@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TalentLens Arcade | Bad-Hire P&L & Weighted Fit % Engine</title>
+  <meta name="description" content="Zero-fluff interactive hiring tool by Catalina Gil Sierra: Calculate Bad-Hire P&L Leakage and convert interviews into weighted % Fit scores.">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              300: '#5eead4',
+              400: '#2dd4bf',
+              500: '#14b8a6',
+              600: '#0d9488',
+              900: '#134e4a',
+              950: '#042f2e',
+            },
+            dark: {
+              bg: '#05070b',
+              surface: '#0a0e17',
+              card: '#101624',
+              border: '#1e293b'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #05070b;
+      color: #f1f5f9;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+    .grid-bg {
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(45, 212, 191, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(45, 212, 191, 0.04) 1px, transparent 1px);
+    }
+    .glass {
+      background: rgba(16, 22, 36, 0.86);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .card-pop {
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .card-pop:hover {
+      transform: translateY(-2px);
+      border-color: rgba(45, 212, 191, 0.45);
+      box-shadow: 0 12px 30px -10px rgba(20, 184, 166, 0.25);
+    }
+    .btn-bounce:active {
+      transform: scale(0.95);
+    }
+    .mode-active {
+      background: linear-gradient(135deg, #14b8a6 0%, #10b981 100%) !important;
+      color: #05070b !important;
+      font-weight: 800 !important;
+      box-shadow: 0 0 25px rgba(20, 184, 166, 0.45);
+      border-color: transparent !important;
+    }
+    .score-pill-1-active {
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.28), rgba(159, 18, 57, 0.45)) !important;
+      border-color: #f43f5e !important;
+      color: #ffe4e6 !important;
+      box-shadow: 0 0 18px rgba(244, 63, 94, 0.35);
+    }
+    .score-pill-3-active {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.28), rgba(180, 83, 9, 0.45)) !important;
+      border-color: #f59e0b !important;
+      color: #fef3c7 !important;
+      box-shadow: 0 0 18px rgba(245, 158, 11, 0.35);
+    }
+    .score-pill-5-active {
+      background: linear-gradient(135deg, rgba(20, 184, 166, 0.32), rgba(16, 185, 129, 0.48)) !important;
+      border-color: #2dd4bf !important;
+      color: #ccfbf1 !important;
+      box-shadow: 0 0 22px rgba(45, 212, 191, 0.45);
+    }
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0 rgba(45, 212, 191, 0.5); }
+      70% { box-shadow: 0 0 0 12px rgba(45, 212, 191, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(45, 212, 191, 0); }
+    }
+    .pulse-ring {
+      animation: pulse-ring 2s infinite;
+    }
+    input[type=range] {
+      height: 6px;
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body class="grid-bg min-h-screen selection:bg-brand-500 selection:text-black">
+
+  <!-- CONFETTI CANVAS OVERLAY -->
+  <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+  <!-- TOAST -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 hidden px-4 py-2.5 rounded-xl bg-emerald-400 text-black font-extrabold text-xs font-mono shadow-2xl flex items-center gap-2">
+    <span>⚡</span>
+    <span id="toast-msg">Copied!</span>
+  </div>
+
+  <!-- COMPACT GAMIFIED TOP BAR -->
+  <header class="sticky top-0 z-40 glass border-b border-gray-800/80 px-4 lg:px-8 py-2.5">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
+      
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-500 to-emerald-400 flex items-center justify-center font-extrabold text-black text-base shadow-lg shadow-brand-500/20">
+          TL
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-white text-sm sm:text-base tracking-tight">TalentLens Studio</span>
+            <span class="px-2 py-0.5 text-[10px] font-mono font-bold rounded-full bg-brand-950 text-brand-400 border border-brand-500/30">WEEK 1 • LIVE TOOL</span>
+          </div>
+          <p class="text-[10px] text-gray-400 font-mono hidden sm:block">By Catalina Gil Sierra • Psychometrics (USBMED)</p>
+        </div>
+      </div>
+
+      <!-- GAMIFIED XP / STREAK HUD -->
+      <div class="hidden md:flex items-center gap-3 bg-dark-bg/90 px-3.5 py-1.5 rounded-xl border border-gray-800 font-mono text-xs">
+        <div class="flex items-center gap-1.5">
+          <span class="text-amber-400">🔥 Calibrations:</span>
+          <span id="hud-streak" class="font-extrabold text-white">3</span>
+        </div>
+        <span class="text-gray-700">|</span>
+        <div class="flex items-center gap-1.5">
+          <span class="text-emerald-400">🛡️ P&L Protected:</span>
+          <span id="hud-saved" class="font-extrabold text-emerald-400">$179,712</span>
+        </div>
+        <span class="text-gray-700">|</span>
+        <div class="flex items-center gap-1.5">
+          <span class="text-brand-400">🏆 Top Fit:</span>
+          <span id="hud-top-fit" class="font-extrabold text-brand-300">92.5%</span>
+        </div>
+      </div>
+
+      <!-- SOUND TOGGLE + EXPORT + CTA -->
+      <div class="flex items-center gap-2">
+        <button type="button" id="btn-sound-toggle" class="px-2.5 py-1.5 rounded-lg bg-dark-card hover:bg-gray-800 text-brand-400 border border-gray-700 text-xs font-mono btn-bounce" title="Toggle Tactile Sound FX">
+          🔊 SFX: ON
+        </button>
+        <button type="button" id="btn-quick-export" class="px-3 py-1.5 rounded-lg bg-dark-card hover:bg-gray-800 text-gray-200 border border-gray-700 text-xs font-mono font-bold btn-bounce hidden sm:inline-flex items-center gap-1">
+          <span>📋 Export MD</span>
+        </button>
+        <a href="https://cal.com" target="_blank" rel="noopener noreferrer" class="px-3.5 py-1.5 text-xs font-extrabold rounded-lg bg-brand-500 hover:bg-brand-400 text-black shadow-lg shadow-brand-500/20 btn-bounce flex items-center gap-1">
+          <span>Book 15m</span>
+          <span>↗</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+    <!-- ULTRA-PUNCHY HERO + MODE SWITCHER -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 glass rounded-2xl p-4 sm:p-5 border border-gray-800">
+      <div class="space-y-1">
+        <div class="inline-flex items-center gap-1.5 text-[11px] font-mono text-brand-400 font-bold uppercase">
+          <span class="w-2 h-2 rounded-full bg-brand-400 animate-ping"></span>
+          <span>Kill Vibe Checks • Quantify Fit % • Stop P&L Bleed</span>
+        </div>
+        <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+          Interactive Hiring Decision Cockpit
+        </h1>
+      </div>
+
+      <!-- 3 MODE TABS (PLAY ALL OR FOCUS) -->
+      <div class="flex flex-wrap gap-2" id="view-switcher">
+        <button type="button" class="view-btn mode-active px-3.5 py-2 rounded-xl text-xs font-mono border border-gray-700 btn-bounce flex items-center gap-1.5" data-view="all">
+          <span>⚡ Split Cockpit (All Live)</span>
+        </button>
+        <button type="button" class="view-btn px-3.5 py-2 rounded-xl text-xs font-mono bg-dark-card text-gray-300 border border-gray-700 hover:border-brand-500 btn-bounce flex items-center gap-1.5" data-view="converter">
+          <span>🎯 1. Fit % Converter</span>
+        </button>
+        <button type="button" class="view-btn px-3.5 py-2 rounded-xl text-xs font-mono bg-dark-card text-gray-300 border border-gray-700 hover:border-emerald-500 btn-bounce flex items-center gap-1.5" data-view="calculator">
+          <span>💰 2. Bad-Hire P&L</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODULE 1: INTERVIEW ➔ WEIGHTED FIT % CONVERTER + LIVE LEADERBOARD         -->
+    <!-- ========================================================================= -->
+    <section id="module-converter" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      
+      <!-- LEFT 7 COLS: WEIGHT SLIDERS & 1-CLICK 1-3-5 GRADING CARDS -->
+      <div class="lg:col-span-7 glass rounded-3xl p-5 sm:p-6 border border-gray-800 space-y-5">
+        
+        <!-- TOP ROW: ROLE PRESETS & CANDIDATE NAME INPUT -->
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-800 pb-4">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-1 rounded-lg bg-brand-500/20 text-brand-400 font-mono text-xs font-extrabold">TOOL 01</span>
+            <h2 class="text-base sm:text-lg font-extrabold text-white">Interview ➔ Fit % Converter</h2>
+          </div>
+
+          <!-- ROLE PRESET PILLS -->
+          <div class="flex flex-wrap gap-1.5" id="role-presets">
+            <button type="button" class="preset-pill px-2.5 py-1 rounded-lg text-[11px] font-mono font-extrabold bg-brand-500 text-black btn-bounce" data-template="tech">💻 Tech</button>
+            <button type="button" class="preset-pill px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold bg-dark-card text-gray-300 border border-gray-700 hover:border-brand-400 btn-bounce" data-template="product">🚀 Product</button>
+            <button type="button" class="preset-pill px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold bg-dark-card text-gray-300 border border-gray-700 hover:border-brand-400 btn-bounce" data-template="sales">📈 Sales</button>
+            <button type="button" class="preset-pill px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold bg-dark-card text-gray-300 border border-gray-700 hover:border-brand-400 btn-bounce" data-template="ops">⚙️ Ops</button>
+          </div>
+        </div>
+
+        <!-- CANDIDATE BAR + QUICK ACTIONS -->
+        <div class="flex flex-wrap items-center justify-between gap-2 bg-dark-bg/90 p-3 rounded-2xl border border-gray-800">
+          <div class="flex items-center gap-2 flex-grow">
+            <span class="text-xs font-mono text-gray-400">👤 Candidate:</span>
+            <input type="text" id="active-candidate-name" value="Alex Rivera" class="bg-dark-card border border-gray-700 focus:border-brand-400 rounded-lg px-2.5 py-1 text-xs font-bold text-white font-mono focus:outline-none w-40 sm:w-48">
+          </div>
+
+          <div class="flex items-center gap-1.5">
+            <div id="weight-sum-badge" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-mono text-[11px] font-extrabold">
+              Weights: 100% ✓
+            </div>
+            <button type="button" id="btn-auto-balance" class="px-2.5 py-1 rounded-lg bg-dark-card hover:bg-gray-800 text-brand-300 border border-brand-500/30 font-mono text-[11px] font-bold btn-bounce" title="Auto-normalize weights to 100%">
+              ⚖️ Auto-100%
+            </button>
+            <button type="button" id="btn-random-sim" class="px-2.5 py-1 rounded-lg bg-dark-card hover:bg-gray-800 text-purple-300 border border-purple-500/30 font-mono text-[11px] font-bold btn-bounce" title="Simulate a random candidate interview">
+              🎲 Wildcard
+            </button>
+            <button type="button" id="btn-add-skill" class="px-2.5 py-1 rounded-lg bg-dark-card hover:bg-gray-800 text-gray-200 border border-gray-700 font-mono text-[11px] font-bold btn-bounce">
+              + Skill
+            </button>
+          </div>
+        </div>
+
+        <!-- DYNAMIC SKILL CARDS -->
+        <div id="criteria-container" class="space-y-3">
+          <!-- Populated via JS -->
+        </div>
+
+      </div>
+
+      <!-- RIGHT 5 COLS: LIVE FIT GAUGE + RADAR + MULTI-CANDIDATE ARENA -->
+      <div class="lg:col-span-5 space-y-5">
+        
+        <!-- LIVE SCORE & FIT % HERO CARD -->
+        <div class="glass rounded-3xl p-5 border border-brand-500/40 space-y-4 relative overflow-hidden">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-[10px] font-mono text-gray-400 uppercase block">Live Weighted Fit</span>
+              <div class="flex items-baseline gap-2">
+                <span id="live-fit-pct" class="text-4xl sm:text-5xl font-extrabold text-emerald-400 font-mono tracking-tight">92.5%</span>
+                <span id="live-raw-score" class="text-xs font-mono text-brand-300 font-bold">4.70 / 5.0</span>
+              </div>
+            </div>
+
+            <div id="verdict-pill" class="px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-mono font-extrabold text-xs text-right">
+              🔥 STRONG HIRE
+            </div>
+          </div>
+
+          <!-- PROGRESS BAR -->
+          <div class="w-full bg-gray-900 h-3 rounded-full overflow-hidden p-0.5 border border-gray-800">
+            <div id="live-fit-bar" class="h-full rounded-full bg-gradient-to-r from-brand-500 to-emerald-400 transition-all duration-300" style="width: 92.5%"></div>
+          </div>
+
+          <!-- ACTION BUTTONS -->
+          <div class="grid grid-cols-2 gap-2.5 pt-1">
+            <button type="button" id="btn-lock-candidate" class="pulse-ring py-2.5 px-3 rounded-xl bg-gradient-to-r from-brand-500 to-emerald-400 hover:from-brand-400 hover:to-emerald-300 text-black font-extrabold text-xs font-mono btn-bounce flex items-center justify-center gap-1.5 shadow-lg">
+              <span>🏆 Lock Into Arena</span>
+            </button>
+            <button type="button" id="btn-copy-scorecard" class="py-2.5 px-3 rounded-xl bg-dark-card hover:bg-gray-800 text-white border border-gray-700 font-mono font-bold text-xs btn-bounce flex items-center justify-center gap-1.5">
+              <span>📋 Copy Scorecard</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- LIVE MULTI-CANDIDATE LEADERBOARD & CHART -->
+        <div class="glass rounded-3xl p-5 border border-gray-800 space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-mono uppercase text-purple-400 font-extrabold">🏆 Candidate Arena</span>
+            </div>
+            <span id="arena-leader-tag" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono text-[11px] font-bold">
+              #1 Alex Rivera (92.5%)
+            </span>
+          </div>
+
+          <!-- COMPACT LEADERBOARD LIST -->
+          <div id="leaderboard-list" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+            <!-- Populated via JS -->
+          </div>
+
+          <!-- BENCHMARK CHART -->
+          <div class="bg-dark-bg/90 rounded-2xl p-3 border border-gray-800">
+            <div class="relative w-full h-36">
+              <canvas id="arenaChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- MODULE 2: COST OF A BAD HIRE (P&L BLEED SIMULATOR)                        -->
+    <!-- ========================================================================= -->
+    <section id="module-calculator" class="glass rounded-3xl p-5 sm:p-6 border border-gray-800">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-800 pb-4 mb-5">
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 font-mono text-xs font-extrabold">TOOL 02</span>
+          <h2 class="text-base sm:text-lg font-extrabold text-white">Cost of a Bad Hire (P&L Bleed Simulator)</h2>
+        </div>
+        <span class="text-[11px] font-mono text-gray-400">SHRM / HBR Formula • Drag sliders to stress-test P&L</span>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        
+        <!-- 4 TACTILE SLIDERS -->
+        <div class="lg:col-span-5 space-y-4 bg-dark-bg/80 p-4 rounded-2xl border border-gray-800">
+          
+          <div>
+            <div class="flex justify-between text-xs font-mono mb-1">
+              <span class="text-gray-400">💵 Avg Base Salary:</span>
+              <span id="lbl-salary" class="text-brand-400 font-extrabold text-sm">$80,000</span>
+            </div>
+            <input type="range" id="rng-salary" min="20000" max="250000" step="5000" value="80000" class="w-full accent-brand-500 bg-gray-800 cursor-pointer">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-mono mb-1">
+              <span class="text-gray-400">👥 Annual Hires:</span>
+              <span id="lbl-hires" class="text-brand-400 font-extrabold text-sm">12 Hires</span>
+            </div>
+            <input type="range" id="rng-hires" min="1" max="50" step="1" value="12" class="w-full accent-brand-500 bg-gray-800 cursor-pointer">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-mono mb-1">
+              <span class="text-gray-400">📉 90-Day Fail Rate (Vibe Check):</span>
+              <span id="lbl-fail" class="text-rose-400 font-extrabold text-sm">20%</span>
+            </div>
+            <input type="range" id="rng-fail" min="5" max="50" step="5" value="20" class="w-full accent-rose-500 bg-gray-800 cursor-pointer">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-mono mb-1">
+              <span class="text-gray-400">🏢 Agency / Replacement Fee:</span>
+              <span id="lbl-fee" class="text-amber-400 font-extrabold text-sm">22%</span>
+            </div>
+            <input type="range" id="rng-fee" min="0" max="30" step="2" value="22" class="w-full accent-amber-500 bg-gray-800 cursor-pointer">
+          </div>
+
+        </div>
+
+        <!-- 3 KPI COUNTERS + BAR COMPARISON -->
+        <div class="lg:col-span-7 space-y-4">
+          
+          <div class="grid grid-cols-3 gap-3">
+            <div class="p-3.5 rounded-2xl bg-dark-bg border border-gray-800 text-center">
+              <span class="text-[10px] font-mono text-gray-400 uppercase block">1 Bad Hire Costs</span>
+              <div id="kpi-single-bad" class="text-lg sm:text-2xl font-extrabold text-rose-400 font-mono mt-0.5">$93,600</div>
+              <span class="text-[10px] text-gray-500 font-mono">Salary + Ramp + Fee</span>
+            </div>
+
+            <div class="p-3.5 rounded-2xl bg-dark-bg border border-gray-800 text-center">
+              <span class="text-[10px] font-mono text-gray-400 uppercase block">Annual P&L Bleed</span>
+              <div id="kpi-annual-bleed" class="text-lg sm:text-2xl font-extrabold text-amber-400 font-mono mt-0.5">$224,640</div>
+              <span id="kpi-mishire-count" class="text-[10px] text-gray-500 font-mono">2.4 failed hires/yr</span>
+            </div>
+
+            <div class="p-3.5 rounded-2xl bg-emerald-950/30 border border-emerald-500/40 text-center">
+              <span class="text-[10px] font-mono text-emerald-300 uppercase font-bold block">BARS Net Savings</span>
+              <div id="kpi-net-savings" class="text-lg sm:text-2xl font-extrabold text-emerald-400 font-mono mt-0.5">$179,712</div>
+              <span class="text-[10px] text-emerald-400/80 font-mono">Cuts fail rate to 4%</span>
+            </div>
+          </div>
+
+          <div class="bg-dark-bg/90 rounded-2xl p-4 border border-gray-800">
+            <div class="relative w-full h-40">
+              <canvas id="pnlChart"></canvas>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- COMPACT FOOTER / AUTHOR CREDENTIALS -->
+    <footer class="glass rounded-2xl p-4 sm:p-5 border border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-brand-500 text-black font-extrabold flex items-center justify-center">CG</div>
+        <div>
+          <strong class="text-white">Catalina Gil Sierra</strong> • Lead TA & Psychometric Systems Architect (USBMED)
+          <div class="text-[11px] text-gray-400">⏳ Coming Next Week: n8n Workflow Simulator & Funnel Bottleneck Diagnostic</div>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
+        <a href="https://www.linkedin.com/in/catalinagilpeopleops" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-brand-400">LinkedIn ↗</a>
+        <a href="https://docs.google.com/document/d/1LFZOGBt049Cw7poC0fcgHkFuszylslldqMNAUYQO-eg/edit" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-brand-400">Lead CV ↗</a>
+        <a href="https://docs.google.com/document/d/1NyrhrXB_HySO9egpYThS5MJuVfiH3X2BehcRAJiqOVg/edit" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-brand-400">Full-Cycle CV ↗</a>
+        <a href="mailto:catagil91@gmail.com" class="text-brand-400 font-bold hover:underline">catagil91@gmail.com</a>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- INTERACTIVE ENGINE -->
+  <script>
+    // =========================================================================
+    // TACTILE SYNTHESIZED SOUND EFFECTS (WEB AUDIO API) + CONFETTI
+    // =========================================================================
+    let sfxEnabled = true;
+    let calibrationsCount = 3;
+    let audioCtx = null;
+
+    function playTone(freq = 520, type = 'sine', duration = 0.07) {
+      if (!sfxEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function playChord() {
+      if (!sfxEnabled) return;
+      playTone(523.25, 'triangle', 0.12);
+      setTimeout(() => playTone(659.25, 'triangle', 0.12), 60);
+      setTimeout(() => playTone(783.99, 'triangle', 0.18), 120);
+    }
+
+    document.getElementById('btn-sound-toggle').addEventListener('click', (e) => {
+      sfxEnabled = !sfxEnabled;
+      e.currentTarget.textContent = sfxEnabled ? '🔊 SFX: ON' : '🔇 SFX: OFF';
+      if (sfxEnabled) playTone(660, 'sine', 0.08);
+    });
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      t.classList.remove('hidden');
+      setTimeout(() => t.classList.add('hidden'), 2200);
+    }
+
+    function fireConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const pieces = Array.from({ length: 45 }, () => ({
+        x: canvas.width / 2 + (Math.random() - 0.5) * 200,
+        y: canvas.height / 2,
+        vx: (Math.random() - 0.5) * 12,
+        vy: -Math.random() * 12 - 4,
+        size: Math.random() * 6 + 4,
+        color: ['#2dd4bf', '#10b981', '#f59e0b', '#a855f7'][Math.floor(Math.random() * 4)]
+      }));
+      let frame = 0;
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.45;
+          ctx.fillStyle = p.color;
+          ctx.fillRect(p.x, p.y, p.size, p.size);
+        });
+        frame++;
+        if (frame < 50) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      animate();
+    }
+
+    // =========================================================================
+    // VIEW SWITCHER (ALL / CONVERTER / CALCULATOR)
+    // =========================================================================
+    document.querySelectorAll('.view-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        playTone(480, 'sine', 0.06);
+        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('mode-active'));
+        btn.classList.add('mode-active');
+        const view = btn.getAttribute('data-view');
+        const modConv = document.getElementById('module-converter');
+        const modCalc = document.getElementById('module-calculator');
+        if (view === 'all') {
+          modConv.classList.remove('hidden');
+          modCalc.classList.remove('hidden');
+        } else if (view === 'converter') {
+          modConv.classList.remove('hidden');
+          modCalc.classList.add('hidden');
+        } else {
+          modConv.classList.add('hidden');
+          modCalc.classList.remove('hidden');
+        }
+      });
+    });
+
+    // =========================================================================
+    // MODULE 1: INTERVIEW-TO-FIT % CONVERTER
+    // =========================================================================
+    const templates = {
+      tech: [
+        { name: "Production Resilience & Debugging", weight: 40, q: "Debugged a p99 latency spike under load—what metrics & trade-offs?", s1: "Blames cloud/juniors; no metrics", s3: "Standard alerts + horizontal scale", s5: "Query plan profiling + circuit breakers", score: 5 },
+        { name: "Zero-Downtime DB Architecture", weight: 35, q: "Executed a high-volume schema migration without breaking SLAs?", s1: "Table locks & outage", s3: "Off-hours maintenance window", s5: "Dual-write + async backfill (0 downtime)", score: 5 },
+        { name: "Product vs. Tech-Debt Alignment", weight: 25, q: "Resolved a speed vs. stability dispute with a Product Lead?", s1: "Rigid or caves immediately", s3: "Escalates in sprint planning", s5: "Built latency-vs-revenue matrix", score: 4 }
+      ],
+      product: [
+        { name: "Hypothesis & A/B Rigor", weight: 40, q: "Handled a flat A/B test—how did you audit instrumentation?", s1: "Chases vanity metrics", s3: "Moves to next backlog item", s5: "Found funnel leak; +25% activation", score: 4 },
+        { name: "Tech Debt vs. Revenue ROI", weight: 35, q: "Engineering asks for 2 sprints of refactoring—your call?", s1: "Dismisses engineering risk", s3: "Allocates flat 20% capacity", s5: "Quantified churn cost; phased roadmap", score: 5 },
+        { name: "User Friction Discovery", weight: 25, q: "Feature had low adoption post-launch—how did you pivot?", s1: "Blames users or marketing", s3: "Sends standard NPS survey", s5: "Interviewed 12 users in 48h; 3x usage", score: 5 }
+      ],
+      sales: [
+        { name: "Executive Pain Discovery", weight: 40, q: "Uncovered budget on a stalled $50k+ B2B deal?", s1: "Pitches generic feature demo", s3: "Standard BANT qualification", s5: "Mapped Economic Buyer P&L pain", score: 5 },
+        { name: "CFO Objection Turnaround", weight: 35, q: "CFO freezes spend at quarter-end—how do you rescue?", s1: "Panic-discounts margin", s3: "Offers quarterly payment terms", s5: "Built Cost-of-Inaction ROI case", score: 4 },
+        { name: "Pipeline & Forecast Precision", weight: 25, q: "How do you keep monthly forecast accuracy above 90%?", s1: "Hopes on zombie deals", s3: "Weekly CRM hygiene", s5: "Strict 3x weighted stage velocity", score: 5 }
+      ],
+      ops: [
+        { name: "Bottleneck Elimination", weight: 40, q: "Cut cycle times without adding headcount?", s1: "Throws headcount at chaos", s3: "Maps SOP checklists", s5: "Removed handoffs; -65% error rate", score: 5 },
+        { name: "SLA Crisis Contingency", weight: 35, q: "Key vendor failed during peak demand—your playbook?", s1: "Missed customer SLAs", s3: "Called backup vendor list", s5: "Rerouted in 4h; 98% on-time fulfillment", score: 4 },
+        { name: "Frontline 90-Day Retention", weight: 25, q: "Reduced early turnover in high-tempo shift teams?", s1: "Blames labor market", s3: "Runs exit interviews", s5: "Skill-tiered progression; -60% churn", score: 5 }
+      ]
+    };
+
+    let criteria = JSON.parse(JSON.stringify(templates.tech));
+
+    function renderCriteria() {
+      const container = document.getElementById('criteria-container');
+      container.innerHTML = '';
+
+      let totalWeight = 0;
+      let weightedSum = 0;
+
+      criteria.forEach((c, idx) => {
+        const w = parseFloat(c.weight) || 0;
+        totalWeight += w;
+        weightedSum += c.score * (w / 100);
+
+        const card = document.createElement('div');
+        card.className = 'card-pop p-3.5 rounded-2xl bg-dark-bg/90 border border-gray-800 space-y-2.5';
+        card.innerHTML = `
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 flex-grow">
+              <span class="w-5 h-5 rounded-md bg-brand-950 text-brand-400 font-mono text-[11px] font-extrabold flex items-center justify-center shrink-0">${idx + 1}</span>
+              <input type="text" value="${c.name}" data-idx="${idx}" class="skill-name bg-transparent border-b border-transparent focus:border-brand-500 text-xs sm:text-sm font-extrabold text-white w-full focus:outline-none">
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0">
+              <input type="range" min="5" max="80" step="5" value="${c.weight}" data-idx="${idx}" class="skill-weight-slider w-20 accent-brand-500 bg-gray-800 cursor-pointer">
+              <span class="w-10 text-right font-mono text-xs font-extrabold text-brand-400">${c.weight}%</span>
+              <button type="button" data-idx="${idx}" class="btn-del-skill text-gray-500 hover:text-rose-400 text-xs font-mono px-1">✕</button>
+            </div>
+          </div>
+
+          <div class="text-[11px] font-mono text-gray-400 bg-dark-card/70 px-2.5 py-1.5 rounded-lg border border-gray-800/80 flex items-center justify-between gap-2">
+            <span class="truncate">💬 "${c.q}"</span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <button type="button" data-idx="${idx}" data-val="1" class="rate-btn btn-bounce p-2 rounded-xl border text-left transition-all ${c.score === 1 ? 'score-pill-1-active font-bold' : 'bg-dark-card border-gray-800 text-gray-400 hover:border-gray-700'}">
+              <div class="font-mono font-extrabold text-rose-400">1 • Alert (0%)</div>
+              <div class="truncate text-[10px] mt-0.5">${c.s1}</div>
+            </button>
+            <button type="button" data-idx="${idx}" data-val="3" class="rate-btn btn-bounce p-2 rounded-xl border text-left transition-all ${c.score === 3 ? 'score-pill-3-active font-bold' : 'bg-dark-card border-gray-800 text-gray-400 hover:border-gray-700'}">
+              <div class="font-mono font-extrabold text-amber-400">3 • Solid (50%)</div>
+              <div class="truncate text-[10px] mt-0.5">${c.s3}</div>
+            </button>
+            <button type="button" data-idx="${idx}" data-val="5" class="rate-btn btn-bounce p-2 rounded-xl border text-left transition-all ${c.score === 5 ? 'score-pill-5-active font-bold' : 'bg-dark-card border-gray-800 text-gray-400 hover:border-gray-700'}">
+              <div class="font-mono font-extrabold text-brand-300">5 • Star (100%)</div>
+              <div class="truncate text-[10px] mt-0.5">${c.s5}</div>
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      // Weight badge update
+      const wBadge = document.getElementById('weight-sum-badge');
+      if (Math.round(totalWeight) === 100) {
+        wBadge.textContent = `Weights: 100% ✓`;
+        wBadge.className = 'px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-mono text-[11px] font-extrabold';
+      } else {
+        wBadge.textContent = `Weights: ${totalWeight}% ⚠️`;
+        wBadge.className = 'px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40 font-mono text-[11px] font-extrabold';
+      }
+
+      // Compute normalized score & fit %
+      const normW = totalWeight > 0 ? totalWeight : 100;
+      const finalScore = (weightedSum * 100) / normW;
+      const fitPct = Math.max(0, Math.min(100, ((finalScore - 1.0) / 4.0) * 100));
+
+      document.getElementById('live-fit-pct').textContent = `${fitPct.toFixed(1)}%`;
+      document.getElementById('live-raw-score').textContent = `${finalScore.toFixed(2)} / 5.0`;
+      document.getElementById('live-fit-bar').style.width = `${fitPct}%`;
+
+      const vPill = document.getElementById('verdict-pill');
+      const fitEl = document.getElementById('live-fit-pct');
+      if (fitPct >= 80) {
+        vPill.textContent = '🔥 STRONG HIRE';
+        vPill.className = 'px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-mono font-extrabold text-xs';
+        fitEl.className = 'text-4xl sm:text-5xl font-extrabold text-emerald-400 font-mono tracking-tight';
+      } else if (fitPct >= 50) {
+        vPill.textContent = '⚖️ CALIBRATE';
+        vPill.className = 'px-3 py-1.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 font-mono font-extrabold text-xs';
+        fitEl.className = 'text-4xl sm:text-5xl font-extrabold text-amber-400 font-mono tracking-tight';
+      } else {
+        vPill.textContent = '✖ NO HIRE';
+        vPill.className = 'px-3 py-1.5 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 font-mono font-extrabold text-xs';
+        fitEl.className = 'text-4xl sm:text-5xl font-extrabold text-rose-400 font-mono tracking-tight';
+      }
+
+      // Bind events
+      document.querySelectorAll('.rate-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const i = parseInt(btn.getAttribute('data-idx'), 10);
+          const v = parseInt(btn.getAttribute('data-val'), 10);
+          criteria[i].score = v;
+          playTone(v === 5 ? 680 : (v === 3 ? 480 : 280), 'triangle', 0.08);
+          renderCriteria();
+        });
+      });
+
+      document.querySelectorAll('.skill-weight-slider').forEach(sl => {
+        sl.addEventListener('input', () => {
+          const i = parseInt(sl.getAttribute('data-idx'), 10);
+          criteria[i].weight = parseInt(sl.value, 10);
+          playTone(420, 'sine', 0.03);
+          renderCriteria();
+        });
+      });
+
+      document.querySelectorAll('.skill-name').forEach(inp => {
+        inp.addEventListener('change', () => {
+          const i = parseInt(inp.getAttribute('data-idx'), 10);
+          criteria[i].name = inp.value;
+        });
+      });
+
+      document.querySelectorAll('.btn-del-skill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (criteria.length <= 1) {
+            showToast('Keep at least 1 skill!');
+            return;
+          }
+          const i = parseInt(btn.getAttribute('data-idx'), 10);
+          criteria.splice(i, 1);
+          playTone(300, 'sine', 0.06);
+          renderCriteria();
+        });
+      });
+    }
+
+    // Role preset switching
+    document.querySelectorAll('.preset-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        playTone(580, 'triangle', 0.07);
+        document.querySelectorAll('.preset-pill').forEach(b => {
+          b.className = 'preset-pill px-2.5 py-1 rounded-lg text-[11px] font-mono font-bold bg-dark-card text-gray-300 border border-gray-700 hover:border-brand-400 btn-bounce';
+        });
+        btn.className = 'preset-pill px-2.5 py-1 rounded-lg text-[11px] font-mono font-extrabold bg-brand-500 text-black btn-bounce';
+        const key = btn.getAttribute('data-template');
+        criteria = JSON.parse(JSON.stringify(templates[key]));
+        renderCriteria();
+        showToast(`Loaded ${btn.textContent.trim()} rubric!`);
+      });
+    });
+
+    // Auto-balance weights to 100%
+    document.getElementById('btn-auto-balance').addEventListener('click', () => {
+      const total = criteria.reduce((acc, c) => acc + (parseFloat(c.weight) || 0), 0);
+      if (total === 0) return;
+      let running = 0;
+      criteria.forEach((c, idx) => {
+        if (idx === criteria.length - 1) {
+          c.weight = Math.max(5, 100 - running);
+        } else {
+          const w = Math.round(((c.weight / total) * 100) / 5) * 5;
+          c.weight = Math.max(5, w);
+          running += c.weight;
+        }
+      });
+      playChord();
+      renderCriteria();
+      showToast('Weights normalized to 100%!');
+    });
+
+    // Wildcard random candidate simulator
+    const randomNames = ["Sofia Chen", "Marcus Vance", "Elena Rostova", "Liam O'Connor", "Mateo Silva", "Priya Patel"];
+    document.getElementById('btn-random-sim').addEventListener('click', () => {
+      const pickName = randomNames[Math.floor(Math.random() * randomNames.length)];
+      document.getElementById('active-candidate-name').value = pickName;
+      const possibleScores = [1, 3, 5];
+      criteria.forEach(c => {
+        c.score = possibleScores[Math.floor(Math.random() * possibleScores.length)];
+      });
+      playTone(620, 'sawtooth', 0.08);
+      renderCriteria();
+      showToast(`Simulated ${pickName}!`);
+    });
+
+    // Add custom skill
+    document.getElementById('btn-add-skill').addEventListener('click', () => {
+      criteria.push({
+        name: `Custom Skill #${criteria.length + 1}`,
+        weight: 15,
+        q: "Give a specific example with measurable impact.",
+        s1: "Vague / no ownership",
+        s3: "Meets standard bar",
+        s5: "Measurable ROI & autonomy",
+        score: 5
+      });
+      playTone(540, 'sine', 0.07);
+      renderCriteria();
+    });
+
+    renderCriteria();
+
+    // =========================================================================
+    // CANDIDATE ARENA LEADERBOARD & BENCHMARK CHART
+    // =========================================================================
+    let candidates = [
+      { name: "Alex Rivera", score: 4.70, fit: 92.5, status: "HIRE", color: "#10b981" },
+      { name: "Jordan Lee", score: 3.80, fit: 70.0, status: "CALIBRATE", color: "#f59e0b" },
+      { name: "Taylor Smith", score: 2.30, fit: 32.5, status: "PASS", color: "#f43f5e" }
+    ];
+
+    const arenaCtx = document.getElementById('arenaChart').getContext('2d');
+    const arenaChart = new Chart(arenaCtx, {
+      type: 'bar',
+      data: {
+        labels: candidates.map(c => c.name),
+        datasets: [{
+          data: candidates.map(c => c.fit),
+          backgroundColor: candidates.map(c => c.color),
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { color: '#94a3b8', callback: v => v + '%' } },
+          x: { grid: { display: false }, ticks: { color: '#f1f5f9', font: { size: 10, weight: 'bold' } } }
+        },
+        plugins: { legend: { display: false } }
+      }
+    });
+
+    function renderLeaderboard() {
+      const list = document.getElementById('leaderboard-list');
+      list.innerHTML = '';
+
+      // Sort descending by fit
+      candidates.sort((a, b) => b.fit - a.fit);
+
+      if (candidates.length > 0) {
+        document.getElementById('arena-leader-tag').textContent = `#1 ${candidates[0].name} (${candidates[0].fit.toFixed(1)}%)`;
+        document.getElementById('hud-top-fit').textContent = `${candidates[0].fit.toFixed(1)}%`;
+      }
+
+      candidates.forEach((c, idx) => {
+        const row = document.createElement('div');
+        row.className = 'flex items-center justify-between px-3 py-2 rounded-xl bg-dark-bg border border-gray-800 text-xs font-mono';
+        const badgeColor = c.fit >= 80 ? 'text-emerald-400 bg-emerald-500/15' : (c.fit >= 50 ? 'text-amber-400 bg-amber-500/15' : 'text-rose-400 bg-rose-500/15');
+        row.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="text-gray-500 font-bold">#${idx + 1}</span>
+            <span class="font-bold text-white">${c.name}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-gray-400">${c.score.toFixed(2)}/5</span>
+            <span class="px-2 py-0.5 rounded font-extrabold ${badgeColor}">${c.fit.toFixed(1)}%</span>
+            <button type="button" data-idx="${idx}" class="btn-remove-cand text-gray-500 hover:text-rose-400">✕</button>
+          </div>
+        `;
+        list.appendChild(row);
+      });
+
+      arenaChart.data.labels = candidates.map(c => c.name);
+      arenaChart.data.datasets[0].data = candidates.map(c => c.fit);
+      arenaChart.data.datasets[0].backgroundColor = candidates.map(c => c.color);
+      arenaChart.update();
+
+      document.querySelectorAll('.btn-remove-cand').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (candidates.length <= 1) return;
+          const i = parseInt(btn.getAttribute('data-idx'), 10);
+          candidates.splice(i, 1);
+          playTone(320, 'sine', 0.05);
+          renderLeaderboard();
+        });
+      });
+    }
+
+    renderLeaderboard();
+
+    document.getElementById('btn-lock-candidate').addEventListener('click', () => {
+      const nameInput = document.getElementById('active-candidate-name');
+      const cname = nameInput.value.trim() || `Candidate #${candidates.length + 1}`;
+
+      let totalW = 0;
+      let wSum = 0;
+      criteria.forEach(c => {
+        totalW += c.weight;
+        wSum += c.score * (c.weight / 100);
+      });
+      const normW = totalW > 0 ? totalW : 100;
+      const score = parseFloat(((wSum * 100) / normW).toFixed(2));
+      const fit = parseFloat(Math.max(0, Math.min(100, ((score - 1.0) / 4.0) * 100)).toFixed(1));
+      const color = fit >= 80 ? '#10b981' : (fit >= 50 ? '#f59e0b' : '#f43f5e');
+      const status = fit >= 80 ? 'HIRE' : (fit >= 50 ? 'CALIBRATE' : 'PASS');
+
+      candidates.push({ name: cname, score, fit, status, color });
+      calibrationsCount++;
+      document.getElementById('hud-streak').textContent = calibrationsCount;
+
+      playChord();
+      if (fit >= 80) fireConfetti();
+      renderLeaderboard();
+      showToast(`Locked ${cname} (${fit}% Fit) into Arena!`);
+    });
+
+    // Copy Markdown Scorecard
+    function exportScorecardMD() {
+      const cname = document.getElementById('active-candidate-name').value;
+      const fitText = document.getElementById('live-fit-pct').textContent;
+      const rawText = document.getElementById('live-raw-score').textContent;
+      let md = `# BARS WEIGHTED SCORECARD — ${cname}\n`;
+      md += `**Weighted Fit:** ${fitText} (${rawText}) | **Framework:** Catalina Gil Sierra (USBMED)\n\n`;
+      criteria.forEach((c, i) => {
+        md += `${i + 1}. **${c.name}** (Weight: ${c.weight}%) — Score: **${c.score}/5**\n`;
+        md += `   - Probe: *"${c.q}"*\n`;
+      });
+      try { navigator.clipboard.writeText(md); } catch (e) {}
+      playChord();
+      showToast('Scorecard Markdown copied!');
+    }
+
+    document.getElementById('btn-copy-scorecard').addEventListener('click', exportScorecardMD);
+    document.getElementById('btn-quick-export').addEventListener('click', exportScorecardMD);
+
+    // =========================================================================
+    // MODULE 2: BAD-HIRE P&L BLEED SIMULATOR
+    // =========================================================================
+    const rngSalary = document.getElementById('rng-salary');
+    const rngHires = document.getElementById('rng-hires');
+    const rngFail = document.getElementById('rng-fail');
+    const rngFee = document.getElementById('rng-fee');
+
+    const pnlCtx = document.getElementById('pnlChart').getContext('2d');
+    const pnlChart = new Chart(pnlCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Unstructured Vibe-Check Bleed', 'Calibrated BARS Process (4% Fail)'],
+        datasets: [{
+          data: [224640, 44928],
+          backgroundColor: ['#f43f5e', '#10b981'],
+          borderRadius: 8
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { color: '#94a3b8', callback: v => '$' + (v / 1000) + 'k' } },
+          y: { grid: { display: false }, ticks: { color: '#f1f5f9', font: { weight: 'bold' } } }
+        },
+        plugins: { legend: { display: false } }
+      }
+    });
+
+    function updatePnL() {
+      const salary = parseFloat(rngSalary.value);
+      const hires = parseFloat(rngHires.value);
+      const failRate = parseFloat(rngFail.value) / 100;
+      const feeRate = parseFloat(rngFee.value) / 100;
+
+      document.getElementById('lbl-salary').textContent = `$${salary.toLocaleString()}`;
+      document.getElementById('lbl-hires').textContent = `${hires} ${hires === 1 ? 'Hire' : 'Hires'}`;
+      document.getElementById('lbl-fail').textContent = `${rngFail.value}%`;
+      document.getElementById('lbl-fee').textContent = `${rngFee.value}%`;
+
+      const costPerBadHire = Math.round(salary * (0.55 + feeRate));
+      const badHiresCount = hires * failRate;
+      const annualBleed = Math.round(costPerBadHire * badHiresCount);
+      const calibratedBleed = Math.round(costPerBadHire * (hires * 0.04));
+      const netSavings = Math.max(0, annualBleed - calibratedBleed);
+
+      document.getElementById('kpi-single-bad').textContent = `$${costPerBadHire.toLocaleString()}`;
+      document.getElementById('kpi-annual-bleed').textContent = `$${annualBleed.toLocaleString()}`;
+      document.getElementById('kpi-mishire-count').textContent = `${badHiresCount.toFixed(1)} failed hires/yr`;
+      document.getElementById('kpi-net-savings').textContent = `$${netSavings.toLocaleString()}`;
+      document.getElementById('hud-saved').textContent = `$${netSavings.toLocaleString()}`;
+
+      pnlChart.data.datasets[0].data = [annualBleed, calibratedBleed];
+      pnlChart.update();
+    }
+
+    [rngSalary, rngHires, rngFail, rngFee].forEach(inp => {
+      inp.addEventListener('input', () => {
+        playTone(380, 'sine', 0.03);
+        updatePnL();
+      });
+    });
+    updatePnL();
+  </script>
+</body>
+</html>
