@@ -15,76 +15,71 @@ import {
   Scale, 
   Plus, 
   Trash2, 
-  TrendingDown, 
   DollarSign, 
   Users, 
   AlertTriangle,
   FileSpreadsheet,
-  FileText,
-  Sparkles,
-  Award
+  ArrowUpRight,
+  ChevronRight
 } from 'lucide-react';
 import { ROLE_TEMPLATES, SkillCriterion, CandidateEntry, calculateFit, calculatePnL } from './lib/engine';
 import { sound } from './lib/sound';
 
 export function App() {
-  // Theme state: Defaulting to 2026 Pearl Studio (Light) for optical warmth & neuroaesthetic appeal
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [sfxOn, setSfxOn] = useState<boolean>(true);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
-  // Cockpit View Modes
+  // View Modes: Split Cockpit (All Live), 1. Fit % Converter, 2. Bad-Hire P&L
   const [activeTab, setActiveTab] = useState<'all' | 'converter' | 'calculator'>('all');
 
-  // Module 1: Fit % State
+  // Role Templates & Evaluation
   const [selectedRole, setSelectedRole] = useState<'tech' | 'product' | 'sales' | 'ops'>('tech');
   const [criteria, setCriteria] = useState<SkillCriterion[]>(() => JSON.parse(JSON.stringify(ROLE_TEMPLATES.tech)));
   const [activeCandidate, setActiveCandidate] = useState<string>('Alex Rivera');
   
-  // Candidates Arena
+  // Arena Candidates List
   const [candidates, setCandidates] = useState<CandidateEntry[]>([
-    { name: "Alex Rivera", score: 4.70, fit: 92.5, status: "HIRE", color: "var(--accent-emerald)" },
-    { name: "Jordan Lee", score: 3.80, fit: 70.0, status: "CALIBRATE", color: "var(--accent-amber)" },
-    { name: "Taylor Smith", score: 2.30, fit: 32.5, status: "PASS", color: "var(--accent-rose)" }
+    { name: "Alex Rivera", score: 4.70, fit: 92.5, status: "HIRE", color: "var(--apple-green)" },
+    { name: "Jordan Lee", score: 3.80, fit: 70.0, status: "CALIBRATE", color: "var(--apple-amber)" },
+    { name: "Taylor Smith", score: 2.30, fit: 32.5, status: "PASS", color: "var(--apple-red)" }
   ]);
   const [calibrationsCount, setCalibrationsCount] = useState<number>(3);
 
-  // Module 2: P&L Simulator State
+  // P&L Parameters
   const [salary, setSalary] = useState<number>(80000);
   const [hires, setHires] = useState<number>(12);
   const [failRate, setFailRate] = useState<number>(20);
   const [feeRate, setFeeRate] = useState<number>(22);
 
-  // Lead Capture State
+  // Leads
   const [leadEmail, setLeadEmail] = useState<string>('');
   const [honeypot, setHoneypot] = useState<string>('');
   const [leadLoading, setLeadLoading] = useState<boolean>(false);
   const [leadSuccess, setLeadSuccess] = useState<boolean>(false);
 
-  // Computed Values
+  // Dynamic Engine Calculations
   const fitResults = calculateFit(criteria);
   const pnlResults = calculatePnL(salary, hires, failRate, feeRate);
 
-  // Sync Theme attribute
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
-  // Sound sync
   useEffect(() => {
     sound.enabled = sfxOn;
   }, [sfxOn]);
 
   const showToast = (msg: string) => {
     setToastMsg(msg);
-    setTimeout(() => setToastMsg(null), 2500);
+    setTimeout(() => setToastMsg(null), 2400);
   };
 
   const handleRoleChange = (role: 'tech' | 'product' | 'sales' | 'ops') => {
     sound.playTone(560, 'triangle');
     setSelectedRole(role);
     setCriteria(JSON.parse(JSON.stringify(ROLE_TEMPLATES[role])));
-    showToast(`Loaded ${role.toUpperCase()} rubric template!`);
+    showToast(`Loaded ${role.toUpperCase()} rubric!`);
   };
 
   const updateScore = (index: number, score: number) => {
@@ -116,7 +111,7 @@ export function App() {
     });
     setCriteria(next);
     sound.playChord();
-    showToast('Normalized weights to exactly 100%!');
+    showToast('Weights normalized to 100%!');
   };
 
   const simulateWildcard = () => {
@@ -137,12 +132,12 @@ export function App() {
     setCriteria([
       ...criteria,
       {
-        name: `Strategic Skill #${criteria.length + 1}`,
+        name: `Custom Skill #${criteria.length + 1}`,
         weight: 15,
-        q: "Demonstrated measurable ROI and end-to-end execution under pressure?",
-        s1: "Vague explanations / no metrics",
-        s3: "Meets standard process requirements",
-        s5: "Autonomous leadership, 0-to-1 impact",
+        q: "Give a specific example with measurable impact.",
+        s1: "Vague / no ownership",
+        s3: "Meets standard bar",
+        s5: "Measurable ROI & autonomy",
         score: 5
       }
     ]);
@@ -156,7 +151,7 @@ export function App() {
       score: fitResults.rawScore,
       fit: fitResults.fitPct,
       status: fitResults.fitPct >= 80 ? 'HIRE' : fitResults.fitPct >= 50 ? 'CALIBRATE' : 'PASS',
-      color: fitResults.fitPct >= 80 ? 'var(--accent-emerald)' : fitResults.fitPct >= 50 ? 'var(--accent-amber)' : 'var(--accent-rose)'
+      color: fitResults.fitPct >= 80 ? 'var(--apple-green)' : fitResults.fitPct >= 50 ? 'var(--apple-amber)' : 'var(--apple-red)'
     };
 
     setCandidates([newCand, ...candidates].sort((a, b) => b.fit - a.fit));
@@ -164,32 +159,27 @@ export function App() {
     sound.playChord();
 
     if (fitResults.fitPct >= 80) {
-      confetti({
-        particleCount: 55,
-        spread: 65,
-        origin: { y: 0.6 }
-      });
+      confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
     }
     showToast(`Locked ${name} (${fitResults.fitPct}% Fit) into Arena!`);
   };
 
-  const copyScorecardMD = () => {
+  const exportScorecardMD = () => {
     let md = `# BARS WEIGHTED SCORECARD — ${activeCandidate}\n`;
-    md += `**Weighted Fit:** ${fitResults.fitPct}% (${fitResults.rawScore}/5.0) | **Verdict:** ${fitResults.verdict}\n`;
-    md += `**Framework:** Catalina Gil Sierra (USBMED Psychometrics)\n\n`;
+    md += `**Weighted Fit:** ${fitResults.fitPct}% (${fitResults.rawScore}/5.0) | **Framework:** Catalina Gil Sierra (USBMED)\n\n`;
     criteria.forEach((c, idx) => {
-      md += `${idx + 1}. **${c.name}** (Weight: ${c.weight}%) — Grade: **${c.score}/5**\n`;
+      md += `${idx + 1}. **${c.name}** (Weight: ${c.weight}%) — Score: **${c.score}/5**\n`;
       md += `   - Probe: *"${c.q}"*\n`;
     });
     navigator.clipboard.writeText(md);
     sound.playChord();
-    showToast('Scorecard Markdown copied to clipboard!');
+    showToast('Scorecard Markdown copied!');
   };
 
   const handleLeadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!leadEmail || !leadEmail.includes('@')) {
-      showToast('Please enter a valid business email.');
+      showToast('Please enter a valid email.');
       return;
     }
     setLeadLoading(true);
@@ -203,7 +193,7 @@ export function App() {
       if (res.ok && data.success) {
         setLeadSuccess(true);
         sound.playChord();
-        confetti({ particleCount: 45, spread: 55, origin: { y: 0.8 } });
+        confetti({ particleCount: 40, spread: 50, origin: { y: 0.8 } });
         showToast(data.message || "You're on the list!");
       } else {
         showToast(data.error || 'Could not register email.');
@@ -211,7 +201,7 @@ export function App() {
     } catch {
       setLeadSuccess(true);
       sound.playChord();
-      showToast("You're on the list! (Saved locally)");
+      showToast("You're on the list!");
     } finally {
       setLeadLoading(false);
     }
@@ -219,154 +209,144 @@ export function App() {
 
   const topCandidate = candidates.length > 0 ? candidates[0] : null;
 
-  // SVG Radial Gauge Geometry
-  const radius = 56;
+  // Apple Activity-Ring Inspired Circular Gauge
+  const radius = 64;
+  const strokeWidth = 10;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (fitResults.fitPct / 100) * circumference;
 
-  return (
-    <div className="relative min-h-screen">
-      {/* 2026 Ambient Chromatic Aurora */}
-      <div className="aurora-bg">
-        <div className="aurora-blob-1" />
-        <div className="aurora-blob-2" />
-      </div>
+  const getStatusColor = (fit: number) => {
+    if (fit >= 80) return 'var(--apple-green)';
+    if (fit >= 50) return 'var(--apple-amber)';
+    return 'var(--apple-red)';
+  };
 
-      {/* Floating Toast Notification */}
+  return (
+    <div className="min-h-screen selection:bg-[var(--apple-blue)] selection:text-white pb-16">
+      
+      {/* Toast Notification */}
       {toastMsg && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-[var(--accent-emerald)] text-white font-black text-xs font-mono shadow-2xl animate-bounce">
-          <Check className="w-4 h-4 stroke-[3]" />
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-5 py-2.5 rounded-full bg-[var(--apple-surface)] border border-[var(--apple-border)] text-[var(--apple-text-primary)] font-semibold text-xs shadow-2xl animate-fade-in">
+          <Check className="w-4 h-4 text-[var(--apple-green)]" />
           <span>{toastMsg}</span>
         </div>
       )}
 
-      {/* 2026 Refractive Glass Floating Island Header */}
-      <header className="sticky top-4 z-40 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="prismatic-glass rounded-2xl px-5 py-3 flex items-center justify-between gap-4">
+      {/* Apple-Style Frosted Translucent Navbar */}
+      <header className="sticky top-0 z-40 apple-glass px-4 sm:px-8 py-3">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+          
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[var(--accent-primary)] to-[var(--accent-emerald)] flex items-center justify-center font-black text-white text-base shadow-md">
+            <div className="w-8 h-8 rounded-lg bg-[var(--apple-text-primary)] text-[var(--apple-bg)] flex items-center justify-center font-bold text-sm tracking-tight">
               TL
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-black text-[var(--text-heading)] text-base tracking-tight">TalentLens Studio</span>
-                <span className="px-2 py-0.5 text-[10px] font-mono font-black rounded-full bg-[var(--accent-emerald-bg)] text-[var(--accent-emerald)] border border-[var(--border-subtle)]">
-                  PEARL STUDIO v2.6
+                <span className="font-bold text-[var(--apple-text-primary)] text-sm tracking-tight">TalentLens Studio</span>
+                <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] border border-[var(--apple-border)]">
+                  WEEK 1 • LIVE TOOL
                 </span>
               </div>
-              <p className="text-xs text-[var(--text-muted)] font-mono hidden sm:block">
-                Catalina Gil Sierra • Psychometric Systems Architect
+              <p className="text-[11px] text-[var(--apple-text-secondary)] hidden sm:block">
+                By Catalina Gil Sierra • Psychometrics (USBMED)
               </p>
             </div>
           </div>
 
-          {/* Realtime KPI Telemetry */}
-          <div className="hidden md:flex items-center gap-4 px-4 py-1.5 rounded-xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] font-mono text-xs">
+          {/* Clean Telemetry HUD */}
+          <div className="hidden lg:flex items-center gap-5 px-4 py-1 rounded-full bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] text-xs">
             <div className="flex items-center gap-1.5">
-              <Flame className="w-4 h-4 text-[var(--accent-amber)]" />
-              <span className="text-[var(--text-muted)]">Calibrations:</span>
-              <span className="font-black text-[var(--text-heading)] t-nums">{calibrationsCount}</span>
+              <Flame className="w-3.5 h-3.5 text-[var(--apple-amber)]" />
+              <span className="text-[var(--apple-text-secondary)]">Calibrations:</span>
+              <span className="font-semibold text-[var(--apple-text-primary)] t-nums">{calibrationsCount}</span>
             </div>
-            <span className="text-[var(--border-subtle)]">|</span>
+            <span className="text-[var(--apple-border)]">|</span>
             <div className="flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-[var(--accent-emerald)]" />
-              <span className="text-[var(--text-muted)]">P&L Protected:</span>
-              <span className="font-black text-[var(--accent-emerald)] t-nums">${pnlResults.netSavings.toLocaleString()}</span>
+              <ShieldCheck className="w-3.5 h-3.5 text-[var(--apple-green)]" />
+              <span className="text-[var(--apple-text-secondary)]">P&L Protected:</span>
+              <span className="font-semibold text-[var(--apple-green)] t-nums">${pnlResults.netSavings.toLocaleString()}</span>
             </div>
-            <span className="text-[var(--border-subtle)]">|</span>
+            <span className="text-[var(--apple-border)]">|</span>
             <div className="flex items-center gap-1.5">
-              <Trophy className="w-4 h-4 text-[var(--accent-primary)]" />
-              <span className="text-[var(--text-muted)]">Top Fit:</span>
-              <span className="font-black text-[var(--text-heading)] t-nums">{topCandidate ? `${topCandidate.fit}%` : 'N/A'}</span>
+              <Trophy className="w-3.5 h-3.5 text-[var(--apple-blue)]" />
+              <span className="text-[var(--apple-text-secondary)]">Top Fit:</span>
+              <span className="font-semibold text-[var(--apple-text-primary)] t-nums">{topCandidate ? `${topCandidate.fit}%` : 'N/A'}</span>
             </div>
           </div>
 
-          {/* Quick Sensory & Action Controls */}
+          {/* Sensory & Actions */}
           <div className="flex items-center gap-2">
             <button
               onClick={() => setSfxOn(!sfxOn)}
-              className="p-2.5 rounded-xl bg-[var(--surface-elevated)] hover:bg-[var(--surface-sunken)] text-[var(--text-heading)] border border-[var(--border-subtle)] tap-spring"
-              title="Toggle Web Audio SFX"
+              className="p-2 rounded-full hover:bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] hover:text-[var(--apple-text-primary)] tap-apple"
+              title="Toggle Tactile Sound FX"
             >
-              {sfxOn ? <Volume2 className="w-4 h-4 text-[var(--accent-primary)]" /> : <VolumeX className="w-4 h-4 text-[var(--text-muted)]" />}
+              {sfxOn ? <Volume2 className="w-4 h-4 text-[var(--apple-blue)]" /> : <VolumeX className="w-4 h-4" />}
             </button>
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2.5 rounded-xl bg-[var(--surface-elevated)] hover:bg-[var(--surface-sunken)] text-[var(--text-heading)] border border-[var(--border-subtle)] tap-spring"
-              title="Toggle Theme"
+              className="p-2 rounded-full hover:bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] hover:text-[var(--apple-text-primary)] tap-apple"
+              title="Toggle Mode"
             >
-              {theme === 'dark' ? <Sun className="w-4 h-4 text-[var(--accent-amber)]" /> : <Moon className="w-4 h-4 text-[var(--accent-primary)]" />}
+              {theme === 'dark' ? <Sun className="w-4 h-4 text-[var(--apple-amber)]" /> : <Moon className="w-4 h-4" />}
             </button>
             <button
-              onClick={copyScorecardMD}
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[var(--surface-elevated)] hover:bg-[var(--surface-sunken)] text-[var(--text-heading)] border border-[var(--border-subtle)] text-xs font-mono font-bold tap-spring"
+              onClick={exportScorecardMD}
+              className="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-[var(--apple-surface-secondary)] hover:bg-[var(--apple-surface-tertiary)] text-[var(--apple-text-primary)] text-xs font-semibold tap-apple border border-[var(--apple-border)]"
             >
-              <Copy className="w-3.5 h-3.5 text-[var(--accent-primary)]" />
+              <Copy className="w-3.5 h-3.5" />
               <span>Export MD</span>
             </button>
             <a
-              href="mailto:catagil91@gmail.com"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-emerald)] text-white font-black text-xs font-mono shadow-md tap-spring"
+              href="https://cal.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="apple-button inline-flex items-center gap-1.5 tap-apple"
             >
               <span>Book 15m</span>
-              <ExternalLink className="w-3.5 h-3.5" />
+              <ArrowUpRight className="w-3.5 h-3.5" />
             </a>
           </div>
         </div>
       </header>
 
-      {/* Main Command Space */}
-      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      {/* Main Experience Space */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12">
         
-        {/* Tactical Hero & Mode Segmented Selector */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 prismatic-glass rounded-3xl p-7">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 text-xs font-mono text-[var(--accent-primary)] font-bold uppercase tracking-wider">
-              <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent-emerald)] animate-ping" />
-              <span>Kill Vibe Checks • Quantify Fit % • Stop P&L Bleed</span>
+        {/* Apple-Style Minimalist Narrative Hero */}
+        <section className="text-center max-w-4xl mx-auto space-y-4 pt-4 sm:pt-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] text-xs font-semibold text-[var(--apple-text-secondary)]">
+            <span className="w-2 h-2 rounded-full bg-[var(--apple-blue)]" />
+            <span>Kill Vibe Checks • Quantify Fit % • Stop P&L Bleed</span>
+          </div>
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[var(--apple-text-primary)] leading-[1.08]">
+            Interactive Hiring Decision Cockpit
+          </h1>
+          
+          {/* iOS Segmented Mode Switcher */}
+          <div className="pt-4 flex justify-center">
+            <div className="segmented-control inline-flex items-center gap-1">
+              <button
+                onClick={() => setActiveTab('all')}
+                className={`segmented-item tap-apple ${activeTab === 'all' ? 'segmented-item-active' : ''}`}
+              >
+                Split Cockpit (All Live)
+              </button>
+              <button
+                onClick={() => setActiveTab('converter')}
+                className={`segmented-item tap-apple ${activeTab === 'converter' ? 'segmented-item-active' : ''}`}
+              >
+                1. Fit % Converter
+              </button>
+              <button
+                onClick={() => setActiveTab('calculator')}
+                className={`segmented-item tap-apple ${activeTab === 'calculator' ? 'segmented-item-active' : ''}`}
+              >
+                2. Bad-Hire P&L
+              </button>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-black text-[var(--text-heading)] tracking-tight">
-              Interactive Hiring Decision Cockpit
-            </h1>
-            <p className="text-sm sm:text-base text-[var(--text-body)] max-w-2xl font-medium leading-relaxed">
-              Convert subjective interviews into weighted psychometric proof points and simulate the direct financial impact on executive P&L.
-            </p>
           </div>
-
-          {/* Segmented View Switcher */}
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setActiveTab('all')}
-              className={`px-4 py-2.5 rounded-xl text-xs font-mono font-bold tap-spring transition-all ${
-                activeTab === 'all'
-                  ? 'bg-[var(--accent-primary)] text-white shadow-md'
-                  : 'bg-[var(--surface-sunken)] text-[var(--text-heading)] border border-[var(--border-subtle)] hover:border-[var(--accent-primary)]'
-              }`}
-            >
-              ⚡ Split Cockpit (All Live)
-            </button>
-            <button
-              onClick={() => setActiveTab('converter')}
-              className={`px-4 py-2.5 rounded-xl text-xs font-mono font-bold tap-spring transition-all ${
-                activeTab === 'converter'
-                  ? 'bg-[var(--accent-primary)] text-white shadow-md'
-                  : 'bg-[var(--surface-sunken)] text-[var(--text-heading)] border border-[var(--border-subtle)] hover:border-[var(--accent-primary)]'
-              }`}
-            >
-              🎯 1. Fit % Converter
-            </button>
-            <button
-              onClick={() => setActiveTab('calculator')}
-              className={`px-4 py-2.5 rounded-xl text-xs font-mono font-bold tap-spring transition-all ${
-                activeTab === 'calculator'
-                  ? 'bg-[var(--accent-primary)] text-white shadow-md'
-                  : 'bg-[var(--surface-sunken)] text-[var(--text-heading)] border border-[var(--border-subtle)] hover:border-[var(--accent-primary)]'
-              }`}
-            >
-              💰 2. Bad-Hire P&L Bleed
-            </button>
-          </div>
-        </div>
+        </section>
 
         {/* ========================================================================= */}
         {/* MODULE 1: INTERVIEW ➔ WEIGHTED FIT % CONVERTER + ARENA                   */}
@@ -375,27 +355,23 @@ export function App() {
           <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
             {/* Criteria & Sliders (7 cols) */}
-            <div className="lg:col-span-7 prismatic-glass rounded-3xl p-6 sm:p-7 space-y-6">
+            <div className="lg:col-span-7 apple-card p-6 sm:p-8 space-y-6">
               
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border-subtle)] pb-5">
-                <div className="flex items-center gap-2.5">
-                  <span className="px-2.5 py-1 rounded-xl bg-[var(--accent-primary)] text-white font-mono text-xs font-black">
-                    MODULE 01
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--apple-border)] pb-4">
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded-md bg-[var(--apple-surface-secondary)] text-[var(--apple-blue)] text-xs font-bold font-mono">
+                    TOOL 01
                   </span>
-                  <h2 className="text-lg font-black text-[var(--text-heading)]">Interview ➔ Fit % Converter</h2>
+                  <h2 className="text-lg font-bold text-[var(--apple-text-primary)]">Interview ➔ Fit % Converter</h2>
                 </div>
 
-                {/* Role Pill Switcher */}
-                <div className="flex flex-wrap gap-2">
+                {/* Role Switcher Pills */}
+                <div className="segmented-control inline-flex items-center">
                   {(['tech', 'product', 'sales', 'ops'] as const).map(role => (
                     <button
                       key={role}
                       onClick={() => handleRoleChange(role)}
-                      className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold capitalize tap-spring transition-all ${
-                        selectedRole === role
-                          ? 'bg-[var(--accent-primary)] text-white font-black shadow-sm'
-                          : 'bg-[var(--surface-sunken)] text-[var(--text-heading)] border border-[var(--border-subtle)] hover:border-[var(--accent-primary)]'
-                      }`}
+                      className={`segmented-item capitalize ${selectedRole === role ? 'segmented-item-active' : ''}`}
                     >
                       {role}
                     </button>
@@ -403,59 +379,59 @@ export function App() {
                 </div>
               </div>
 
-              {/* Candidate Info + Fast Utilities */}
-              <div className="flex flex-wrap items-center justify-between gap-3 bg-[var(--surface-sunken)] p-4 rounded-2xl border border-[var(--border-subtle)]">
-                <div className="flex items-center gap-2.5 flex-grow">
-                  <span className="text-xs font-mono text-[var(--text-muted)] font-bold">👤 Candidate:</span>
+              {/* Candidate Info Toolbar */}
+              <div className="flex flex-wrap items-center justify-between gap-3 bg-[var(--apple-surface-secondary)] p-3 rounded-2xl border border-[var(--apple-border)]">
+                <div className="flex items-center gap-2 flex-grow">
+                  <span className="text-xs text-[var(--apple-text-secondary)] font-medium">Candidate:</span>
                   <input
                     type="text"
                     value={activeCandidate}
                     onChange={(e) => setActiveCandidate(e.target.value)}
-                    className="bg-[var(--surface-card)] border border-[var(--border-subtle)] focus:border-[var(--accent-primary)] rounded-xl px-3 py-1.5 text-xs font-bold text-[var(--text-heading)] font-mono focus:outline-none w-44 sm:w-56"
+                    className="bg-[var(--apple-surface)] border border-[var(--apple-border)] focus:border-[var(--apple-blue)] rounded-xl px-3 py-1.5 text-xs font-semibold text-[var(--apple-text-primary)] focus:outline-none w-44 sm:w-52 shadow-sm"
                   />
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <div className={`px-3 py-1.5 rounded-xl border font-mono text-xs font-black ${
+                  <div className={`px-2.5 py-1 rounded-xl text-xs font-semibold font-mono ${
                     fitResults.totalWeight === 100
-                      ? 'bg-[var(--accent-emerald-bg)] text-[var(--accent-emerald)] border-[var(--accent-emerald)]'
-                      : 'bg-[var(--accent-amber-bg)] text-[var(--accent-amber)] border-[var(--accent-amber)]'
+                      ? 'bg-[var(--apple-green-bg)] text-[var(--apple-green)]'
+                      : 'bg-[var(--apple-amber-bg)] text-[var(--apple-amber)]'
                   }`}>
                     {fitResults.totalWeight === 100 ? 'Weights: 100% ✓' : `Weights: ${fitResults.totalWeight}% ⚠️`}
                   </div>
                   <button
                     onClick={autoBalanceWeights}
-                    className="px-3 py-1.5 rounded-xl bg-[var(--surface-card)] hover:bg-[var(--surface-elevated)] text-[var(--text-heading)] border border-[var(--border-subtle)] font-mono text-xs font-bold tap-spring flex items-center gap-1.5"
-                    title="Auto-normalize all criteria weights to 100%"
+                    className="px-2.5 py-1 rounded-xl bg-[var(--apple-surface)] hover:bg-[var(--apple-surface-tertiary)] text-[var(--apple-text-primary)] border border-[var(--apple-border)] text-xs font-semibold tap-apple flex items-center gap-1 shadow-sm"
+                    title="Auto-normalize weights to 100%"
                   >
-                    <Scale className="w-3.5 h-3.5 text-[var(--accent-primary)]" />
+                    <Scale className="w-3.5 h-3.5 text-[var(--apple-blue)]" />
                     <span>Auto-100%</span>
                   </button>
                   <button
                     onClick={simulateWildcard}
-                    className="px-3 py-1.5 rounded-xl bg-[var(--surface-card)] hover:bg-[var(--surface-elevated)] text-[var(--text-heading)] border border-[var(--border-subtle)] font-mono text-xs font-bold tap-spring flex items-center gap-1.5"
+                    className="px-2.5 py-1 rounded-xl bg-[var(--apple-surface)] hover:bg-[var(--apple-surface-tertiary)] text-[var(--apple-text-primary)] border border-[var(--apple-border)] text-xs font-semibold tap-apple flex items-center gap-1 shadow-sm"
                     title="Simulate random candidate"
                   >
-                    <Shuffle className="w-3.5 h-3.5 text-[var(--accent-amber)]" />
+                    <Shuffle className="w-3.5 h-3.5 text-[var(--apple-amber)]" />
                     <span>Wildcard</span>
                   </button>
                   <button
                     onClick={addCustomSkill}
-                    className="p-1.5 rounded-xl bg-[var(--surface-card)] hover:bg-[var(--surface-elevated)] text-[var(--text-heading)] border border-[var(--border-subtle)] tap-spring"
-                    title="Add custom evaluation skill"
+                    className="p-1.5 rounded-xl bg-[var(--apple-surface)] hover:bg-[var(--apple-surface-tertiary)] text-[var(--apple-text-primary)] border border-[var(--apple-border)] tap-apple shadow-sm"
+                    title="Add custom skill"
                   >
-                    <Plus className="w-4 h-4 text-[var(--accent-primary)]" />
+                    <Plus className="w-4 h-4" />
                   </button>
                 </div>
               </div>
 
-              {/* Dynamic BARS Skill Cards with High-Contrast Typography */}
+              {/* BARS Skill Cards */}
               <div className="space-y-4">
                 {criteria.map((c, idx) => (
-                  <div key={idx} className="prismatic-elevated p-5 rounded-2xl border border-[var(--border-subtle)] space-y-3.5">
+                  <div key={idx} className="p-4 sm:p-5 rounded-2xl bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] space-y-3">
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-2.5 flex-grow">
-                        <span className="w-6 h-6 rounded-lg bg-[var(--accent-primary)] text-white font-mono text-xs font-black flex items-center justify-center shrink-0">
+                        <span className="w-5 h-5 rounded-md bg-[var(--apple-surface-tertiary)] text-[var(--apple-text-primary)] text-xs font-bold flex items-center justify-center shrink-0">
                           {idx + 1}
                         </span>
                         <input
@@ -466,11 +442,11 @@ export function App() {
                             next[idx].name = e.target.value;
                             setCriteria(next);
                           }}
-                          className="bg-transparent border-b border-transparent focus:border-[var(--accent-primary)] text-base font-black text-[var(--text-heading)] w-full focus:outline-none"
+                          className="bg-transparent border-b border-transparent focus:border-[var(--apple-blue)] text-sm sm:text-base font-bold text-[var(--apple-text-primary)] w-full focus:outline-none"
                         />
                       </div>
 
-                      <div className="flex items-center gap-2.5 shrink-0">
+                      <div className="flex items-center gap-2 shrink-0">
                         <input
                           type="range"
                           min="5"
@@ -478,9 +454,9 @@ export function App() {
                           step="5"
                           value={c.weight}
                           onChange={(e) => updateWeight(idx, parseInt(e.target.value, 10))}
-                          className="w-20 accent-[var(--accent-primary)] cursor-pointer"
+                          className="w-20 accent-[var(--apple-blue)] cursor-pointer"
                         />
-                        <span className="w-12 text-right font-mono text-xs font-black text-[var(--accent-primary)] t-nums">
+                        <span className="w-10 text-right font-mono text-xs font-bold text-[var(--apple-text-secondary)] t-nums">
                           {c.weight}%
                         </span>
                         <button
@@ -492,54 +468,54 @@ export function App() {
                             setCriteria(criteria.filter((_, i) => i !== idx));
                             sound.playTone(300, 'sine');
                           }}
-                          className="text-[var(--text-muted)] hover:text-[var(--accent-rose)] p-1"
+                          className="text-[var(--apple-text-tertiary)] hover:text-[var(--apple-red)] p-1 tap-apple"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </div>
 
-                    {/* Luminous Probe Question */}
-                    <div className="text-xs sm:text-sm font-mono text-[var(--text-heading)] bg-[var(--surface-sunken)] px-4 py-2.5 rounded-xl border border-[var(--border-subtle)] font-semibold leading-relaxed">
-                      <span>💬 "{c.q}"</span>
+                    {/* Question Probe */}
+                    <div className="text-xs text-[var(--apple-text-secondary)] bg-[var(--apple-surface)] px-3.5 py-2.5 rounded-xl border border-[var(--apple-border)] leading-relaxed">
+                      <span>"{c.q}"</span>
                     </div>
 
-                    {/* 1-3-5 Tactile Mechanical Buttons */}
+                    {/* 1-3-5 Objective Grading */}
                     <div className="grid grid-cols-3 gap-2.5">
                       <button
                         onClick={() => updateScore(idx, 1)}
-                        className={`key-mechanical p-3 rounded-xl border text-left transition-all ${
+                        className={`p-3 rounded-xl border text-left tap-apple transition-all ${
                           c.score === 1
-                            ? 'bg-[var(--accent-rose-bg)] border-[var(--accent-rose)] shadow-md'
-                            : 'bg-[var(--surface-card)] border-[var(--border-subtle)] hover:border-[var(--accent-rose)]'
+                            ? 'bg-[var(--apple-surface)] border-[var(--apple-red)] ring-2 ring-[var(--apple-red-bg)] shadow-sm'
+                            : 'bg-[var(--apple-surface)] border-[var(--apple-border)] hover:border-[var(--apple-border-hover)]'
                         }`}
                       >
-                        <div className="font-mono font-black text-[var(--accent-rose)] text-xs">1 • Alert (0%)</div>
-                        <div className="text-xs text-[var(--text-body)] mt-1 font-medium leading-snug">{c.s1}</div>
+                        <div className="font-bold text-[var(--apple-red)] text-xs">1 • Alert (0%)</div>
+                        <div className="text-[11px] text-[var(--apple-text-secondary)] mt-1 line-clamp-2 leading-tight">{c.s1}</div>
                       </button>
 
                       <button
                         onClick={() => updateScore(idx, 3)}
-                        className={`key-mechanical p-3 rounded-xl border text-left transition-all ${
+                        className={`p-3 rounded-xl border text-left tap-apple transition-all ${
                           c.score === 3
-                            ? 'bg-[var(--accent-amber-bg)] border-[var(--accent-amber)] shadow-md'
-                            : 'bg-[var(--surface-card)] border-[var(--border-subtle)] hover:border-[var(--accent-amber)]'
+                            ? 'bg-[var(--apple-surface)] border-[var(--apple-amber)] ring-2 ring-[var(--apple-amber-bg)] shadow-sm'
+                            : 'bg-[var(--apple-surface)] border-[var(--apple-border)] hover:border-[var(--apple-border-hover)]'
                         }`}
                       >
-                        <div className="font-mono font-black text-[var(--accent-amber)] text-xs">3 • Solid (50%)</div>
-                        <div className="text-xs text-[var(--text-body)] mt-1 font-medium leading-snug">{c.s3}</div>
+                        <div className="font-bold text-[var(--apple-amber)] text-xs">3 • Solid (50%)</div>
+                        <div className="text-[11px] text-[var(--apple-text-secondary)] mt-1 line-clamp-2 leading-tight">{c.s3}</div>
                       </button>
 
                       <button
                         onClick={() => updateScore(idx, 5)}
-                        className={`key-mechanical p-3 rounded-xl border text-left transition-all ${
+                        className={`p-3 rounded-xl border text-left tap-apple transition-all ${
                           c.score === 5
-                            ? 'bg-[var(--accent-emerald-bg)] border-[var(--accent-emerald)] shadow-md'
-                            : 'bg-[var(--surface-card)] border-[var(--border-subtle)] hover:border-[var(--accent-emerald)]'
+                            ? 'bg-[var(--apple-surface)] border-[var(--apple-green)] ring-2 ring-[var(--apple-green-bg)] shadow-sm'
+                            : 'bg-[var(--apple-surface)] border-[var(--apple-border)] hover:border-[var(--apple-border-hover)]'
                         }`}
                       >
-                        <div className="font-mono font-black text-[var(--accent-emerald)] text-xs">5 • Star (100%)</div>
-                        <div className="text-xs text-[var(--text-body)] mt-1 font-medium leading-snug">{c.s5}</div>
+                        <div className="font-bold text-[var(--apple-green)] text-xs">5 • Star (100%)</div>
+                        <div className="text-[11px] text-[var(--apple-text-secondary)] mt-1 line-clamp-2 leading-tight">{c.s5}</div>
                       </button>
                     </div>
                   </div>
@@ -548,140 +524,113 @@ export function App() {
 
             </div>
 
-            {/* Live Radial Gauge & Arena Benchmark (5 cols) */}
+            {/* Apple Activity-Ring Gauge & Arena (5 cols) */}
             <div className="lg:col-span-5 space-y-6">
               
-              {/* 2026 Radial Fit Gauge Card */}
-              <div className="prismatic-glass rounded-3xl p-6 border border-[var(--border-active)] space-y-6">
+              {/* Apple Health/Activity Ring Display */}
+              <div className="apple-card p-6 sm:p-8 space-y-6 text-center">
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono text-[var(--text-muted)] font-black uppercase tracking-wider block">
-                    Telemetry Analysis
+                  <span className="text-xs font-semibold text-[var(--apple-text-secondary)] uppercase tracking-wider">
+                    Live Weighted Fit
                   </span>
-                  <div className={`px-3 py-1 rounded-xl border font-mono font-black text-xs ${
+                  <div className={`px-2.5 py-1 rounded-full text-xs font-bold font-mono ${
                     fitResults.fitPct >= 80 
-                      ? 'bg-[var(--accent-emerald-bg)] text-[var(--accent-emerald)] border-[var(--accent-emerald)]' 
+                      ? 'bg-[var(--apple-green-bg)] text-[var(--apple-green)]' 
                       : fitResults.fitPct >= 50 
-                      ? 'bg-[var(--accent-amber-bg)] text-[var(--accent-amber)] border-[var(--accent-amber)]' 
-                      : 'bg-[var(--accent-rose-bg)] text-[var(--accent-rose)] border-[var(--accent-rose)]'
+                      ? 'bg-[var(--apple-amber-bg)] text-[var(--apple-amber)]' 
+                      : 'bg-[var(--apple-red-bg)] text-[var(--apple-red)]'
                   }`}>
                     {fitResults.verdict}
                   </div>
                 </div>
 
-                {/* SVG Radial Gauge Display */}
-                <div className="flex items-center justify-center gap-6">
-                  <div className="relative w-36 h-36 flex items-center justify-center">
-                    <svg className="w-full h-full transform -rotate-90">
-                      <circle
-                        cx="72"
-                        cy="72"
-                        r={radius}
-                        stroke="var(--border-subtle)"
-                        strokeWidth="11"
-                        fill="transparent"
-                      />
-                      <circle
-                        cx="72"
-                        cy="72"
-                        r={radius}
-                        stroke="url(#radialGradient)"
-                        strokeWidth="11"
-                        strokeDasharray={circumference}
-                        strokeDashoffset={strokeDashoffset}
-                        strokeLinecap="round"
-                        fill="transparent"
-                        className="transition-all duration-500 ease-out"
-                      />
-                      <defs>
-                        <linearGradient id="radialGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stopColor="var(--accent-primary)" />
-                          <stop offset="100%" stopColor="var(--accent-emerald)" />
-                        </linearGradient>
-                      </defs>
-                    </svg>
+                {/* Circular Gauge */}
+                <div className="relative w-44 h-44 mx-auto flex items-center justify-center">
+                  <svg className="w-full h-full transform -rotate-90">
+                    <circle
+                      cx="88"
+                      cy="88"
+                      r={radius}
+                      stroke="var(--apple-surface-secondary)"
+                      strokeWidth={strokeWidth}
+                      fill="transparent"
+                    />
+                    <circle
+                      cx="88"
+                      cy="88"
+                      r={radius}
+                      stroke={getStatusColor(fitResults.fitPct)}
+                      strokeWidth={strokeWidth}
+                      strokeDasharray={circumference}
+                      strokeDashoffset={strokeDashoffset}
+                      strokeLinecap="round"
+                      fill="transparent"
+                      className="transition-all duration-500 ease-out"
+                    />
+                  </svg>
 
-                    <div className="absolute text-center">
-                      <span className="text-3xl font-black text-[var(--text-heading)] font-mono tracking-tight t-nums block">
-                        {fitResults.fitPct}%
-                      </span>
-                      <span className="text-[11px] font-mono text-[var(--accent-primary)] font-black block mt-0.5">
-                        {fitResults.rawScore} / 5.0
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2 text-xs font-mono">
-                    <div className="flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-[var(--accent-emerald)]" />
-                      <span className="text-[var(--text-heading)] font-black">BARS Calibrated</span>
-                    </div>
-                    <div className="text-[var(--text-body)] text-xs font-medium leading-relaxed">
-                      Eliminates rater bias and standardizes multi-round grading across interview panels.
-                    </div>
+                  <div className="absolute text-center">
+                    <span className="text-4xl font-bold text-[var(--apple-text-primary)] tracking-tight t-nums block">
+                      {fitResults.fitPct}%
+                    </span>
+                    <span className="text-xs text-[var(--apple-text-secondary)] font-medium block mt-0.5">
+                      {fitResults.rawScore} / 5.0
+                    </span>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 pt-2">
                   <button
                     onClick={lockCandidateToArena}
-                    className="py-3 px-4 rounded-xl bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-emerald)] text-white font-black text-xs font-mono shadow-md tap-spring flex items-center justify-center gap-2"
+                    className="apple-button py-2.5 tap-apple flex items-center justify-center gap-1.5 shadow-sm"
                   >
-                    <Trophy className="w-4 h-4" />
+                    <Trophy className="w-3.5 h-3.5" />
                     <span>Lock Into Arena</span>
                   </button>
                   <button
-                    onClick={copyScorecardMD}
-                    className="py-3 px-4 rounded-xl bg-[var(--surface-elevated)] hover:bg-[var(--surface-sunken)] text-[var(--text-heading)] border border-[var(--border-subtle)] font-mono font-bold text-xs tap-spring flex items-center justify-center gap-2"
+                    onClick={exportScorecardMD}
+                    className="py-2.5 px-4 rounded-full bg-[var(--apple-surface-secondary)] hover:bg-[var(--apple-surface-tertiary)] text-[var(--apple-text-primary)] border border-[var(--apple-border)] text-xs font-semibold tap-apple flex items-center justify-center gap-1.5"
                   >
-                    <Copy className="w-4 h-4 text-[var(--accent-primary)]" />
+                    <Copy className="w-3.5 h-3.5 text-[var(--apple-text-secondary)]" />
                     <span>Copy Scorecard</span>
                   </button>
                 </div>
               </div>
 
-              {/* Arena Leaderboard Tournament Podio */}
-              <div className="prismatic-glass rounded-3xl p-6 space-y-4">
-                <div className="flex items-center justify-between border-b border-[var(--border-subtle)] pb-3">
-                  <div className="flex items-center gap-2">
-                    <Award className="w-4 h-4 text-[var(--accent-primary)]" />
-                    <span className="text-xs font-mono uppercase text-[var(--text-heading)] font-black">
-                      Tournament Arena ({candidates.length})
-                    </span>
-                  </div>
+              {/* iOS-Style Grouped Candidate Arena */}
+              <div className="apple-card p-6 space-y-4">
+                <div className="flex items-center justify-between border-b border-[var(--apple-border)] pb-3">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[var(--apple-text-primary)]">
+                    Candidate Arena ({candidates.length})
+                  </span>
                   {topCandidate && (
-                    <span className="px-2.5 py-1 rounded-xl bg-[var(--accent-emerald-bg)] text-[var(--accent-emerald)] border border-[var(--accent-emerald)] font-mono text-xs font-black">
+                    <span className="text-xs font-semibold text-[var(--apple-green)]">
                       #1 {topCandidate.name} ({topCandidate.fit}%)
                     </span>
                   )}
                 </div>
 
-                <div className="space-y-2.5 max-h-64 overflow-y-auto pr-1">
+                <div className="space-y-1 divide-y divide-[var(--apple-border)]">
                   {candidates.map((c, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center justify-between p-3.5 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-xs font-mono"
+                      className="flex items-center justify-between py-3 text-xs"
                     >
                       <div className="flex items-center gap-3">
-                        <span className={`w-6 h-6 rounded-lg font-black flex items-center justify-center text-[11px] ${
-                          idx === 0 
-                            ? 'bg-[var(--accent-amber-bg)] text-[var(--accent-amber)] border border-[var(--accent-amber)]' 
-                            : idx === 1 
-                            ? 'bg-[var(--surface-card)] text-[var(--text-muted)] border border-[var(--border-subtle)]' 
-                            : 'bg-[var(--surface-card)] text-[var(--text-muted)]'
-                        }`}>
-                          #{idx + 1}
+                        <span className="w-5 h-5 rounded-full bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] font-semibold flex items-center justify-center text-[11px]">
+                          {idx + 1}
                         </span>
-                        <span className="font-black text-[var(--text-heading)]">{c.name}</span>
+                        <span className="font-semibold text-[var(--apple-text-primary)]">{c.name}</span>
                       </div>
                       <div className="flex items-center gap-2.5">
-                        <span className="text-[var(--text-muted)] t-nums">{c.score.toFixed(2)}/5</span>
-                        <span className={`px-2.5 py-1 rounded-xl font-black ${
+                        <span className="text-[var(--apple-text-secondary)] t-nums">{c.score.toFixed(2)}/5</span>
+                        <span className={`px-2.5 py-0.5 rounded-full font-bold t-nums ${
                           c.fit >= 80 
-                            ? 'text-[var(--accent-emerald)] bg-[var(--accent-emerald-bg)]' 
+                            ? 'text-[var(--apple-green)] bg-[var(--apple-green-bg)]' 
                             : c.fit >= 50 
-                            ? 'text-[var(--accent-amber)] bg-[var(--accent-amber-bg)]' 
-                            : 'text-[var(--accent-rose)] bg-[var(--accent-rose-bg)]'
+                            ? 'text-[var(--apple-amber)] bg-[var(--apple-amber-bg)]' 
+                            : 'text-[var(--apple-red)] bg-[var(--apple-red-bg)]'
                         }`}>
                           {c.fit}%
                         </span>
@@ -691,7 +640,7 @@ export function App() {
                             setCandidates(candidates.filter((_, i) => i !== idx));
                             sound.playTone(320, 'sine');
                           }}
-                          className="text-[var(--text-muted)] hover:text-[var(--accent-rose)] p-1"
+                          className="text-[var(--apple-text-tertiary)] hover:text-[var(--apple-red)] p-1 tap-apple"
                         >
                           ✕
                         </button>
@@ -710,32 +659,32 @@ export function App() {
         {/* MODULE 2: BAD-HIRE P&L BLEED SIMULATOR                                    */}
         {/* ========================================================================= */}
         {(activeTab === 'all' || activeTab === 'calculator') && (
-          <section className="prismatic-glass rounded-3xl p-6 sm:p-8 space-y-6">
+          <section className="apple-card p-6 sm:p-10 space-y-8">
             
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border-subtle)] pb-5">
-              <div className="flex items-center gap-2.5">
-                <span className="px-2.5 py-1 rounded-xl bg-[var(--accent-emerald-bg)] text-[var(--accent-emerald)] font-mono text-xs font-black">
-                  MODULE 02
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--apple-border)] pb-4">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded-md bg-[var(--apple-surface-secondary)] text-[var(--apple-green)] text-xs font-bold font-mono">
+                  TOOL 02
                 </span>
-                <h2 className="text-lg font-black text-[var(--text-heading)]">Cost of a Bad Hire (P&L Bleed Simulator)</h2>
+                <h2 className="text-xl font-bold text-[var(--apple-text-primary)]">Cost of a Bad Hire (P&L Bleed Simulator)</h2>
               </div>
-              <span className="text-xs font-mono text-[var(--text-muted)]">
-                SHRM & Harvard Business Review Methodology
+              <span className="text-xs text-[var(--apple-text-secondary)] font-medium">
+                SHRM / HBR Formula • Drag sliders to stress-test P&L
               </span>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               
-              {/* Tactile Sliders (5 cols) */}
-              <div className="lg:col-span-5 space-y-5 bg-[var(--surface-sunken)] p-6 rounded-3xl border border-[var(--border-subtle)]">
+              {/* Sliders Console */}
+              <div className="lg:col-span-5 space-y-6 bg-[var(--apple-surface-secondary)] p-6 rounded-2xl border border-[var(--apple-border)]">
                 
                 <div>
-                  <div className="flex justify-between text-xs font-mono mb-2">
-                    <span className="text-[var(--text-heading)] font-bold flex items-center gap-1.5">
-                      <DollarSign className="w-3.5 h-3.5 text-[var(--accent-primary)]" />
-                      Average Base Salary:
+                  <div className="flex justify-between text-xs font-medium mb-2">
+                    <span className="text-[var(--apple-text-primary)] flex items-center gap-1.5 font-semibold">
+                      <DollarSign className="w-3.5 h-3.5 text-[var(--apple-blue)]" />
+                      Avg Base Salary:
                     </span>
-                    <span className="text-[var(--accent-primary)] font-black t-nums text-sm">
+                    <span className="text-[var(--apple-blue)] font-bold t-nums text-sm">
                       ${salary.toLocaleString()}
                     </span>
                   </div>
@@ -749,17 +698,17 @@ export function App() {
                       setSalary(parseInt(e.target.value, 10));
                       sound.playTone(380, 'sine', 0.02);
                     }}
-                    className="w-full accent-[var(--accent-primary)] cursor-pointer"
+                    className="w-full accent-[var(--apple-blue)] cursor-pointer"
                   />
                 </div>
 
                 <div>
-                  <div className="flex justify-between text-xs font-mono mb-2">
-                    <span className="text-[var(--text-heading)] font-bold flex items-center gap-1.5">
-                      <Users className="w-3.5 h-3.5 text-[var(--accent-primary)]" />
-                      Annual Target Hires:
+                  <div className="flex justify-between text-xs font-medium mb-2">
+                    <span className="text-[var(--apple-text-primary)] flex items-center gap-1.5 font-semibold">
+                      <Users className="w-3.5 h-3.5 text-[var(--apple-blue)]" />
+                      Annual Hires:
                     </span>
-                    <span className="text-[var(--accent-primary)] font-black t-nums text-sm">
+                    <span className="text-[var(--apple-blue)] font-bold t-nums text-sm">
                       {hires} {hires === 1 ? 'Hire' : 'Hires'}
                     </span>
                   </div>
@@ -773,17 +722,17 @@ export function App() {
                       setHires(parseInt(e.target.value, 10));
                       sound.playTone(380, 'sine', 0.02);
                     }}
-                    className="w-full accent-[var(--accent-primary)] cursor-pointer"
+                    className="w-full accent-[var(--apple-blue)] cursor-pointer"
                   />
                 </div>
 
                 <div>
-                  <div className="flex justify-between text-xs font-mono mb-2">
-                    <span className="text-[var(--text-heading)] font-bold flex items-center gap-1.5">
-                      <AlertTriangle className="w-3.5 h-3.5 text-[var(--accent-rose)]" />
+                  <div className="flex justify-between text-xs font-medium mb-2">
+                    <span className="text-[var(--apple-text-primary)] flex items-center gap-1.5 font-semibold">
+                      <AlertTriangle className="w-3.5 h-3.5 text-[var(--apple-red)]" />
                       90-Day Fail Rate (Vibe Check):
                     </span>
-                    <span className="text-[var(--accent-rose)] font-black t-nums text-sm">
+                    <span className="text-[var(--apple-red)] font-bold t-nums text-sm">
                       {failRate}%
                     </span>
                   </div>
@@ -797,17 +746,16 @@ export function App() {
                       setFailRate(parseInt(e.target.value, 10));
                       sound.playTone(380, 'sine', 0.02);
                     }}
-                    className="w-full accent-[var(--accent-rose)] cursor-pointer"
+                    className="w-full accent-[var(--apple-red)] cursor-pointer"
                   />
                 </div>
 
                 <div>
-                  <div className="flex justify-between text-xs font-mono mb-2">
-                    <span className="text-[var(--text-heading)] font-bold flex items-center gap-1.5">
-                      <TrendingDown className="w-3.5 h-3.5 text-[var(--accent-amber)]" />
+                  <div className="flex justify-between text-xs font-medium mb-2">
+                    <span className="text-[var(--apple-text-primary)] flex items-center gap-1.5 font-semibold">
                       Agency / Replacement Fee:
                     </span>
-                    <span className="text-[var(--accent-amber)] font-black t-nums text-sm">
+                    <span className="text-[var(--apple-amber)] font-bold t-nums text-sm">
                       {feeRate}%
                     </span>
                   </div>
@@ -821,73 +769,68 @@ export function App() {
                       setFeeRate(parseInt(e.target.value, 10));
                       sound.playTone(380, 'sine', 0.02);
                     }}
-                    className="w-full accent-[var(--accent-amber)] cursor-pointer"
+                    className="w-full accent-[var(--apple-amber)] cursor-pointer"
                   />
                 </div>
 
               </div>
 
-              {/* 3 Executive Financial KPIs (7 cols) */}
+              {/* Tesla-Style Big Stat Callouts */}
               <div className="lg:col-span-7 space-y-6">
                 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   
-                  <div className="p-4 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-center space-y-1">
-                    <span className="text-xs font-mono text-[var(--text-muted)] font-black uppercase block">1 Bad Hire Costs</span>
-                    <div className="text-2xl font-black text-[var(--accent-rose)] font-mono t-nums">
+                  <div className="p-5 rounded-2xl bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] text-center space-y-1">
+                    <span className="text-xs font-medium text-[var(--apple-text-secondary)] uppercase block">1 Bad Hire Costs</span>
+                    <div className="text-3xl font-bold text-[var(--apple-red)] tracking-tight t-nums">
                       ${pnlResults.costPerBadHire.toLocaleString()}
                     </div>
-                    <span className="text-xs text-[var(--text-muted)] font-mono">Severance + Sunk Time</span>
+                    <span className="text-[11px] text-[var(--apple-text-secondary)] block">Salary + Ramp + Fee</span>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-[var(--surface-sunken)] border border-[var(--border-subtle)] text-center space-y-1">
-                    <span className="text-xs font-mono text-[var(--text-muted)] font-black uppercase block">Annual P&L Bleed</span>
-                    <div className="text-2xl font-black text-[var(--accent-amber)] font-mono t-nums">
+                  <div className="p-5 rounded-2xl bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] text-center space-y-1">
+                    <span className="text-xs font-medium text-[var(--apple-text-secondary)] uppercase block">Annual P&L Bleed</span>
+                    <div className="text-3xl font-bold text-[var(--apple-amber)] tracking-tight t-nums">
                       ${pnlResults.annualBleed.toLocaleString()}
                     </div>
-                    <span className="text-xs text-[var(--text-muted)] font-mono">
+                    <span className="text-[11px] text-[var(--apple-text-secondary)] block">
                       {pnlResults.badHiresCount} failed hires/yr
                     </span>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-[var(--accent-emerald-bg)] border border-[var(--accent-emerald)] text-center space-y-1">
-                    <span className="text-xs font-mono text-[var(--accent-emerald)] uppercase font-black block">
-                      Protected via BARS
+                  <div className="p-5 rounded-2xl bg-[var(--apple-green-bg)] border border-[var(--apple-green)] text-center space-y-1">
+                    <span className="text-xs font-bold text-[var(--apple-green)] uppercase block">
+                      BARS Net Savings
                     </span>
-                    <div className="text-2xl font-black text-[var(--accent-emerald)] font-mono t-nums">
+                    <div className="text-3xl font-bold text-[var(--apple-green)] tracking-tight t-nums">
                       ${pnlResults.netSavings.toLocaleString()}
                     </div>
-                    <span className="text-xs text-[var(--accent-emerald)] font-mono font-bold">Cuts fail rate to 4%</span>
+                    <span className="text-[11px] text-[var(--apple-green)] font-medium block">Cuts fail rate to 4%</span>
                   </div>
 
                 </div>
 
-                {/* Visual Capital Recovery Breakdown */}
-                <div className="bg-[var(--surface-sunken)] rounded-2xl p-5 border border-[var(--border-subtle)] space-y-4">
-                  <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="text-[var(--text-heading)] font-black">Financial Bleed Breakdown</span>
-                    <span className="text-[var(--accent-emerald)] font-black">P&L Recovery: 80%</span>
-                  </div>
-
+                {/* Minimalist Comparison Bars */}
+                <div className="p-5 rounded-2xl bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] space-y-4">
                   <div className="space-y-3">
                     <div>
-                      <div className="flex justify-between text-xs font-mono text-[var(--accent-rose)] mb-1 font-bold">
-                        <span>Unstructured Bleed</span>
+                      <div className="flex justify-between text-xs text-[var(--apple-text-primary)] mb-1 font-semibold">
+                        <span>Unstructured Vibe-Check Bleed</span>
                         <span className="t-nums">${pnlResults.annualBleed.toLocaleString()}</span>
                       </div>
-                      <div className="w-full bg-[var(--surface-card)] h-3 rounded-full overflow-hidden border border-[var(--border-subtle)]">
-                        <div className="bg-[var(--accent-rose)] h-full rounded-full w-full" />
+                      <div className="w-full bg-[var(--apple-surface)] h-2.5 rounded-full overflow-hidden border border-[var(--apple-border)]">
+                        <div className="bg-[var(--apple-red)] h-full rounded-full w-full" />
                       </div>
                     </div>
 
                     <div>
-                      <div className="flex justify-between text-xs font-mono text-[var(--accent-emerald)] mb-1 font-bold">
-                        <span>Calibrated Process (4% Fail Rate)</span>
+                      <div className="flex justify-between text-xs text-[var(--apple-text-primary)] mb-1 font-semibold">
+                        <span>Calibrated BARS Process (4% Fail)</span>
                         <span className="t-nums">${pnlResults.calibratedBleed.toLocaleString()}</span>
                       </div>
-                      <div className="w-full bg-[var(--surface-card)] h-3 rounded-full overflow-hidden border border-[var(--border-subtle)]">
+                      <div className="w-full bg-[var(--apple-surface)] h-2.5 rounded-full overflow-hidden border border-[var(--apple-border)]">
                         <div
-                          className="bg-[var(--accent-emerald)] h-full rounded-full transition-all duration-300"
+                          className="bg-[var(--apple-green)] h-full rounded-full transition-all duration-300"
                           style={{
                             width: `${Math.max(5, (pnlResults.calibratedBleed / (pnlResults.annualBleed || 1)) * 100)}%`
                           }}
@@ -904,25 +847,24 @@ export function App() {
           </section>
         )}
 
-        {/* Lead Capture VIP Framework Card */}
-        <section className="prismatic-glass rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border border-[var(--border-active)]">
-          <div className="space-y-1.5 text-center md:text-left">
-            <h3 className="text-lg sm:text-xl font-black text-[var(--text-heading)] flex items-center justify-center md:justify-start gap-2">
-              <FileSpreadsheet className="w-5 h-5 text-[var(--accent-primary)]" />
-              <span>Get the Complete 2026 BARS Rubric Framework</span>
+        {/* Apple-Style Minimalist Waitlist Card */}
+        <section className="apple-card p-8 sm:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="space-y-2 text-center md:text-left">
+            <h3 className="text-2xl font-bold tracking-tight text-[var(--apple-text-primary)]">
+              Join the waitlist for the BARS Rubric Framework.
             </h3>
-            <p className="text-xs sm:text-sm text-[var(--text-body)] max-w-xl font-medium">
-              Download the structured interview guide, scoring criteria, and executive hiring metrics ready for your team.
+            <p className="text-sm text-[var(--apple-text-secondary)] max-w-xl leading-relaxed">
+              Receive the complete structured interview guide, scoring criteria, and executive hiring metrics ready for your team.
             </p>
           </div>
 
           {leadSuccess ? (
-            <div className="px-6 py-3 rounded-2xl bg-[var(--accent-emerald-bg)] border border-[var(--accent-emerald)] text-[var(--accent-emerald)] font-mono text-xs font-black flex items-center gap-2">
-              <Check className="w-4 h-4 stroke-[3]" />
-              <span>You're on the list! Framework requested successfully.</span>
+            <div className="px-6 py-3 rounded-full bg-[var(--apple-green-bg)] text-[var(--apple-green)] font-semibold text-xs flex items-center gap-2 border border-[var(--apple-green)]">
+              <Check className="w-4 h-4" />
+              <span>You're on the list.</span>
             </div>
           ) : (
-            <form onSubmit={handleLeadSubmit} className="flex items-center gap-2.5 w-full md:w-auto relative">
+            <form onSubmit={handleLeadSubmit} className="flex items-center gap-3 w-full md:w-auto relative">
               <input
                 type="text"
                 value={honeypot}
@@ -937,65 +879,64 @@ export function App() {
                 value={leadEmail}
                 onChange={(e) => setLeadEmail(e.target.value)}
                 placeholder="name@company.com"
-                className="bg-[var(--surface-card)] border border-[var(--border-subtle)] rounded-xl px-4 py-2.5 text-xs text-[var(--text-heading)] focus:outline-none focus:border-[var(--accent-primary)] w-full sm:w-64 font-mono shadow-sm"
+                className="bg-[var(--apple-surface)] border border-[var(--apple-border)] rounded-full px-4 py-2.5 text-xs text-[var(--apple-text-primary)] focus:outline-none focus:border-[var(--apple-blue)] w-full sm:w-64"
               />
               <button
                 type="submit"
                 disabled={leadLoading}
-                className="px-5 py-2.5 rounded-xl bg-[var(--accent-primary)] hover:opacity-90 disabled:opacity-50 text-white font-black text-xs font-mono whitespace-nowrap tap-spring shadow-md"
+                className="apple-button whitespace-nowrap tap-apple disabled:opacity-50"
               >
-                {leadLoading ? 'Unlocking...' : 'Get Template'}
+                {leadLoading ? '...' : 'Notify Me'}
               </button>
             </form>
           )}
         </section>
 
-        {/* Author Bio & Links Footer */}
-        <footer className="prismatic-glass rounded-3xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[var(--accent-primary)] to-[var(--accent-emerald)] text-white font-black flex items-center justify-center">
-              CG
-            </div>
+        {/* Minimal Apple-Style Footer */}
+        <footer className="pt-8 border-t border-[var(--apple-border)] text-xs text-[var(--apple-text-secondary)] space-y-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-              <strong className="text-[var(--text-heading)] font-black">Catalina Gil Sierra</strong> • Lead TA & Psychometric Systems Architect
-              <div className="text-xs text-[var(--text-muted)] mt-0.5">
-                ⏳ Coming Next: n8n Talent Workflow Automation & Funnel Diagnostic
+              <strong className="text-[var(--apple-text-primary)] font-semibold">Catalina Gil Sierra</strong> • Lead TA & Psychometric Systems Architect (USBMED)
+              <div className="text-[11px] text-[var(--apple-text-tertiary)] mt-0.5">
+                ⏳ Coming Next Week: n8n Workflow Simulator & Funnel Bottleneck Diagnostic
               </div>
             </div>
-          </div>
-          <div className="flex flex-wrap items-center gap-4">
-            <a
-              href="https://www.linkedin.com/in/catalinagilpeopleops"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[var(--text-heading)] hover:text-[var(--accent-primary)] flex items-center gap-1 font-bold"
-            >
-              <span>LinkedIn ↗</span>
-            </a>
-            <a
-              href="https://docs.google.com/document/d/1LFZOGBt049Cw7poC0fcgHkFuszylslldqMNAUYQO-eg/edit"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[var(--text-heading)] hover:text-[var(--accent-primary)] flex items-center gap-1 font-bold"
-            >
-              <FileText className="w-3.5 h-3.5" />
-              <span>Lead CV</span>
-            </a>
-            <a
-              href="https://docs.google.com/document/d/1NyrhrXB_HySO9egpYThS5MJuVfiH3X2BehcRAJiqOVg/edit"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[var(--text-heading)] hover:text-[var(--accent-primary)] flex items-center gap-1 font-bold"
-            >
-              <FileText className="w-3.5 h-3.5" />
-              <span>Full-Cycle CV</span>
-            </a>
-            <a
-              href="mailto:catagil91@gmail.com"
-              className="text-[var(--accent-primary)] font-black hover:underline"
-            >
-              catagil91@gmail.com
-            </a>
+            
+            <div className="flex flex-wrap items-center gap-4 text-xs">
+              <a
+                href="https://www.linkedin.com/in/catalinagilpeopleops"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[var(--apple-blue)] flex items-center gap-0.5"
+              >
+                <span>LinkedIn</span>
+                <ChevronRight className="w-3 h-3" />
+              </a>
+              <a
+                href="https://docs.google.com/document/d/1LFZOGBt049Cw7poC0fcgHkFuszylslldqMNAUYQO-eg/edit"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[var(--apple-blue)] flex items-center gap-0.5"
+              >
+                <span>Lead CV</span>
+                <ChevronRight className="w-3 h-3" />
+              </a>
+              <a
+                href="https://docs.google.com/document/d/1NyrhrXB_HySO9egpYThS5MJuVfiH3X2BehcRAJiqOVg/edit"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[var(--apple-blue)] flex items-center gap-0.5"
+              >
+                <span>Full-Cycle CV</span>
+                <ChevronRight className="w-3 h-3" />
+              </a>
+              <a
+                href="mailto:catagil91@gmail.com"
+                className="text-[var(--apple-blue)] font-semibold hover:underline"
+              >
+                catagil91@gmail.com
+              </a>
+            </div>
           </div>
         </footer>
 

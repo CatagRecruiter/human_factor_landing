@@ -2,170 +2,153 @@
 
 @layer base {
   :root {
-    /* 2026 Neuroaesthetic Pearl Studio Palette (Default: Luminoso, Lujoso, Óptico) */
-    --bg-canvas: oklch(0.975 0.008 250);          /* Satin Pearl Canvas */
-    --surface-card: oklch(1 0 0 / 0.88);           /* Pure Prismatic Frosted Glass */
-    --surface-elevated: oklch(0.95 0.012 250 / 0.95); /* Polished Titanium Elevation */
-    --surface-sunken: oklch(0.93 0.015 250 / 0.85);   /* Recessed Instrument Tray */
+    /* Apple / Tesla High-End Design System Tokens (Light Mode Default) */
+    --apple-bg: #fbfbfd;
+    --apple-surface: #ffffff;
+    --apple-surface-secondary: #f5f5f7;
+    --apple-surface-tertiary: #e8e8ed;
     
-    --border-subtle: oklch(0.18 0.03 250 / 0.12); /* Crisp Specular Contour */
-    --border-active: oklch(0.55 0.22 255 / 0.65); /* Electric Cobalt Accent */
+    --apple-text-primary: #1d1d1f;
+    --apple-text-secondary: #6e6e73;
+    --apple-text-tertiary: #86868b;
     
-    --text-heading: oklch(0.12 0.03 260);         /* Pure Obsidian Carbon */
-    --text-body: oklch(0.28 0.035 250);           /* Architectural Charcoal (High Legibility) */
-    --text-muted: oklch(0.48 0.025 250);          /* Neutral Metadata */
-
-    /* Pure Spectral Functional Accents */
-    --accent-emerald: oklch(0.62 0.20 165);       /* Hyper-Mint Success */
-    --accent-emerald-bg: oklch(0.94 0.06 165 / 0.7);
-    --accent-rose: oklch(0.60 0.25 25);           /* Crimson Laser Alert */
-    --accent-rose-bg: oklch(0.95 0.06 25 / 0.7);
-    --accent-amber: oklch(0.74 0.18 80);          /* Solar Gold Calibration */
-    --accent-amber-bg: oklch(0.95 0.06 80 / 0.7);
-    --accent-primary: oklch(0.52 0.24 260);       /* Precision Cobalt */
+    --apple-border: rgba(0, 0, 0, 0.08);
+    --apple-border-hover: rgba(0, 0, 0, 0.18);
     
-    --aurora-1: oklch(0.85 0.12 240 / 0.35);
-    --aurora-2: oklch(0.90 0.12 170 / 0.35);
-    --aurora-3: oklch(0.92 0.10 80 / 0.25);
+    /* System Accents */
+    --apple-blue: #0071e3;
+    --apple-blue-hover: #0077ed;
+    --apple-green: #34c759;
+    --apple-green-bg: rgba(52, 199, 89, 0.12);
+    --apple-amber: #ff9f0a;
+    --apple-amber-bg: rgba(255, 159, 10, 0.12);
+    --apple-red: #ff3b30;
+    --apple-red-bg: rgba(255, 59, 48, 0.12);
+    
+    --apple-nav-bg: rgba(255, 255, 255, 0.82);
+    --apple-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --apple-card-shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.08);
   }
 
   [data-theme="dark"] {
-    /* 2026 Midnight Obsidian Cyber-Luxury Palette */
-    --bg-canvas: oklch(0.10 0.025 255);          /* Pure Deep Obsidian */
-    --surface-card: oklch(0.15 0.035 255 / 0.82); /* Smoked Quartz Glass */
-    --surface-elevated: oklch(0.19 0.045 255 / 0.90);
-    --surface-sunken: oklch(0.12 0.028 255 / 0.85);
-
-    --border-subtle: oklch(0.98 0.01 250 / 0.14);
-    --border-active: oklch(0.75 0.18 212 / 0.65);
-
-    --text-heading: oklch(0.99 0.005 250);        /* Snow Pure White */
-    --text-body: oklch(0.90 0.015 250);           /* Luminous Snow Slate */
-    --text-muted: oklch(0.68 0.02 250);
-
-    --accent-emerald: oklch(0.84 0.19 168);
-    --accent-emerald-bg: oklch(0.84 0.19 168 / 0.18);
-    --accent-rose: oklch(0.68 0.25 25);
-    --accent-rose-bg: oklch(0.68 0.25 25 / 0.18);
-    --accent-amber: oklch(0.82 0.19 82);
-    --accent-amber-bg: oklch(0.82 0.19 82 / 0.18);
-    --accent-primary: oklch(0.76 0.18 212);
-
-    --aurora-1: oklch(0.55 0.20 250 / 0.20);
-    --aurora-2: oklch(0.65 0.19 170 / 0.20);
-    --aurora-3: oklch(0.60 0.22 300 / 0.15);
+    /* Apple / Tesla Dark Precision (Dark Mode) */
+    --apple-bg: #000000;
+    --apple-surface: #161617;
+    --apple-surface-secondary: #1d1d1f;
+    --apple-surface-tertiary: #2d2d2f;
+    
+    --apple-text-primary: #f5f5f7;
+    --apple-text-secondary: #86868b;
+    --apple-text-tertiary: #6e6e73;
+    
+    --apple-border: rgba(255, 255, 255, 0.12);
+    --apple-border-hover: rgba(255, 255, 255, 0.24);
+    
+    --apple-blue: #2997ff;
+    --apple-blue-hover: #0077ed;
+    --apple-green: #30d158;
+    --apple-green-bg: rgba(48, 209, 88, 0.16);
+    --apple-amber: #ff9f0a;
+    --apple-amber-bg: rgba(255, 159, 10, 0.16);
+    --apple-red: #ff453a;
+    --apple-red-bg: rgba(255, 69, 58, 0.16);
+    
+    --apple-nav-bg: rgba(22, 22, 23, 0.82);
+    --apple-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+    --apple-card-shadow-hover: 0 16px 40px rgba(0, 0, 0, 0.65);
   }
 
   * {
-    font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  }
-
-  code, pre, .font-mono, [class*="font-mono"] {
-    font-family: 'Geist Mono', monospace !important;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter Variable", sans-serif;
   }
 }
 
 body {
-  background-color: var(--bg-canvas);
-  color: var(--text-body);
-  font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--apple-bg);
+  color: var(--apple-text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter Variable", sans-serif;
   overflow-x: hidden;
-  letter-spacing: -0.02em;
-  transition: background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.35s ease;
+  letter-spacing: -0.015em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s cubic-bezier(0.28, 0.11, 0.32, 1), color 0.3s cubic-bezier(0.28, 0.11, 0.32, 1);
 }
 
-/* 2026 Refractive Prismatic Glass */
-.prismatic-glass {
-  background: var(--surface-card);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid var(--border-subtle);
-  box-shadow: 
-    0 16px 40px -10px rgba(0, 0, 0, 0.08),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.6);
+/* Apple Frosted Glass */
+.apple-glass {
+  background-color: var(--apple-nav-bg);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--apple-border);
 }
 
-[data-theme="dark"] .prismatic-glass {
-  box-shadow: 
-    0 16px 40px -10px rgba(0, 0, 0, 0.5),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
+/* Apple Card Architecture */
+.apple-card {
+  background-color: var(--apple-surface);
+  border: 1px solid var(--apple-border);
+  box-shadow: var(--apple-card-shadow);
+  border-radius: 24px;
+  transition: transform 0.25s cubic-bezier(0.28, 0.11, 0.32, 1), box-shadow 0.25s cubic-bezier(0.28, 0.11, 0.32, 1), border-color 0.25s ease;
 }
 
-.prismatic-elevated {
-  background: var(--surface-elevated);
-  backdrop-filter: blur(32px) saturate(200%);
-  border: 1px solid var(--border-subtle);
-  box-shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.12);
+.apple-card:hover {
+  border-color: var(--apple-border-hover);
+  box-shadow: var(--apple-card-shadow-hover);
 }
 
-/* Tactile Mechanical Keys */
-.key-mechanical {
-  transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
-  position: relative;
-}
-.key-mechanical:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px -4px rgba(0,0,0,0.1);
-}
-.key-mechanical:active {
-  transform: translateY(1.5px) scale(0.98);
+/* iOS Segmented Control */
+.segmented-control {
+  background-color: var(--apple-surface-secondary);
+  border-radius: 12px;
+  padding: 3px;
+  border: 1px solid var(--apple-border);
 }
 
-/* Ambient 2026 Chromatic Aurora */
-.aurora-bg {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
+.segmented-item {
+  border-radius: 9px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.28, 0.11, 0.32, 1);
+  color: var(--apple-text-secondary);
 }
 
-.aurora-blob-1 {
-  position: absolute;
-  filter: blur(120px);
-  width: 600px;
-  height: 600px;
-  top: -100px;
-  left: -100px;
-  background: var(--aurora-1);
-  border-radius: 9999px;
-  animation: floatAurora1 24s infinite alternate ease-in-out;
+.segmented-item-active {
+  background-color: var(--apple-surface);
+  color: var(--apple-text-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-.aurora-blob-2 {
-  position: absolute;
-  filter: blur(120px);
-  width: 650px;
-  height: 650px;
-  top: 40%;
-  right: -150px;
-  background: var(--aurora-2);
-  border-radius: 9999px;
-  animation: floatAurora2 20s infinite alternate ease-in-out;
+/* Apple Button Pill */
+.apple-button {
+  background-color: var(--apple-blue);
+  color: #ffffff;
+  border-radius: 980px;
+  padding: 8px 18px;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.18s cubic-bezier(0.28, 0.11, 0.32, 1);
 }
 
-@keyframes floatAurora1 {
-  0% { transform: translate(0px, 0px) scale(1); }
-  50% { transform: translate(100px, -60px) scale(1.15); }
-  100% { transform: translate(-40px, 80px) scale(0.95); }
+.apple-button:hover {
+  background-color: var(--apple-blue-hover);
+  transform: scale(1.02);
 }
 
-@keyframes floatAurora2 {
-  0% { transform: translate(0px, 0px) scale(1); }
-  50% { transform: translate(-80px, 70px) scale(1.1); }
-  100% { transform: translate(60px, -80px) scale(0.9); }
+.apple-button:active {
+  transform: scale(0.97);
 }
 
 /* Numbers Tabular Alignment */
 .t-nums {
   font-variant-numeric: tabular-nums;
-  font-family: 'Geist Mono', monospace !important;
+  letter-spacing: -0.025em;
 }
 
-/* Micro-interaction Spring */
-.tap-spring {
-  transition: transform 0.16s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+/* Smooth Touch Spring */
+.tap-apple {
+  transition: transform 0.15s cubic-bezier(0.28, 0.11, 0.32, 1);
 }
-.tap-spring:active {
-  transform: scale(0.96);
+.tap-apple:active {
+  transform: scale(0.97);
 }
