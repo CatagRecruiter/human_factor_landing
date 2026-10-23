@@ -1,5 +1,9 @@
 node_modules
 dist
+assets
+.wrangler
+.dev.vars
+.test_functions
 .env
 .env.local
 .DS_Store

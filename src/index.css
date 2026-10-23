@@ -2,31 +2,34 @@
 
 @layer base {
   :root {
-    /* 2026 Wide Gamut OKLCH Color Space */
-    --bg-base: oklch(0.12 0.025 255);
-    --surface-1: oklch(0.17 0.035 255 / 0.78);
-    --surface-2: oklch(0.22 0.045 255 / 0.90);
-    --border-subtle: oklch(0.98 0.01 250 / 0.10);
-    --border-active: oklch(0.82 0.17 175 / 0.50);
+    /* 2026 Wide Gamut OKLCH High-Contrast & Crisp Snow Palette */
+    --bg-base: oklch(0.12 0.025 255);             /* Deep Obsidian Titanium */
+    --surface-1: oklch(0.16 0.035 255 / 0.82);    /* Liquid Titanium Glass */
+    --surface-2: oklch(0.20 0.045 255 / 0.92);    /* Elevated Prismatic Surface */
+    --border-subtle: oklch(0.98 0.01 250 / 0.12); /* Crisp Specular Contour */
+    --border-active: oklch(0.84 0.19 168 / 0.55); /* Bioluminescent Mint Sheen */
     
-    --text-primary: oklch(0.98 0.005 250);
-    --text-secondary: oklch(0.72 0.03 250);
+    /* Crisp Typography Contrast */
+    --text-primary: oklch(0.99 0.005 250);        /* Snow Pure White (High Luminance) */
+    --text-secondary: oklch(0.89 0.015 250);      /* Luminous Snow Slate (Readability 10:1) */
+    --text-muted: oklch(0.68 0.02 250);          /* Optical Muted Metadata */
     
-    --brand-mint: oklch(0.84 0.19 168);
-    --brand-cyan: oklch(0.76 0.18 212);
-    --brand-rose: oklch(0.68 0.25 25);
-    --brand-amber: oklch(0.82 0.19 82);
+    --brand-mint: oklch(0.84 0.19 168);          /* Bioluminescent Electric Mint */
+    --brand-cyan: oklch(0.76 0.18 212);          /* Quantum Laser Cyan */
+    --brand-rose: oklch(0.68 0.25 25);           /* High-Intensity Alert Rose */
+    --brand-amber: oklch(0.82 0.19 82);          /* Solar Calibration Amber */
   }
 
   [data-theme="light"] {
-    --bg-base: oklch(0.97 0.01 250);
-    --surface-1: oklch(1 0 0 / 0.88);
-    --surface-2: oklch(0.94 0.015 250 / 0.95);
-    --border-subtle: oklch(0.2 0.04 255 / 0.10);
-    --border-active: oklch(0.65 0.18 175 / 0.65);
+    --bg-base: oklch(0.97 0.01 250);             /* Satin Pearl Magnesite */
+    --surface-1: oklch(1 0 0 / 0.90);             /* Pure Frosted Crystalline */
+    --surface-2: oklch(0.93 0.015 250 / 0.96);   /* Soft Platinum Elevation */
+    --border-subtle: oklch(0.18 0.04 255 / 0.12);/* Crisp Contour */
+    --border-active: oklch(0.65 0.19 168 / 0.70);/* Vibrant Mint Accent */
     
-    --text-primary: oklch(0.15 0.035 260);
-    --text-secondary: oklch(0.42 0.03 250);
+    --text-primary: oklch(0.12 0.03 260);        /* Obsidian Carbon Ink */
+    --text-secondary: oklch(0.28 0.03 250);      /* Deep Graphite */
+    --text-muted: oklch(0.48 0.02 250);          /* Soft Muted */
   }
 
   * {
@@ -43,7 +46,7 @@ body {
   color: var(--text-primary);
   font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   overflow-x: hidden;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.022em;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -54,8 +57,8 @@ body {
   -webkit-backdrop-filter: blur(28px) saturate(190%);
   border: 1px solid var(--border-subtle);
   box-shadow: 
-    0 12px 36px 0 rgba(0, 0, 0, 0.40),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.14);
+    0 16px 40px 0 rgba(0, 0, 0, 0.45),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 .liquid-glass-elevated {
@@ -63,8 +66,20 @@ body {
   backdrop-filter: blur(32px) saturate(210%);
   border: 1px solid var(--border-active);
   box-shadow: 
-    0 20px 48px -10px oklch(0.82 0.17 175 / 0.22),
-    inset 0 1px 2px 0 rgba(255, 255, 255, 0.25);
+    0 24px 52px -10px oklch(0.84 0.19 168 / 0.22),
+    inset 0 1px 2px 0 rgba(255, 255, 255, 0.28);
+}
+
+/* Tactile Mechanical Keys */
+.key-mechanical {
+  transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+.key-mechanical:hover {
+  transform: translateY(-2px);
+}
+.key-mechanical:active {
+  transform: translateY(1.5px) scale(0.98);
 }
 
 /* Ambient 2026 Aurora */
@@ -78,23 +93,23 @@ body {
 
 .aurora-blob {
   position: absolute;
-  filter: blur(100px);
-  opacity: 0.25;
+  filter: blur(110px);
+  opacity: 0.26;
   border-radius: 9999px;
-  animation: floatAurora 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+  animation: floatAurora 22s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 [data-theme="light"] .aurora-blob {
-  opacity: 0.30;
+  opacity: 0.32;
 }
 
 @keyframes floatAurora {
   0% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
-  50% { transform: translate(75px, -50px) scale(1.2) rotate(45deg); }
-  100% { transform: translate(-50px, 75px) scale(0.9) rotate(-30deg); }
+  50% { transform: translate(80px, -50px) scale(1.18) rotate(40deg); }
+  100% { transform: translate(-50px, 80px) scale(0.92) rotate(-25deg); }
 }
 
-/* Tabular numbers for clean financial alignment */
+/* Numbers Tabular Alignment */
 .t-nums {
   font-variant-numeric: tabular-nums;
   font-family: 'Geist Mono', monospace !important;

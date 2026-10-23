@@ -1,0 +1,18 @@
+{
+  "name": "human-factor-landing",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "talentlens-db",
+      "database_id": "53144a09-dc73-41c9-8748-45abcacc80db"
+    }
+  ]
+}
