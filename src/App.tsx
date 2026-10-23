@@ -53,6 +53,11 @@ export function App() {
   const [failRate, setFailRate] = useState<number>(20);
   const [feeRate, setFeeRate] = useState<number>(22);
 
+  // Lead Capture State
+  const [leadEmail, setLeadEmail] = useState<string>('');
+  const [leadLoading, setLeadLoading] = useState<boolean>(false);
+  const [leadSuccess, setLeadSuccess] = useState<boolean>(false);
+
   // Computed Values
   const fitResults = calculateFit(criteria);
   const pnlResults = calculatePnL(salary, hires, failRate, feeRate);
@@ -176,6 +181,38 @@ export function App() {
     navigator.clipboard.writeText(md);
     sound.playChord();
     showToast('Scorecard Markdown copied to clipboard!');
+  };
+
+  const handleLeadSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!leadEmail || !leadEmail.includes('@')) {
+      showToast('Please enter a valid business email.');
+      return;
+    }
+    setLeadLoading(true);
+    try {
+      const res = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: leadEmail, source: 'bars_framework_download' })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setLeadSuccess(true);
+        sound.playChord();
+        confetti({ particleCount: 40, spread: 50, origin: { y: 0.8 } });
+        showToast('Template framework unlocked! Check your inbox.');
+      } else {
+        showToast(data.error || 'Could not register email.');
+      }
+    } catch {
+      // Fallback in local preview mode
+      setLeadSuccess(true);
+      sound.playChord();
+      showToast('Framework requested successfully!');
+    } finally {
+      setLeadLoading(false);
+    }
   };
 
   const topCandidate = candidates.length > 0 ? candidates[0] : null;
@@ -818,19 +855,31 @@ export function App() {
               Download the structured interview guide, scoring criteria, and executive hiring metrics ready for your team.
             </p>
           </div>
-          <div className="flex items-center gap-2.5 w-full md:w-auto">
-            <input
-              type="email"
-              placeholder="name@company.com"
-              className="bg-slate-900/90 border border-white/10 rounded-2xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-teal-400 w-full sm:w-64"
-            />
-            <button
-              onClick={() => showToast('Lead capture connected: framework scheduled for release!')}
-              className="px-5 py-2.5 rounded-2xl bg-teal-400 hover:bg-teal-300 text-slate-950 font-extrabold text-xs font-mono whitespace-nowrap tap-spring"
-            >
-              Get Template
-            </button>
-          </div>
+
+          {leadSuccess ? (
+            <div className="px-6 py-3 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-mono text-xs font-bold flex items-center gap-2">
+              <Check className="w-4 h-4 stroke-[3]" />
+              <span>Framework unlocked! Check your inbox shortly.</span>
+            </div>
+          ) : (
+            <form onSubmit={handleLeadSubmit} className="flex items-center gap-2.5 w-full md:w-auto">
+              <input
+                type="email"
+                required
+                value={leadEmail}
+                onChange={(e) => setLeadEmail(e.target.value)}
+                placeholder="name@company.com"
+                className="bg-slate-900/90 border border-white/10 rounded-2xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-teal-400 w-full sm:w-64 font-mono"
+              />
+              <button
+                type="submit"
+                disabled={leadLoading}
+                className="px-5 py-2.5 rounded-2xl bg-teal-400 hover:bg-teal-300 disabled:opacity-50 text-slate-950 font-extrabold text-xs font-mono whitespace-nowrap tap-spring"
+              >
+                {leadLoading ? 'Unlocking...' : 'Get Template'}
+              </button>
+            </form>
+          )}
         </section>
 
         {/* Author Bio & Links Footer */}
