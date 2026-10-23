@@ -2,34 +2,58 @@
 
 @layer base {
   :root {
-    /* 2026 Wide Gamut OKLCH High-Contrast & Crisp Snow Palette */
-    --bg-base: oklch(0.12 0.025 255);             /* Deep Obsidian Titanium */
-    --surface-1: oklch(0.16 0.035 255 / 0.82);    /* Liquid Titanium Glass */
-    --surface-2: oklch(0.20 0.045 255 / 0.92);    /* Elevated Prismatic Surface */
-    --border-subtle: oklch(0.98 0.01 250 / 0.12); /* Crisp Specular Contour */
-    --border-active: oklch(0.84 0.19 168 / 0.55); /* Bioluminescent Mint Sheen */
+    /* 2026 Neuroaesthetic Pearl Studio Palette (Default: Luminoso, Lujoso, Óptico) */
+    --bg-canvas: oklch(0.975 0.008 250);          /* Satin Pearl Canvas */
+    --surface-card: oklch(1 0 0 / 0.88);           /* Pure Prismatic Frosted Glass */
+    --surface-elevated: oklch(0.95 0.012 250 / 0.95); /* Polished Titanium Elevation */
+    --surface-sunken: oklch(0.93 0.015 250 / 0.85);   /* Recessed Instrument Tray */
     
-    /* Crisp Typography Contrast */
-    --text-primary: oklch(0.99 0.005 250);        /* Snow Pure White (High Luminance) */
-    --text-secondary: oklch(0.89 0.015 250);      /* Luminous Snow Slate (Readability 10:1) */
-    --text-muted: oklch(0.68 0.02 250);          /* Optical Muted Metadata */
+    --border-subtle: oklch(0.18 0.03 250 / 0.12); /* Crisp Specular Contour */
+    --border-active: oklch(0.55 0.22 255 / 0.65); /* Electric Cobalt Accent */
     
-    --brand-mint: oklch(0.84 0.19 168);          /* Bioluminescent Electric Mint */
-    --brand-cyan: oklch(0.76 0.18 212);          /* Quantum Laser Cyan */
-    --brand-rose: oklch(0.68 0.25 25);           /* High-Intensity Alert Rose */
-    --brand-amber: oklch(0.82 0.19 82);          /* Solar Calibration Amber */
+    --text-heading: oklch(0.12 0.03 260);         /* Pure Obsidian Carbon */
+    --text-body: oklch(0.28 0.035 250);           /* Architectural Charcoal (High Legibility) */
+    --text-muted: oklch(0.48 0.025 250);          /* Neutral Metadata */
+
+    /* Pure Spectral Functional Accents */
+    --accent-emerald: oklch(0.62 0.20 165);       /* Hyper-Mint Success */
+    --accent-emerald-bg: oklch(0.94 0.06 165 / 0.7);
+    --accent-rose: oklch(0.60 0.25 25);           /* Crimson Laser Alert */
+    --accent-rose-bg: oklch(0.95 0.06 25 / 0.7);
+    --accent-amber: oklch(0.74 0.18 80);          /* Solar Gold Calibration */
+    --accent-amber-bg: oklch(0.95 0.06 80 / 0.7);
+    --accent-primary: oklch(0.52 0.24 260);       /* Precision Cobalt */
+    
+    --aurora-1: oklch(0.85 0.12 240 / 0.35);
+    --aurora-2: oklch(0.90 0.12 170 / 0.35);
+    --aurora-3: oklch(0.92 0.10 80 / 0.25);
   }
 
-  [data-theme="light"] {
-    --bg-base: oklch(0.97 0.01 250);             /* Satin Pearl Magnesite */
-    --surface-1: oklch(1 0 0 / 0.90);             /* Pure Frosted Crystalline */
-    --surface-2: oklch(0.93 0.015 250 / 0.96);   /* Soft Platinum Elevation */
-    --border-subtle: oklch(0.18 0.04 255 / 0.12);/* Crisp Contour */
-    --border-active: oklch(0.65 0.19 168 / 0.70);/* Vibrant Mint Accent */
-    
-    --text-primary: oklch(0.12 0.03 260);        /* Obsidian Carbon Ink */
-    --text-secondary: oklch(0.28 0.03 250);      /* Deep Graphite */
-    --text-muted: oklch(0.48 0.02 250);          /* Soft Muted */
+  [data-theme="dark"] {
+    /* 2026 Midnight Obsidian Cyber-Luxury Palette */
+    --bg-canvas: oklch(0.10 0.025 255);          /* Pure Deep Obsidian */
+    --surface-card: oklch(0.15 0.035 255 / 0.82); /* Smoked Quartz Glass */
+    --surface-elevated: oklch(0.19 0.045 255 / 0.90);
+    --surface-sunken: oklch(0.12 0.028 255 / 0.85);
+
+    --border-subtle: oklch(0.98 0.01 250 / 0.14);
+    --border-active: oklch(0.75 0.18 212 / 0.65);
+
+    --text-heading: oklch(0.99 0.005 250);        /* Snow Pure White */
+    --text-body: oklch(0.90 0.015 250);           /* Luminous Snow Slate */
+    --text-muted: oklch(0.68 0.02 250);
+
+    --accent-emerald: oklch(0.84 0.19 168);
+    --accent-emerald-bg: oklch(0.84 0.19 168 / 0.18);
+    --accent-rose: oklch(0.68 0.25 25);
+    --accent-rose-bg: oklch(0.68 0.25 25 / 0.18);
+    --accent-amber: oklch(0.82 0.19 82);
+    --accent-amber-bg: oklch(0.82 0.19 82 / 0.18);
+    --accent-primary: oklch(0.76 0.18 212);
+
+    --aurora-1: oklch(0.55 0.20 250 / 0.20);
+    --aurora-2: oklch(0.65 0.19 170 / 0.20);
+    --aurora-3: oklch(0.60 0.22 300 / 0.15);
   }
 
   * {
@@ -42,32 +66,36 @@
 }
 
 body {
-  background-color: var(--bg-base);
-  color: var(--text-primary);
+  background-color: var(--bg-canvas);
+  color: var(--text-body);
   font-family: 'Geist Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   overflow-x: hidden;
-  letter-spacing: -0.022em;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  letter-spacing: -0.02em;
+  transition: background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.35s ease;
 }
 
-/* 2026 Liquid Glass Architecture */
-.liquid-glass {
-  background: var(--surface-1);
-  backdrop-filter: blur(28px) saturate(190%);
-  -webkit-backdrop-filter: blur(28px) saturate(190%);
+/* 2026 Refractive Prismatic Glass */
+.prismatic-glass {
+  background: var(--surface-card);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
   border: 1px solid var(--border-subtle);
   box-shadow: 
-    0 16px 40px 0 rgba(0, 0, 0, 0.45),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.18);
+    0 16px 40px -10px rgba(0, 0, 0, 0.08),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.6);
 }
 
-.liquid-glass-elevated {
-  background: var(--surface-2);
-  backdrop-filter: blur(32px) saturate(210%);
-  border: 1px solid var(--border-active);
+[data-theme="dark"] .prismatic-glass {
   box-shadow: 
-    0 24px 52px -10px oklch(0.84 0.19 168 / 0.22),
-    inset 0 1px 2px 0 rgba(255, 255, 255, 0.28);
+    0 16px 40px -10px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.prismatic-elevated {
+  background: var(--surface-elevated);
+  backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.12);
 }
 
 /* Tactile Mechanical Keys */
@@ -77,12 +105,13 @@ body {
 }
 .key-mechanical:hover {
   transform: translateY(-2px);
+  box-shadow: 0 6px 16px -4px rgba(0,0,0,0.1);
 }
 .key-mechanical:active {
   transform: translateY(1.5px) scale(0.98);
 }
 
-/* Ambient 2026 Aurora */
+/* Ambient 2026 Chromatic Aurora */
 .aurora-bg {
   position: fixed;
   inset: 0;
@@ -91,22 +120,40 @@ body {
   overflow: hidden;
 }
 
-.aurora-blob {
+.aurora-blob-1 {
   position: absolute;
-  filter: blur(110px);
-  opacity: 0.26;
+  filter: blur(120px);
+  width: 600px;
+  height: 600px;
+  top: -100px;
+  left: -100px;
+  background: var(--aurora-1);
   border-radius: 9999px;
-  animation: floatAurora 22s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+  animation: floatAurora1 24s infinite alternate ease-in-out;
 }
 
-[data-theme="light"] .aurora-blob {
-  opacity: 0.32;
+.aurora-blob-2 {
+  position: absolute;
+  filter: blur(120px);
+  width: 650px;
+  height: 650px;
+  top: 40%;
+  right: -150px;
+  background: var(--aurora-2);
+  border-radius: 9999px;
+  animation: floatAurora2 20s infinite alternate ease-in-out;
 }
 
-@keyframes floatAurora {
-  0% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
-  50% { transform: translate(80px, -50px) scale(1.18) rotate(40deg); }
-  100% { transform: translate(-50px, 80px) scale(0.92) rotate(-25deg); }
+@keyframes floatAurora1 {
+  0% { transform: translate(0px, 0px) scale(1); }
+  50% { transform: translate(100px, -60px) scale(1.15); }
+  100% { transform: translate(-40px, 80px) scale(0.95); }
+}
+
+@keyframes floatAurora2 {
+  0% { transform: translate(0px, 0px) scale(1); }
+  50% { transform: translate(-80px, 70px) scale(1.1); }
+  100% { transform: translate(60px, -80px) scale(0.9); }
 }
 
 /* Numbers Tabular Alignment */
@@ -115,9 +162,9 @@ body {
   font-family: 'Geist Mono', monospace !important;
 }
 
-/* Micro-interaction Tactile Spring */
+/* Micro-interaction Spring */
 .tap-spring {
-  transition: transform 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.18s ease;
+  transition: transform 0.16s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 .tap-spring:active {
   transform: scale(0.96);
