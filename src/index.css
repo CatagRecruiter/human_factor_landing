@@ -28,6 +28,9 @@
     --apple-nav-bg: rgba(255, 255, 255, 0.82);
     --apple-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.04);
     --apple-card-shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.08);
+
+    --spotlight-glow: rgba(0, 113, 227, 0.07);
+    --grid-dot-color: rgba(0, 0, 0, 0.06);
   }
 
   [data-theme="dark"] {
@@ -56,6 +59,9 @@
     --apple-nav-bg: rgba(22, 22, 23, 0.82);
     --apple-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
     --apple-card-shadow-hover: 0 16px 40px rgba(0, 0, 0, 0.65);
+
+    --spotlight-glow: rgba(41, 151, 255, 0.12);
+    --grid-dot-color: rgba(255, 255, 255, 0.08);
   }
 
   * {
@@ -74,6 +80,29 @@ body {
   transition: background-color 0.3s cubic-bezier(0.28, 0.11, 0.32, 1), color 0.3s cubic-bezier(0.28, 0.11, 0.32, 1);
 }
 
+/* Interactive Ambient Spotlight & Dot Grid Background */
+.ambient-background-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: radial-gradient(var(--grid-dot-color) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.ambient-spotlight-beam {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    650px circle at var(--mouse-x, 50%) var(--mouse-y, 30%),
+    var(--spotlight-glow),
+    transparent 70%
+  );
+  transition: opacity 0.4s ease;
+}
+
 /* Apple Frosted Glass */
 .apple-glass {
   background-color: var(--apple-nav-bg);
@@ -88,6 +117,8 @@ body {
   border: 1px solid var(--apple-border);
   box-shadow: var(--apple-card-shadow);
   border-radius: 24px;
+  position: relative;
+  z-index: 2;
   transition: transform 0.25s cubic-bezier(0.28, 0.11, 0.32, 1), box-shadow 0.25s cubic-bezier(0.28, 0.11, 0.32, 1), border-color 0.25s ease;
 }
 
@@ -99,24 +130,10 @@ body {
 /* iOS Segmented Control */
 .segmented-control {
   background-color: var(--apple-surface-secondary);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 3px;
   border: 1px solid var(--apple-border);
-}
-
-.segmented-item {
-  border-radius: 9px;
-  padding: 6px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  transition: all 0.2s cubic-bezier(0.28, 0.11, 0.32, 1);
-  color: var(--apple-text-secondary);
-}
-
-.segmented-item-active {
-  background-color: var(--apple-surface);
-  color: var(--apple-text-primary);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  position: relative;
 }
 
 /* Apple Button Pill */
@@ -143,12 +160,4 @@ body {
 .t-nums {
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.025em;
-}
-
-/* Smooth Touch Spring */
-.tap-apple {
-  transition: transform 0.15s cubic-bezier(0.28, 0.11, 0.32, 1);
-}
-.tap-apple:active {
-  transform: scale(0.97);
 }

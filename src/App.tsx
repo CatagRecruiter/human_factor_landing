@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   ShieldCheck, 
   Flame, 
@@ -10,25 +11,27 @@ import {
   Moon, 
   Copy, 
   Check, 
-  ExternalLink, 
   Shuffle, 
   Scale, 
   Plus, 
   Trash2, 
   DollarSign, 
   Users, 
-  AlertTriangle,
-  FileSpreadsheet,
+  AlertTriangle, 
   ArrowUpRight,
   ChevronRight
 } from 'lucide-react';
 import { ROLE_TEMPLATES, SkillCriterion, CandidateEntry, calculateFit, calculatePnL } from './lib/engine';
 import { sound } from './lib/sound';
+import { NumberTicker } from './components/NumberTicker';
 
 export function App() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [sfxOn, setSfxOn] = useState<boolean>(true);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+
+  // Spotlight mouse coordinates
+  const [mousePos, setMousePos] = useState({ x: 50, y: 30 });
 
   // View Modes: Split Cockpit (All Live), 1. Fit % Converter, 2. Bad-Hire P&L
   const [activeTab, setActiveTab] = useState<'all' | 'converter' | 'calculator'>('all');
@@ -69,6 +72,17 @@ export function App() {
   useEffect(() => {
     sound.enabled = sfxOn;
   }, [sfxOn]);
+
+  // Spotlight mouse listener at 60fps
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const x = Math.round((e.clientX / window.innerWidth) * 100);
+      const y = Math.round((e.clientY / window.innerHeight) * 100);
+      setMousePos({ x, y });
+    };
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   const showToast = (msg: string) => {
     setToastMsg(msg);
@@ -209,7 +223,7 @@ export function App() {
 
   const topCandidate = candidates.length > 0 ? candidates[0] : null;
 
-  // Apple Activity-Ring Inspired Circular Gauge
+  // Apple Activity Ring Parameters
   const radius = 64;
   const strokeWidth = 10;
   const circumference = 2 * Math.PI * radius;
@@ -222,24 +236,45 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen selection:bg-[var(--apple-blue)] selection:text-white pb-16">
-      
-      {/* Toast Notification */}
-      {toastMsg && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-5 py-2.5 rounded-full bg-[var(--apple-surface)] border border-[var(--apple-border)] text-[var(--apple-text-primary)] font-semibold text-xs shadow-2xl animate-fade-in">
-          <Check className="w-4 h-4 text-[var(--apple-green)]" />
-          <span>{toastMsg}</span>
-        </div>
-      )}
+    <div 
+      className="relative min-h-screen selection:bg-[var(--apple-blue)] selection:text-white pb-16"
+      style={{
+        '--mouse-x': `${mousePos.x}%`,
+        '--mouse-y': `${mousePos.y}%`
+      } as React.CSSProperties}
+    >
+      {/* 2026 Interactive Dot-Grid & Spotlight Background */}
+      <div className="ambient-background-layer" />
+      <div className="ambient-spotlight-beam" />
 
-      {/* Apple-Style Frosted Translucent Navbar */}
+      {/* Floating Dynamic Island Toast */}
+      <AnimatePresence>
+        {toastMsg && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+            className="fixed top-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-5 py-2.5 rounded-full bg-[var(--apple-surface)] border border-[var(--apple-border)] text-[var(--apple-text-primary)] font-semibold text-xs shadow-2xl"
+          >
+            <Check className="w-4 h-4 text-[var(--apple-green)]" />
+            <span>{toastMsg}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Apple Translucent Frosted Glass Navbar */}
       <header className="sticky top-0 z-40 apple-glass px-4 sm:px-8 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[var(--apple-text-primary)] text-[var(--apple-bg)] flex items-center justify-center font-bold text-sm tracking-tight">
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-8 h-8 rounded-lg bg-[var(--apple-text-primary)] text-[var(--apple-bg)] flex items-center justify-center font-bold text-sm tracking-tight cursor-default"
+            >
               TL
-            </div>
+            </motion.div>
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-bold text-[var(--apple-text-primary)] text-sm tracking-tight">TalentLens Studio</span>
@@ -253,7 +288,7 @@ export function App() {
             </div>
           </div>
 
-          {/* Clean Telemetry HUD */}
+          {/* Precision Telemetry HUD */}
           <div className="hidden lg:flex items-center gap-5 px-4 py-1 rounded-full bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] text-xs">
             <div className="flex items-center gap-1.5">
               <Flame className="w-3.5 h-3.5 text-[var(--apple-amber)]" />
@@ -264,7 +299,9 @@ export function App() {
             <div className="flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5 text-[var(--apple-green)]" />
               <span className="text-[var(--apple-text-secondary)]">P&L Protected:</span>
-              <span className="font-semibold text-[var(--apple-green)] t-nums">${pnlResults.netSavings.toLocaleString()}</span>
+              <span className="font-semibold text-[var(--apple-green)]">
+                <NumberTicker value={pnlResults.netSavings} prefix="$" />
+              </span>
             </div>
             <span className="text-[var(--apple-border)]">|</span>
             <div className="flex items-center gap-1.5">
@@ -274,47 +311,58 @@ export function App() {
             </div>
           </div>
 
-          {/* Sensory & Actions */}
+          {/* Sensory Controls */}
           <div className="flex items-center gap-2">
-            <button
+            <motion.button
+              whileTap={{ scale: 0.9 }}
               onClick={() => setSfxOn(!sfxOn)}
-              className="p-2 rounded-full hover:bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] hover:text-[var(--apple-text-primary)] tap-apple"
+              className="p-2 rounded-full hover:bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] hover:text-[var(--apple-text-primary)]"
               title="Toggle Tactile Sound FX"
             >
               {sfxOn ? <Volume2 className="w-4 h-4 text-[var(--apple-blue)]" /> : <VolumeX className="w-4 h-4" />}
-            </button>
-            <button
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.9 }}
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 rounded-full hover:bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] hover:text-[var(--apple-text-primary)] tap-apple"
-              title="Toggle Mode"
+              className="p-2 rounded-full hover:bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] hover:text-[var(--apple-text-primary)]"
+              title="Toggle Theme"
             >
-              {theme === 'dark' ? <Sun className="w-4 h-4 text-[var(--apple-amber)]" /> : <Moon className="w-4 h-4" />}
-            </button>
-            <button
+              {theme === 'dark' ? <Sun className="w-4 h-4 text-[var(--apple-amber)]" /> : <Moon className="w-4 h-4 text-[var(--apple-blue)]" />}
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.95 }}
               onClick={exportScorecardMD}
-              className="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-[var(--apple-surface-secondary)] hover:bg-[var(--apple-surface-tertiary)] text-[var(--apple-text-primary)] text-xs font-semibold tap-apple border border-[var(--apple-border)]"
+              className="hidden sm:inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-[var(--apple-surface-secondary)] hover:bg-[var(--apple-surface-tertiary)] text-[var(--apple-text-primary)] text-xs font-semibold border border-[var(--apple-border)]"
             >
               <Copy className="w-3.5 h-3.5" />
               <span>Export MD</span>
-            </button>
-            <a
+            </motion.button>
+            <motion.a
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.95 }}
               href="https://cal.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="apple-button inline-flex items-center gap-1.5 tap-apple"
+              className="apple-button inline-flex items-center gap-1.5"
             >
               <span>Book 15m</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
-            </a>
+            </motion.a>
           </div>
         </div>
       </header>
 
-      {/* Main Experience Space */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12">
+      {/* Main Experience Space with Staggered Entrance */}
+      <motion.main 
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.28, 0.11, 0.32, 1] }}
+        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12"
+      >
         
         {/* Apple-Style Minimalist Narrative Hero */}
-        <section className="text-center max-w-4xl mx-auto space-y-4 pt-4 sm:pt-8">
+        <section className="text-center max-w-4xl mx-auto space-y-4 pt-4 sm:pt-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] text-xs font-semibold text-[var(--apple-text-secondary)]">
             <span className="w-2 h-2 rounded-full bg-[var(--apple-blue)]" />
             <span>Kill Vibe Checks • Quantify Fit % • Stop P&L Bleed</span>
@@ -323,27 +371,31 @@ export function App() {
             Interactive Hiring Decision Cockpit
           </h1>
           
-          {/* iOS Segmented Mode Switcher */}
+          {/* iOS Segmented Control with Shared Layout Sliding Pill */}
           <div className="pt-4 flex justify-center">
-            <div className="segmented-control inline-flex items-center gap-1">
-              <button
-                onClick={() => setActiveTab('all')}
-                className={`segmented-item tap-apple ${activeTab === 'all' ? 'segmented-item-active' : ''}`}
-              >
-                Split Cockpit (All Live)
-              </button>
-              <button
-                onClick={() => setActiveTab('converter')}
-                className={`segmented-item tap-apple ${activeTab === 'converter' ? 'segmented-item-active' : ''}`}
-              >
-                1. Fit % Converter
-              </button>
-              <button
-                onClick={() => setActiveTab('calculator')}
-                className={`segmented-item tap-apple ${activeTab === 'calculator' ? 'segmented-item-active' : ''}`}
-              >
-                2. Bad-Hire P&L
-              </button>
+            <div className="segmented-control inline-flex items-center p-1 bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] rounded-full">
+              {[
+                { id: 'all', label: 'Split Cockpit (All Live)' },
+                { id: 'converter', label: '1. Fit % Converter' },
+                { id: 'calculator', label: '2. Bad-Hire P&L' }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as 'all' | 'converter' | 'calculator')}
+                  className="relative px-4 py-1.5 text-xs font-semibold transition-colors z-10"
+                >
+                  {activeTab === tab.id && (
+                    <motion.div
+                      layoutId="activeViewTabPill"
+                      className="absolute inset-0 bg-[var(--apple-surface)] rounded-full shadow-sm"
+                      transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                    />
+                  )}
+                  <span className={`relative z-20 ${activeTab === tab.id ? 'text-[var(--apple-text-primary)] font-bold' : 'text-[var(--apple-text-secondary)]'}`}>
+                    {tab.label}
+                  </span>
+                </button>
+              ))}
             </div>
           </div>
         </section>
@@ -365,15 +417,24 @@ export function App() {
                   <h2 className="text-lg font-bold text-[var(--apple-text-primary)]">Interview ➔ Fit % Converter</h2>
                 </div>
 
-                {/* Role Switcher Pills */}
-                <div className="segmented-control inline-flex items-center">
+                {/* Role Switcher with Shared Layout Sliding Pill */}
+                <div className="segmented-control inline-flex items-center p-1 bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] rounded-full">
                   {(['tech', 'product', 'sales', 'ops'] as const).map(role => (
                     <button
                       key={role}
                       onClick={() => handleRoleChange(role)}
-                      className={`segmented-item capitalize ${selectedRole === role ? 'segmented-item-active' : ''}`}
+                      className="relative px-3.5 py-1 text-xs font-semibold capitalize transition-colors z-10"
                     >
-                      {role}
+                      {selectedRole === role && (
+                        <motion.div
+                          layoutId="activeRoleTabPill"
+                          className="absolute inset-0 bg-[var(--apple-surface)] rounded-full shadow-sm"
+                          transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                        />
+                      )}
+                      <span className={`relative z-20 ${selectedRole === role ? 'text-[var(--apple-text-primary)] font-bold' : 'text-[var(--apple-text-secondary)]'}`}>
+                        {role}
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -399,36 +460,43 @@ export function App() {
                   }`}>
                     {fitResults.totalWeight === 100 ? 'Weights: 100% ✓' : `Weights: ${fitResults.totalWeight}% ⚠️`}
                   </div>
-                  <button
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
                     onClick={autoBalanceWeights}
-                    className="px-2.5 py-1 rounded-xl bg-[var(--apple-surface)] hover:bg-[var(--apple-surface-tertiary)] text-[var(--apple-text-primary)] border border-[var(--apple-border)] text-xs font-semibold tap-apple flex items-center gap-1 shadow-sm"
+                    className="px-2.5 py-1 rounded-xl bg-[var(--apple-surface)] hover:bg-[var(--apple-surface-tertiary)] text-[var(--apple-text-primary)] border border-[var(--apple-border)] text-xs font-semibold flex items-center gap-1 shadow-sm"
                     title="Auto-normalize weights to 100%"
                   >
                     <Scale className="w-3.5 h-3.5 text-[var(--apple-blue)]" />
                     <span>Auto-100%</span>
-                  </button>
-                  <button
+                  </motion.button>
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
                     onClick={simulateWildcard}
-                    className="px-2.5 py-1 rounded-xl bg-[var(--apple-surface)] hover:bg-[var(--apple-surface-tertiary)] text-[var(--apple-text-primary)] border border-[var(--apple-border)] text-xs font-semibold tap-apple flex items-center gap-1 shadow-sm"
+                    className="px-2.5 py-1 rounded-xl bg-[var(--apple-surface)] hover:bg-[var(--apple-surface-tertiary)] text-[var(--apple-text-primary)] border border-[var(--apple-border)] text-xs font-semibold flex items-center gap-1 shadow-sm"
                     title="Simulate random candidate"
                   >
                     <Shuffle className="w-3.5 h-3.5 text-[var(--apple-amber)]" />
                     <span>Wildcard</span>
-                  </button>
-                  <button
+                  </motion.button>
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
                     onClick={addCustomSkill}
-                    className="p-1.5 rounded-xl bg-[var(--apple-surface)] hover:bg-[var(--apple-surface-tertiary)] text-[var(--apple-text-primary)] border border-[var(--apple-border)] tap-apple shadow-sm"
+                    className="p-1.5 rounded-xl bg-[var(--apple-surface)] hover:bg-[var(--apple-surface-tertiary)] text-[var(--apple-text-primary)] border border-[var(--apple-border)] shadow-sm"
                     title="Add custom skill"
                   >
                     <Plus className="w-4 h-4" />
-                  </button>
+                  </motion.button>
                 </div>
               </div>
 
               {/* BARS Skill Cards */}
               <div className="space-y-4">
                 {criteria.map((c, idx) => (
-                  <div key={idx} className="p-4 sm:p-5 rounded-2xl bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] space-y-3">
+                  <motion.div 
+                    layout
+                    key={idx} 
+                    className="p-4 sm:p-5 rounded-2xl bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] space-y-3"
+                  >
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-2.5 flex-grow">
                         <span className="w-5 h-5 rounded-md bg-[var(--apple-surface-tertiary)] text-[var(--apple-text-primary)] text-xs font-bold flex items-center justify-center shrink-0">
@@ -468,7 +536,7 @@ export function App() {
                             setCriteria(criteria.filter((_, i) => i !== idx));
                             sound.playTone(300, 'sine');
                           }}
-                          className="text-[var(--apple-text-tertiary)] hover:text-[var(--apple-red)] p-1 tap-apple"
+                          className="text-[var(--apple-text-tertiary)] hover:text-[var(--apple-red)] p-1"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -482,9 +550,10 @@ export function App() {
 
                     {/* 1-3-5 Objective Grading */}
                     <div className="grid grid-cols-3 gap-2.5">
-                      <button
+                      <motion.button
+                        whileTap={{ scale: 0.97 }}
                         onClick={() => updateScore(idx, 1)}
-                        className={`p-3 rounded-xl border text-left tap-apple transition-all ${
+                        className={`p-3 rounded-xl border text-left transition-all ${
                           c.score === 1
                             ? 'bg-[var(--apple-surface)] border-[var(--apple-red)] ring-2 ring-[var(--apple-red-bg)] shadow-sm'
                             : 'bg-[var(--apple-surface)] border-[var(--apple-border)] hover:border-[var(--apple-border-hover)]'
@@ -492,11 +561,12 @@ export function App() {
                       >
                         <div className="font-bold text-[var(--apple-red)] text-xs">1 • Alert (0%)</div>
                         <div className="text-[11px] text-[var(--apple-text-secondary)] mt-1 line-clamp-2 leading-tight">{c.s1}</div>
-                      </button>
+                      </motion.button>
 
-                      <button
+                      <motion.button
+                        whileTap={{ scale: 0.97 }}
                         onClick={() => updateScore(idx, 3)}
-                        className={`p-3 rounded-xl border text-left tap-apple transition-all ${
+                        className={`p-3 rounded-xl border text-left transition-all ${
                           c.score === 3
                             ? 'bg-[var(--apple-surface)] border-[var(--apple-amber)] ring-2 ring-[var(--apple-amber-bg)] shadow-sm'
                             : 'bg-[var(--apple-surface)] border-[var(--apple-border)] hover:border-[var(--apple-border-hover)]'
@@ -504,11 +574,12 @@ export function App() {
                       >
                         <div className="font-bold text-[var(--apple-amber)] text-xs">3 • Solid (50%)</div>
                         <div className="text-[11px] text-[var(--apple-text-secondary)] mt-1 line-clamp-2 leading-tight">{c.s3}</div>
-                      </button>
+                      </motion.button>
 
-                      <button
+                      <motion.button
+                        whileTap={{ scale: 0.97 }}
                         onClick={() => updateScore(idx, 5)}
-                        className={`p-3 rounded-xl border text-left tap-apple transition-all ${
+                        className={`p-3 rounded-xl border text-left transition-all ${
                           c.score === 5
                             ? 'bg-[var(--apple-surface)] border-[var(--apple-green)] ring-2 ring-[var(--apple-green-bg)] shadow-sm'
                             : 'bg-[var(--apple-surface)] border-[var(--apple-border)] hover:border-[var(--apple-border-hover)]'
@@ -516,9 +587,9 @@ export function App() {
                       >
                         <div className="font-bold text-[var(--apple-green)] text-xs">5 • Star (100%)</div>
                         <div className="text-[11px] text-[var(--apple-text-secondary)] mt-1 line-clamp-2 leading-tight">{c.s5}</div>
-                      </button>
+                      </motion.button>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
 
@@ -527,7 +598,7 @@ export function App() {
             {/* Apple Activity-Ring Gauge & Arena (5 cols) */}
             <div className="lg:col-span-5 space-y-6">
               
-              {/* Apple Health/Activity Ring Display */}
+              {/* Apple Activity Ring Display */}
               <div className="apple-card p-6 sm:p-8 space-y-6 text-center">
                 
                 <div className="flex items-center justify-between">
@@ -545,7 +616,7 @@ export function App() {
                   </div>
                 </div>
 
-                {/* Circular Gauge */}
+                {/* Circular Activity Ring with Elastic Spring Transition */}
                 <div className="relative w-44 h-44 mx-auto flex items-center justify-center">
                   <svg className="w-full h-full transform -rotate-90">
                     <circle
@@ -556,23 +627,24 @@ export function App() {
                       strokeWidth={strokeWidth}
                       fill="transparent"
                     />
-                    <circle
+                    <motion.circle
                       cx="88"
                       cy="88"
                       r={radius}
                       stroke={getStatusColor(fitResults.fitPct)}
                       strokeWidth={strokeWidth}
                       strokeDasharray={circumference}
-                      strokeDashoffset={strokeDashoffset}
+                      initial={{ strokeDashoffset: circumference }}
+                      animate={{ strokeDashoffset }}
+                      transition={{ type: 'spring', stiffness: 180, damping: 25 }}
                       strokeLinecap="round"
                       fill="transparent"
-                      className="transition-all duration-500 ease-out"
                     />
                   </svg>
 
                   <div className="absolute text-center">
                     <span className="text-4xl font-bold text-[var(--apple-text-primary)] tracking-tight t-nums block">
-                      {fitResults.fitPct}%
+                      <NumberTicker value={Math.round(fitResults.fitPct)} suffix="%" />
                     </span>
                     <span className="text-xs text-[var(--apple-text-secondary)] font-medium block mt-0.5">
                       {fitResults.rawScore} / 5.0
@@ -581,24 +653,28 @@ export function App() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 pt-2">
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={lockCandidateToArena}
-                    className="apple-button py-2.5 tap-apple flex items-center justify-center gap-1.5 shadow-sm"
+                    className="apple-button py-2.5 flex items-center justify-center gap-1.5 shadow-sm"
                   >
                     <Trophy className="w-3.5 h-3.5" />
                     <span>Lock Into Arena</span>
-                  </button>
-                  <button
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={exportScorecardMD}
-                    className="py-2.5 px-4 rounded-full bg-[var(--apple-surface-secondary)] hover:bg-[var(--apple-surface-tertiary)] text-[var(--apple-text-primary)] border border-[var(--apple-border)] text-xs font-semibold tap-apple flex items-center justify-center gap-1.5"
+                    className="py-2.5 px-4 rounded-full bg-[var(--apple-surface-secondary)] hover:bg-[var(--apple-surface-tertiary)] text-[var(--apple-text-primary)] border border-[var(--apple-border)] text-xs font-semibold flex items-center justify-center gap-1.5"
                   >
                     <Copy className="w-3.5 h-3.5 text-[var(--apple-text-secondary)]" />
                     <span>Copy Scorecard</span>
-                  </button>
+                  </motion.button>
                 </div>
               </div>
 
-              {/* iOS-Style Grouped Candidate Arena */}
+              {/* iOS-Style Candidate Arena with Fluid List Reordering */}
               <div className="apple-card p-6 space-y-4">
                 <div className="flex items-center justify-between border-b border-[var(--apple-border)] pb-3">
                   <span className="text-xs font-bold uppercase tracking-wider text-[var(--apple-text-primary)]">
@@ -612,41 +688,49 @@ export function App() {
                 </div>
 
                 <div className="space-y-1 divide-y divide-[var(--apple-border)]">
-                  {candidates.map((c, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center justify-between py-3 text-xs"
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="w-5 h-5 rounded-full bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] font-semibold flex items-center justify-center text-[11px]">
-                          {idx + 1}
-                        </span>
-                        <span className="font-semibold text-[var(--apple-text-primary)]">{c.name}</span>
-                      </div>
-                      <div className="flex items-center gap-2.5">
-                        <span className="text-[var(--apple-text-secondary)] t-nums">{c.score.toFixed(2)}/5</span>
-                        <span className={`px-2.5 py-0.5 rounded-full font-bold t-nums ${
-                          c.fit >= 80 
-                            ? 'text-[var(--apple-green)] bg-[var(--apple-green-bg)]' 
-                            : c.fit >= 50 
-                            ? 'text-[var(--apple-amber)] bg-[var(--apple-amber-bg)]' 
-                            : 'text-[var(--apple-red)] bg-[var(--apple-red-bg)]'
-                        }`}>
-                          {c.fit}%
-                        </span>
-                        <button
-                          onClick={() => {
-                            if (candidates.length <= 1) return;
-                            setCandidates(candidates.filter((_, i) => i !== idx));
-                            sound.playTone(320, 'sine');
-                          }}
-                          className="text-[var(--apple-text-tertiary)] hover:text-[var(--apple-red)] p-1 tap-apple"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                  <AnimatePresence>
+                    {candidates.map((c, idx) => (
+                      <motion.div
+                        layout
+                        initial={{ opacity: 0, height: 0, y: -10 }}
+                        animate={{ opacity: 1, height: 'auto', y: 0 }}
+                        exit={{ opacity: 0, height: 0, y: -10 }}
+                        transition={{ type: 'spring', stiffness: 500, damping: 40 }}
+                        key={c.name}
+                        className="flex items-center justify-between py-3 text-xs"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="w-5 h-5 rounded-full bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] font-semibold flex items-center justify-center text-[11px]">
+                            {idx + 1}
+                          </span>
+                          <span className="font-semibold text-[var(--apple-text-primary)]">{c.name}</span>
+                        </div>
+                        <div className="flex items-center gap-2.5">
+                          <span className="text-[var(--apple-text-secondary)] t-nums">{c.score.toFixed(2)}/5</span>
+                          <span className={`px-2.5 py-0.5 rounded-full font-bold t-nums ${
+                            c.fit >= 80 
+                              ? 'text-[var(--apple-green)] bg-[var(--apple-green-bg)]' 
+                              : c.fit >= 50 
+                              ? 'text-[var(--apple-amber)] bg-[var(--apple-amber-bg)]' 
+                              : 'text-[var(--apple-red)] bg-[var(--apple-red-bg)]'
+                          }`}>
+                            {c.fit}%
+                          </span>
+                          <motion.button
+                            whileTap={{ scale: 0.8 }}
+                            onClick={() => {
+                              if (candidates.length <= 1) return;
+                              setCandidates(candidates.filter(item => item.name !== c.name));
+                              sound.playTone(320, 'sine');
+                            }}
+                            className="text-[var(--apple-text-tertiary)] hover:text-[var(--apple-red)] p-1"
+                          >
+                            ✕
+                          </motion.button>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
                 </div>
               </div>
 
@@ -684,8 +768,8 @@ export function App() {
                       <DollarSign className="w-3.5 h-3.5 text-[var(--apple-blue)]" />
                       Avg Base Salary:
                     </span>
-                    <span className="text-[var(--apple-blue)] font-bold t-nums text-sm">
-                      ${salary.toLocaleString()}
+                    <span className="text-[var(--apple-blue)] font-bold text-sm">
+                      <NumberTicker value={salary} prefix="$" />
                     </span>
                   </div>
                   <input
@@ -708,7 +792,7 @@ export function App() {
                       <Users className="w-3.5 h-3.5 text-[var(--apple-blue)]" />
                       Annual Hires:
                     </span>
-                    <span className="text-[var(--apple-blue)] font-bold t-nums text-sm">
+                    <span className="text-[var(--apple-blue)] font-bold text-sm">
                       {hires} {hires === 1 ? 'Hire' : 'Hires'}
                     </span>
                   </div>
@@ -775,23 +859,23 @@ export function App() {
 
               </div>
 
-              {/* Tesla-Style Big Stat Callouts */}
+              {/* Tesla-Style Big Stat Callouts with Number Ticker */}
               <div className="lg:col-span-7 space-y-6">
                 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   
                   <div className="p-5 rounded-2xl bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] text-center space-y-1">
                     <span className="text-xs font-medium text-[var(--apple-text-secondary)] uppercase block">1 Bad Hire Costs</span>
-                    <div className="text-3xl font-bold text-[var(--apple-red)] tracking-tight t-nums">
-                      ${pnlResults.costPerBadHire.toLocaleString()}
+                    <div className="text-3xl font-bold text-[var(--apple-red)] tracking-tight">
+                      <NumberTicker value={pnlResults.costPerBadHire} prefix="$" />
                     </div>
                     <span className="text-[11px] text-[var(--apple-text-secondary)] block">Salary + Ramp + Fee</span>
                   </div>
 
                   <div className="p-5 rounded-2xl bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] text-center space-y-1">
                     <span className="text-xs font-medium text-[var(--apple-text-secondary)] uppercase block">Annual P&L Bleed</span>
-                    <div className="text-3xl font-bold text-[var(--apple-amber)] tracking-tight t-nums">
-                      ${pnlResults.annualBleed.toLocaleString()}
+                    <div className="text-3xl font-bold text-[var(--apple-amber)] tracking-tight">
+                      <NumberTicker value={pnlResults.annualBleed} prefix="$" />
                     </div>
                     <span className="text-[11px] text-[var(--apple-text-secondary)] block">
                       {pnlResults.badHiresCount} failed hires/yr
@@ -802,8 +886,8 @@ export function App() {
                     <span className="text-xs font-bold text-[var(--apple-green)] uppercase block">
                       BARS Net Savings
                     </span>
-                    <div className="text-3xl font-bold text-[var(--apple-green)] tracking-tight t-nums">
-                      ${pnlResults.netSavings.toLocaleString()}
+                    <div className="text-3xl font-bold text-[var(--apple-green)] tracking-tight">
+                      <NumberTicker value={pnlResults.netSavings} prefix="$" />
                     </div>
                     <span className="text-[11px] text-[var(--apple-green)] font-medium block">Cuts fail rate to 4%</span>
                   </div>
@@ -816,24 +900,30 @@ export function App() {
                     <div>
                       <div className="flex justify-between text-xs text-[var(--apple-text-primary)] mb-1 font-semibold">
                         <span>Unstructured Vibe-Check Bleed</span>
-                        <span className="t-nums">${pnlResults.annualBleed.toLocaleString()}</span>
+                        <NumberTicker value={pnlResults.annualBleed} prefix="$" />
                       </div>
                       <div className="w-full bg-[var(--apple-surface)] h-2.5 rounded-full overflow-hidden border border-[var(--apple-border)]">
-                        <div className="bg-[var(--apple-red)] h-full rounded-full w-full" />
+                        <motion.div 
+                          className="bg-[var(--apple-red)] h-full rounded-full w-full"
+                          initial={{ scaleX: 0 }}
+                          animate={{ scaleX: 1 }}
+                          transition={{ duration: 0.6 }}
+                        />
                       </div>
                     </div>
 
                     <div>
                       <div className="flex justify-between text-xs text-[var(--apple-text-primary)] mb-1 font-semibold">
                         <span>Calibrated BARS Process (4% Fail)</span>
-                        <span className="t-nums">${pnlResults.calibratedBleed.toLocaleString()}</span>
+                        <NumberTicker value={pnlResults.calibratedBleed} prefix="$" />
                       </div>
                       <div className="w-full bg-[var(--apple-surface)] h-2.5 rounded-full overflow-hidden border border-[var(--apple-border)]">
-                        <div
-                          className="bg-[var(--apple-green)] h-full rounded-full transition-all duration-300"
-                          style={{
+                        <motion.div
+                          className="bg-[var(--apple-green)] h-full rounded-full"
+                          animate={{
                             width: `${Math.max(5, (pnlResults.calibratedBleed / (pnlResults.annualBleed || 1)) * 100)}%`
                           }}
+                          transition={{ type: 'spring', stiffness: 120, damping: 20 }}
                         />
                       </div>
                     </div>
@@ -859,10 +949,14 @@ export function App() {
           </div>
 
           {leadSuccess ? (
-            <div className="px-6 py-3 rounded-full bg-[var(--apple-green-bg)] text-[var(--apple-green)] font-semibold text-xs flex items-center gap-2 border border-[var(--apple-green)]">
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="px-6 py-3 rounded-full bg-[var(--apple-green-bg)] text-[var(--apple-green)] font-semibold text-xs flex items-center gap-2 border border-[var(--apple-green)]"
+            >
               <Check className="w-4 h-4" />
               <span>You're on the list.</span>
-            </div>
+            </motion.div>
           ) : (
             <form onSubmit={handleLeadSubmit} className="flex items-center gap-3 w-full md:w-auto relative">
               <input
@@ -881,13 +975,15 @@ export function App() {
                 placeholder="name@company.com"
                 className="bg-[var(--apple-surface)] border border-[var(--apple-border)] rounded-full px-4 py-2.5 text-xs text-[var(--apple-text-primary)] focus:outline-none focus:border-[var(--apple-blue)] w-full sm:w-64"
               />
-              <button
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.95 }}
                 type="submit"
                 disabled={leadLoading}
-                className="apple-button whitespace-nowrap tap-apple disabled:opacity-50"
+                className="apple-button whitespace-nowrap disabled:opacity-50"
               >
                 {leadLoading ? '...' : 'Notify Me'}
-              </button>
+              </motion.button>
             </form>
           )}
         </section>
@@ -940,7 +1036,7 @@ export function App() {
           </div>
         </footer>
 
-      </main>
+      </motion.main>
     </div>
   );
 }
