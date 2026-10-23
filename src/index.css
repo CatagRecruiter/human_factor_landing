@@ -4,12 +4,13 @@
   :root {
     /* Apple / Tesla High-End Design System Tokens (Light Mode Default) */
     --apple-bg: #fbfbfd;
-    --apple-surface: #ffffff;
-    --apple-surface-secondary: #f5f5f7;
+    --apple-surface: rgba(255, 255, 255, 0.78);
+    --apple-surface-solid: #ffffff;
+    --apple-surface-secondary: rgba(245, 245, 247, 0.85);
     --apple-surface-tertiary: #e8e8ed;
     
     --apple-text-primary: #1d1d1f;
-    --apple-text-secondary: #6e6e73;
+    --apple-text-secondary: #515154;
     --apple-text-tertiary: #86868b;
     
     --apple-border: rgba(0, 0, 0, 0.08);
@@ -19,29 +20,35 @@
     --apple-blue: #0071e3;
     --apple-blue-hover: #0077ed;
     --apple-green: #34c759;
-    --apple-green-bg: rgba(52, 199, 89, 0.12);
+    --apple-green-bg: rgba(52, 199, 89, 0.14);
     --apple-amber: #ff9f0a;
-    --apple-amber-bg: rgba(255, 159, 10, 0.12);
+    --apple-amber-bg: rgba(255, 159, 10, 0.14);
     --apple-red: #ff3b30;
-    --apple-red-bg: rgba(255, 59, 48, 0.12);
+    --apple-red-bg: rgba(255, 59, 48, 0.14);
     
-    --apple-nav-bg: rgba(255, 255, 255, 0.82);
-    --apple-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.04);
-    --apple-card-shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.08);
+    --apple-nav-bg: rgba(255, 255, 255, 0.75);
+    --apple-card-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+    --apple-card-shadow-hover: 0 16px 40px rgba(0, 0, 0, 0.08);
 
-    --spotlight-glow: rgba(0, 113, 227, 0.07);
-    --grid-dot-color: rgba(0, 0, 0, 0.06);
+    --spotlight-glow: rgba(0, 113, 227, 0.14);
+    --grid-dot-color: rgba(0, 0, 0, 0.07);
+
+    /* Living Animated Background Blobs */
+    --living-blob-1: rgba(0, 113, 227, 0.22);
+    --living-blob-2: rgba(52, 199, 89, 0.20);
+    --living-blob-3: rgba(255, 159, 10, 0.16);
   }
 
   [data-theme="dark"] {
     /* Apple / Tesla Dark Precision (Dark Mode) */
     --apple-bg: #000000;
-    --apple-surface: #161617;
-    --apple-surface-secondary: #1d1d1f;
+    --apple-surface: rgba(22, 22, 23, 0.75);
+    --apple-surface-solid: #161617;
+    --apple-surface-secondary: rgba(29, 29, 31, 0.85);
     --apple-surface-tertiary: #2d2d2f;
     
     --apple-text-primary: #f5f5f7;
-    --apple-text-secondary: #86868b;
+    --apple-text-secondary: #a1a1a6;
     --apple-text-tertiary: #6e6e73;
     
     --apple-border: rgba(255, 255, 255, 0.12);
@@ -50,18 +57,23 @@
     --apple-blue: #2997ff;
     --apple-blue-hover: #0077ed;
     --apple-green: #30d158;
-    --apple-green-bg: rgba(48, 209, 88, 0.16);
+    --apple-green-bg: rgba(48, 209, 88, 0.18);
     --apple-amber: #ff9f0a;
-    --apple-amber-bg: rgba(255, 159, 10, 0.16);
+    --apple-amber-bg: rgba(255, 159, 10, 0.18);
     --apple-red: #ff453a;
-    --apple-red-bg: rgba(255, 69, 58, 0.16);
+    --apple-red-bg: rgba(255, 69, 58, 0.18);
     
-    --apple-nav-bg: rgba(22, 22, 23, 0.82);
-    --apple-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
-    --apple-card-shadow-hover: 0 16px 40px rgba(0, 0, 0, 0.65);
+    --apple-nav-bg: rgba(22, 22, 23, 0.75);
+    --apple-card-shadow: 0 12px 36px rgba(0, 0, 0, 0.55);
+    --apple-card-shadow-hover: 0 20px 48px rgba(0, 0, 0, 0.75);
 
-    --spotlight-glow: rgba(41, 151, 255, 0.12);
-    --grid-dot-color: rgba(255, 255, 255, 0.08);
+    --spotlight-glow: rgba(41, 151, 255, 0.18);
+    --grid-dot-color: rgba(255, 255, 255, 0.09);
+
+    /* Living Animated Background Blobs */
+    --living-blob-1: rgba(41, 151, 255, 0.25);
+    --living-blob-2: rgba(48, 209, 88, 0.22);
+    --living-blob-3: rgba(168, 85, 247, 0.18);
   }
 
   * {
@@ -80,40 +92,109 @@ body {
   transition: background-color 0.3s cubic-bezier(0.28, 0.11, 0.32, 1), color 0.3s cubic-bezier(0.28, 0.11, 0.32, 1);
 }
 
-/* Interactive Ambient Spotlight & Dot Grid Background */
-.ambient-background-layer {
+/* ========================================================================= */
+/* ALWAYS-ON LIVING CANVAS BACKGROUND (Apple Intelligence & Siri Fluid Mesh) */
+/* ========================================================================= */
+.living-canvas-container {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  background-image: radial-gradient(var(--grid-dot-color) 1px, transparent 1px);
-  background-size: 32px 32px;
+  overflow: hidden;
 }
 
-.ambient-spotlight-beam {
-  position: fixed;
+.living-grid-matrix {
+  position: absolute;
   inset: 0;
-  pointer-events: none;
-  z-index: 1;
+  background-image: radial-gradient(var(--grid-dot-color) 1.5px, transparent 1.5px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(circle at 50% 35%, black 40%, transparent 90%);
+  -webkit-mask-image: radial-gradient(circle at 50% 35%, black 40%, transparent 90%);
+}
+
+.living-orb-1 {
+  position: absolute;
+  width: 700px;
+  height: 700px;
+  top: -150px;
+  left: 20%;
+  border-radius: 9999px;
+  background: radial-gradient(circle, var(--living-blob-1) 0%, transparent 70%);
+  filter: blur(100px);
+  will-change: transform;
+  animation: floatOrb1 16s infinite alternate ease-in-out;
+}
+
+.living-orb-2 {
+  position: absolute;
+  width: 650px;
+  height: 650px;
+  top: 35%;
+  right: -100px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, var(--living-blob-2) 0%, transparent 70%);
+  filter: blur(110px);
+  will-change: transform;
+  animation: floatOrb2 20s infinite alternate ease-in-out;
+}
+
+.living-orb-3 {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  bottom: 5%;
+  left: -100px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, var(--living-blob-3) 0%, transparent 70%);
+  filter: blur(120px);
+  will-change: transform;
+  animation: floatOrb3 24s infinite alternate ease-in-out;
+}
+
+@keyframes floatOrb1 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(80px, 60px, 0) scale(1.15); }
+  100% { transform: translate3d(-60px, 100px, 0) scale(0.92); }
+}
+
+@keyframes floatOrb2 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-90px, -70px, 0) scale(1.12); }
+  100% { transform: translate3d(50px, 80px, 0) scale(0.88); }
+}
+
+@keyframes floatOrb3 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(70px, -60px, 0) scale(1.1); }
+  100% { transform: translate3d(-50px, -80px, 0) scale(0.95); }
+}
+
+/* Interactive Cursor Spotlight overlay */
+.ambient-spotlight-beam {
+  position: absolute;
+  inset: 0;
   background: radial-gradient(
-    650px circle at var(--mouse-x, 50%) var(--mouse-y, 30%),
+    600px circle at var(--mouse-x, 50%) var(--mouse-y, 30%),
     var(--spotlight-glow),
     transparent 70%
   );
-  transition: opacity 0.4s ease;
+  pointer-events: none;
 }
 
-/* Apple Frosted Glass */
+/* ========================================================================= */
+/* TRANSLUCENT APPLE CARD & UI ARCHITECTURE                                  */
+/* ========================================================================= */
 .apple-glass {
   background-color: var(--apple-nav-bg);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
   border-bottom: 1px solid var(--apple-border);
 }
 
-/* Apple Card Architecture */
 .apple-card {
   background-color: var(--apple-surface);
+  backdrop-filter: saturate(160%) blur(20px);
+  -webkit-backdrop-filter: saturate(160%) blur(20px);
   border: 1px solid var(--apple-border);
   box-shadow: var(--apple-card-shadow);
   border-radius: 24px;

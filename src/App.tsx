@@ -243,9 +243,14 @@ export function App() {
         '--mouse-y': `${mousePos.y}%`
       } as React.CSSProperties}
     >
-      {/* 2026 Interactive Dot-Grid & Spotlight Background */}
-      <div className="ambient-background-layer" />
-      <div className="ambient-spotlight-beam" />
+      {/* ALWAYS-ON LIVING CANVAS BACKGROUND (Apple Intelligence Fluid Mesh & Micro-dot Grid) */}
+      <div className="living-canvas-container">
+        <div className="living-grid-matrix" />
+        <div className="living-orb-1" />
+        <div className="living-orb-2" />
+        <div className="living-orb-3" />
+        <div className="ambient-spotlight-beam" />
+      </div>
 
       {/* Floating Dynamic Island Toast */}
       <AnimatePresence>
