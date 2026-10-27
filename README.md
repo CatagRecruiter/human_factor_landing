@@ -1,9 +1,9 @@
-# TalentLens Studio — 2026 Interactive Hiring Decision Cockpit
+# Talent Science — Talent Acquisition Predictive Science
 
 High-impact, zero-fluff interactive cockpit created for **Catalina Gil Sierra** (Lead TA & Psychometric Systems Architect).
 
-- **Module 1: Interview ➔ Weighted Fit % Converter & BARS Arena**
-- **Module 2: Bad-Hire P&L Bleed Simulator (SHRM/HBR Methodology)**
+- **Module 1: Interview Report & Analysis Generator & BARS Arena**
+- **Module 2: Interview Report & Analysis Generator (P&L Bleed Simulator)**
 
 ## Tech Stack
 - **Vite 6** + **React 19** + **TypeScript**
