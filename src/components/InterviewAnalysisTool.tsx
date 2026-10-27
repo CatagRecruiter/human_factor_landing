@@ -340,41 +340,50 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
                 </div>
 
                 {/* 1 - 3 - 5 Objective Anchors */}
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-3 gap-2.5">
                   <button
                     onClick={() => updateCriterionScore(idx, 1)}
-                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                    className={`p-3 rounded-2xl border text-left transition-all active:scale-[0.97] cursor-pointer ${
                       c.score === 1
-                        ? 'border-red-500 bg-red-500/10 text-red-600 font-semibold shadow-sm'
-                        : 'border-[var(--apple-border)] bg-[var(--apple-surface)] text-[var(--apple-text-secondary)] hover:border-[var(--apple-border-hover)]'
+                        ? 'border-red-500 bg-red-500/10 text-red-600 font-semibold shadow-xs ring-1 ring-red-500/30'
+                        : 'border-[var(--apple-border)] bg-[var(--apple-surface)] text-[var(--apple-text-secondary)] hover:border-[var(--apple-border-hover)] hover:bg-[var(--apple-surface-secondary)]'
                     }`}
                   >
-                    <div className="font-bold text-[11px] uppercase">{lang === 'es' ? '1: Insuficiente' : '1: Substandard'}</div>
-                    <div className="text-[10px] opacity-80 mt-1 line-clamp-2">{c.s1}</div>
+                    <div className="font-bold text-[11px] uppercase tracking-wide flex items-center justify-between">
+                      <span>{lang === 'es' ? '1: Insuficiente' : '1: Substandard'}</span>
+                      {c.score === 1 && <span className="w-1.5 h-1.5 rounded-full bg-red-500" />}
+                    </div>
+                    <div className="text-[10px] opacity-80 mt-1 line-clamp-2 leading-relaxed">{c.s1}</div>
                   </button>
 
                   <button
                     onClick={() => updateCriterionScore(idx, 3)}
-                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                    className={`p-3 rounded-2xl border text-left transition-all active:scale-[0.97] cursor-pointer ${
                       c.score === 3
-                        ? 'border-amber-500 bg-amber-500/10 text-amber-600 font-semibold shadow-sm'
-                        : 'border-[var(--apple-border)] bg-[var(--apple-surface)] text-[var(--apple-text-secondary)] hover:border-[var(--apple-border-hover)]'
+                        ? 'border-amber-500 bg-amber-500/10 text-amber-600 font-semibold shadow-xs ring-1 ring-amber-500/30'
+                        : 'border-[var(--apple-border)] bg-[var(--apple-surface)] text-[var(--apple-text-secondary)] hover:border-[var(--apple-border-hover)] hover:bg-[var(--apple-surface-secondary)]'
                     }`}
                   >
-                    <div className="font-bold text-[11px] uppercase">{lang === 'es' ? '3: Estándar' : '3: Standard Bar'}</div>
-                    <div className="text-[10px] opacity-80 mt-1 line-clamp-2">{c.s3}</div>
+                    <div className="font-bold text-[11px] uppercase tracking-wide flex items-center justify-between">
+                      <span>{lang === 'es' ? '3: Estándar' : '3: Standard Bar'}</span>
+                      {c.score === 3 && <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />}
+                    </div>
+                    <div className="text-[10px] opacity-80 mt-1 line-clamp-2 leading-relaxed">{c.s3}</div>
                   </button>
 
                   <button
                     onClick={() => updateCriterionScore(idx, 5)}
-                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                    className={`p-3 rounded-2xl border text-left transition-all active:scale-[0.97] cursor-pointer ${
                       c.score === 5
-                        ? 'border-cyan-500 bg-cyan-500/10 text-cyan-700 font-semibold shadow-sm'
-                        : 'border-[var(--apple-border)] bg-[var(--apple-surface)] text-[var(--apple-text-secondary)] hover:border-[var(--apple-border-hover)]'
+                        ? 'border-cyan-500 bg-cyan-500/10 text-cyan-700 font-semibold shadow-xs ring-1 ring-cyan-500/30'
+                        : 'border-[var(--apple-border)] bg-[var(--apple-surface)] text-[var(--apple-text-secondary)] hover:border-[var(--apple-border-hover)] hover:bg-[var(--apple-surface-secondary)]'
                     }`}
                   >
-                    <div className="font-bold text-[11px] uppercase">{lang === 'es' ? '5: Autónomo' : '5: Autonomous'}</div>
-                    <div className="text-[10px] opacity-80 mt-1 line-clamp-2">{c.s5}</div>
+                    <div className="font-bold text-[11px] uppercase tracking-wide flex items-center justify-between">
+                      <span>{lang === 'es' ? '5: Autónomo' : '5: Autonomous'}</span>
+                      {c.score === 5 && <span className="w-1.5 h-1.5 rounded-full bg-cyan-500" />}
+                    </div>
+                    <div className="text-[10px] opacity-80 mt-1 line-clamp-2 leading-relaxed">{c.s5}</div>
                   </button>
                 </div>
               </div>
@@ -449,32 +458,35 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
               </button>
             </div>
 
-            <div className="divide-y divide-[var(--apple-border)]">
+            <div className="space-y-2">
               {candidates.map((c, i) => (
-                <div key={c.name} className="py-3 flex items-center justify-between text-xs">
+                <div 
+                  key={c.name} 
+                  className="p-3 rounded-2xl bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] flex items-center justify-between text-xs transition-all hover:border-purple-400/50 shadow-2xs"
+                >
                   <div className="flex items-center gap-3">
-                    <span className="w-5 h-5 rounded-full bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] font-semibold flex items-center justify-center text-[10px]">
-                      {i + 1}
+                    <span className="w-6 h-6 rounded-lg bg-[var(--apple-surface-solid)] text-[var(--apple-text-secondary)] font-bold font-mono flex items-center justify-center text-[10px] border border-[var(--apple-border)]">
+                      #{i + 1}
                     </span>
                     <div>
-                      <div className="font-semibold text-[var(--apple-text-primary)]">{c.name}</div>
-                      <div className="text-[10px] text-[var(--apple-text-tertiary)]">{lang === 'es' ? 'Puntaje' : 'Score'}: {c.score.toFixed(2)} / 5.0</div>
+                      <div className="font-bold text-[var(--apple-text-primary)]">{c.name}</div>
+                      <div className="text-[10px] text-[var(--apple-text-tertiary)] font-mono">{lang === 'es' ? 'Puntaje' : 'Score'}: {c.score.toFixed(2)} / 5.0</div>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <span className={`px-2.5 py-0.5 rounded-full font-bold font-mono text-xs ${
                       c.fit >= 80
-                        ? 'bg-cyan-500/10 text-cyan-700'
+                        ? 'bg-cyan-500/10 text-cyan-700 border border-cyan-500/20'
                         : c.fit >= 50
-                        ? 'bg-amber-500/10 text-amber-600'
-                        : 'bg-red-500/10 text-red-600'
+                        ? 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
+                        : 'bg-red-500/10 text-red-600 border border-red-500/20'
                     }`}>
                       {c.fit}%
                     </span>
                     <button
                       onClick={() => setCandidates(prev => prev.filter((_, idx) => idx !== i))}
-                      className="text-[var(--apple-text-tertiary)] hover:text-red-500 p-1 transition-colors cursor-pointer"
+                      className="text-[var(--apple-text-tertiary)] hover:text-red-500 p-1.5 rounded-lg hover:bg-red-500/10 transition-colors cursor-pointer"
                       title={lang === 'es' ? 'Eliminar candidato' : 'Remove candidate'}
                     >
                       <Trash2 className="h-3.5 w-3.5" />

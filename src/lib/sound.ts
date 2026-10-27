@@ -41,6 +41,10 @@ class SoundEngine {
     setTimeout(() => this.playTone(659.25, 'triangle', 0.12), 60);
     setTimeout(() => this.playTone(783.99, 'triangle', 0.18), 120);
   }
+
+  playSuccess() {
+    this.playChord();
+  }
 }
 
 export const sound = new SoundEngine();

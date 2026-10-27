@@ -4,16 +4,17 @@ import {
   Volume2, 
   VolumeX, 
   Check, 
-  ArrowUpRight,
-  ChevronRight,
-  Sparkles,
-  User,
-  Sliders,
-  DollarSign
+  ArrowUpRight, 
+  ChevronRight, 
+  Sparkles, 
+  User, 
+  Sliders, 
+  DollarSign,
+  Command
 } from 'lucide-react';
 import { sound } from './lib/sound';
-import { WelcomeModal } from './components/WelcomeModal';
 import { GuidedTourModal } from './components/GuidedTourModal';
+import { CommandPalette } from './components/CommandPalette';
 import { InterviewAnalysisTool } from './components/InterviewAnalysisTool';
 import { InefficientInterviewingCalculator } from './components/InefficientInterviewingCalculator';
 import { TalentScienceOverview } from './components/TalentScienceOverview';
@@ -26,10 +27,8 @@ export function App() {
   const [lang, setLang] = useState<'en' | 'es'>('en');
   const [sfxOn, setSfxOn] = useState<boolean>(true);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
-  const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState<boolean>(() => {
-    return !localStorage.getItem('talentlens_welcomed');
-  });
   const [isTourOpen, setIsTourOpen] = useState<boolean>(false);
+  const [isCommandOpen, setIsCommandOpen] = useState<boolean>(false);
 
   // Spotlight mouse coordinates
   const [mousePos, setMousePos] = useState({ x: 50, y: 30 });
@@ -53,6 +52,18 @@ export function App() {
     };
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
     return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  // Keyboard shortcut listener for Cmd+K / Ctrl+K
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsCommandOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   const showToast = (msg: string) => {
@@ -112,28 +123,6 @@ export function App() {
       <header className="sticky top-0 z-40 apple-glass px-4 sm:px-8 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
-          {/* Brand */}
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => scrollTo('hero')}>
-            <motion.div 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-8 h-8 rounded-lg bg-gradient-to-tr from-purple-700 to-indigo-600 text-white flex items-center justify-center font-bold text-sm tracking-tight cursor-default shadow-xs"
-            >
-              TS
-            </motion.div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-[var(--apple-text-primary)] text-sm tracking-tight">Talent Science</span>
-                <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-purple-500/10 text-purple-700 border border-purple-500/20 font-mono">
-                  {lang === 'es' ? 'SELECCIÓN PREDICTIVA' : 'PREDICTIVE TA'}
-                </span>
-              </div>
-              <p className="text-[11px] text-[var(--apple-text-secondary)] hidden sm:block">
-                Catalina Gil Sierra • {lang === 'es' ? 'Psicometría' : 'Psychometrics'} (USBMED)
-              </p>
-            </div>
-          </div>
-
           {/* Quick Nav Anchors */}
           <nav className="hidden xl:flex items-center gap-1 bg-[var(--apple-surface-secondary)] p-1 rounded-full border border-[var(--apple-border)] text-xs font-semibold text-[var(--apple-text-secondary)]">
             <button onClick={() => scrollTo('talent-science')} className="px-3 py-1 rounded-full hover:text-[var(--apple-text-primary)] hover:bg-[var(--apple-surface)] transition-all cursor-pointer">
@@ -158,7 +147,21 @@ export function App() {
           </nav>
 
           {/* Controls & CTAs */}
-          <div className="flex items-center gap-2">
+          <div className="ml-auto xl:ml-0 flex items-center gap-2">
+            {/* Command Palette Trigger */}
+            <motion.button
+              whileTap={{ scale: 0.94 }}
+              onClick={() => {
+                sound.playClick();
+                setIsCommandOpen(true);
+              }}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-semibold border border-[var(--apple-border)] bg-[var(--apple-surface)] hover:bg-[var(--apple-hover)] text-[var(--apple-text-secondary)] hover:text-[var(--apple-text-primary)] transition-all shadow-2xs cursor-pointer"
+              title={lang === 'es' ? 'Paleta de Comandos (Ctrl+K)' : 'Command Palette (Ctrl+K)'}
+            >
+              <Command className="w-3.5 h-3.5 text-purple-600" />
+              <span className="font-mono text-[10px] hidden sm:inline">⌘K</span>
+            </motion.button>
+
             <motion.button
               whileTap={{ scale: 0.94 }}
               onClick={() => {
@@ -175,8 +178,7 @@ export function App() {
             <motion.button
               whileTap={{ scale: 0.94 }}
               onClick={() => {
-                sound.playTone(480, 'sine', 0.08);
-                setIsWelcomeModalOpen(true);
+                scrollTo('about-me');
               }}
               className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border border-[var(--apple-border)] bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] hover:text-[var(--apple-text-primary)] hover:border-[var(--apple-border-hover)] transition-all cursor-pointer"
               title="Catalina Gil's Profile"
@@ -256,11 +258,6 @@ export function App() {
         
         {/* Hero Section */}
         <section id="hero" className="text-center max-w-4xl mx-auto space-y-4 pt-4 sm:pt-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] text-xs font-semibold text-[var(--apple-text-secondary)]">
-            <span className="w-2 h-2 rounded-full bg-cyan-500" />
-            <span>{t.hero.badge}</span>
-          </div>
-
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[var(--apple-text-primary)] leading-[1.08]">
             {t.hero.title}
           </h1>
@@ -353,24 +350,6 @@ export function App() {
           </div>
         </footer>
 
-        {/* Welcome Modal */}
-        <WelcomeModal
-          isOpen={isWelcomeModalOpen}
-          lang={lang}
-          onClose={() => {
-            setIsWelcomeModalOpen(false);
-            localStorage.setItem('talentlens_welcomed', 'true');
-          }}
-          onSelectAction={(tab) => {
-            if (tab === 'converter') scrollTo('interview-tool');
-            else if (tab === 'calculator') scrollTo('interview-cost');
-            else scrollTo('talent-science');
-          }}
-          onStartTour={() => {
-            setIsTourOpen(true);
-          }}
-        />
-
         {/* Guided Tour Modal */}
         <GuidedTourModal
           isOpen={isTourOpen}
@@ -381,6 +360,18 @@ export function App() {
             else if (tab === 'calculator') scrollTo('interview-cost');
             else scrollTo('talent-science');
           }}
+        />
+
+        {/* Raycast / Linear Style Command Palette (Cmd+K) */}
+        <CommandPalette
+          isOpen={isCommandOpen}
+          onClose={() => setIsCommandOpen(false)}
+          lang={lang}
+          onScrollTo={scrollTo}
+          onToggleSound={() => setSfxOn(!sfxOn)}
+          sfxOn={sfxOn}
+          onToggleLang={() => setLang(lang === 'es' ? 'en' : 'es')}
+          onOpenTour={() => setIsTourOpen(true)}
         />
 
       </motion.main>
