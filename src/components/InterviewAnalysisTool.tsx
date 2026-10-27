@@ -1,38 +1,35 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
-  FileText, 
-  Upload, 
   Sparkles, 
-  Check, 
   Sliders, 
-  Plus, 
   Trash2, 
   Download, 
   UserPlus, 
   Users, 
-  Trophy, 
-  Scale, 
-  HelpCircle,
-  Copy,
-  ChevronRight,
-  ArrowRight
+  Scale
 } from 'lucide-react';
 import { SkillCriterion, CandidateEntry, calculateFit } from '../lib/engine';
 import { CALIBRATION_QUESTIONS, extractDimensionsFromJD } from '../lib/jdAnalyzer';
 import { generateComparisonPDF } from '../lib/pdfReport';
 import { sound } from '../lib/sound';
+import { TRANSLATIONS } from '../lib/translations';
 
 interface Props {
+  lang: 'en' | 'es';
   onShowToast: (msg: string) => void;
 }
 
-export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
+export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) => {
+  const t = TRANSLATIONS[lang].tool;
+
   // Step 1: Job Description Input & Calibration State
-  const [jobTitle, setJobTitle] = useState('Senior Distributed Systems Engineer');
-  const [department, setDepartment] = useState('Core Engineering');
+  const [jobTitle, setJobTitle] = useState(lang === 'es' ? 'Ingeniero Senior de Sistemas Distribuidos' : 'Senior Distributed Systems Engineer');
+  const [department, setDepartment] = useState(lang === 'es' ? 'Ingeniería Central' : 'Core Engineering');
   const [jdText, setJdText] = useState(
-    'We are looking for a Senior Engineer with deep experience in high-throughput backend services, zero-downtime database migrations, and autonomous problem-solving under production incidents.'
+    lang === 'es'
+      ? 'Buscamos un Ingeniero Senior con sólida experiencia en servicios backend de alto rendimiento, migraciones de bases de datos sin tiempo de inactividad y resolución autónoma de incidentes en producción.'
+      : 'We are looking for a Senior Engineer with deep experience in high-throughput backend services, zero-downtime database migrations, and autonomous problem-solving under production incidents.'
   );
   const [isCalibrating, setIsCalibrating] = useState(false);
   const [calibrationAnswers, setCalibrationAnswers] = useState<Record<string, string>>({
@@ -52,8 +49,7 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
     { name: 'Taylor Smith', score: 2.30, fit: 32.5, status: 'PASS', color: 'var(--apple-red)' },
   ]);
 
-  const [activeCandidateName, setActiveCandidateName] = useState('Sam Patel');
-  const [selectedCandidateIndex, setSelectedCandidateIndex] = useState<number | null>(null);
+  const [activeCandidateName, setActiveCandidateName] = useState(lang === 'es' ? 'Camilo Gómez' : 'Sam Patel');
 
   // Real-time calculation of current criteria
   const currentFitResults = calculateFit(criteria);
@@ -64,7 +60,7 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
     const generated = extractDimensionsFromJD(jobTitle, jdText, calibrationAnswers);
     setCriteria(generated);
     setIsCalibrating(false);
-    onShowToast(`Generated ${generated.length} BARS dimensions from Job Description!`);
+    onShowToast(lang === 'es' ? `¡Se generaron ${generated.length} dimensiones BARS calibradas!` : `Generated ${generated.length} BARS dimensions from Job Description!`);
   };
 
   // Handler: Update score for active evaluation
@@ -84,12 +80,12 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
       weight: i === criteria.length - 1 ? 100 - equalWeight * (criteria.length - 1) : equalWeight,
     }));
     setCriteria(updated);
-    onShowToast('Weights balanced to 100%');
+    onShowToast(lang === 'es' ? 'Ponderaciones balanceadas al 100%' : 'Weights balanced to 100%');
   };
 
   // Handler: Save / Lock candidate to Arena
   const handleLockCandidate = () => {
-    const name = activeCandidateName.trim() || `Candidate #${candidates.length + 1}`;
+    const name = activeCandidateName.trim() || (lang === 'es' ? `Candidato #${candidates.length + 1}` : `Candidate #${candidates.length + 1}`);
     const newEntry: CandidateEntry = {
       name,
       score: currentFitResults.rawScore,
@@ -101,7 +97,7 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
     setCandidates(prev => [newEntry, ...prev].sort((a, b) => b.fit - a.fit));
     setActiveCandidateName('');
     sound.playChord();
-    onShowToast(`Evaluated & saved ${name} (${currentFitResults.fitPct}%)`);
+    onShowToast(lang === 'es' ? `Evaluado y guardado: ${name} (${currentFitResults.fitPct}%)` : `Evaluated & saved ${name} (${currentFitResults.fitPct}%)`);
   };
 
   // Handler: Download PDF Report
@@ -110,11 +106,11 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
     generateComparisonPDF({
       jobTitle,
       department,
-      date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+      date: new Date().toLocaleDateString(lang === 'es' ? 'es-CO' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
       criteria,
       candidates,
     });
-    onShowToast('PDF report generated and downloaded!');
+    onShowToast(lang === 'es' ? '¡Reporte PDF generado y descargado!' : 'PDF report generated and downloaded!');
   };
 
   return (
@@ -123,36 +119,33 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[var(--apple-border)] pb-6">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-500 font-mono text-[11px] font-bold border border-blue-500/20">
-              CORE TOOL
-            </span>
-            <span className="text-xs text-[var(--apple-text-tertiary)] font-medium">
-              Objective 1-3-5 Behavioral Assessment
+            <span className="px-2.5 py-0.5 rounded-full bg-purple-500/10 text-purple-700 font-mono text-[11px] font-bold border border-purple-500/20">
+              {t.badge}
             </span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--apple-text-primary)]">
-            Interview and Analysis Tool
+            {t.title}
           </h2>
           <p className="text-xs sm:text-sm text-[var(--apple-text-secondary)] mt-1 max-w-2xl">
-            Input any job description, calibrate evaluation priorities, score candidates with Behaviorally Anchored Rating Scales (BARS), and download executive comparative reports.
+            {t.subtitle}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <button
             onClick={() => setIsCalibrating(prev => !prev)}
-            className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2.5 rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] hover:bg-[var(--apple-hover)] text-[var(--apple-text-primary)] transition-all shadow-sm"
+            className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2.5 rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] hover:bg-[var(--apple-hover)] text-[var(--apple-text-primary)] transition-all shadow-sm cursor-pointer"
           >
-            <Sliders className="h-4 w-4 text-blue-500" />
-            <span>{isCalibrating ? 'Close Calibration' : 'Calibrate Job Description'}</span>
+            <Sliders className="h-4 w-4 text-purple-600" />
+            <span>{isCalibrating ? (lang === 'es' ? 'Cerrar Calibración' : 'Close Calibration') : (lang === 'es' ? 'Calibrar Vacante' : 'Calibrate Job Description')}</span>
           </button>
 
           <button
             onClick={handleDownloadPDF}
-            className="apple-button flex items-center gap-1.5 text-xs py-2.5 px-4 font-semibold shadow-sm"
+            className="apple-button flex items-center gap-1.5 text-xs py-2.5 px-4 font-semibold shadow-sm cursor-pointer"
           >
             <Download className="h-4 w-4" />
-            <span>Export Comparison PDF</span>
+            <span>{t.downloadPdfBtn}</span>
           </button>
         </div>
       </div>
@@ -164,42 +157,42 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="rounded-2xl border border-blue-500/30 bg-blue-500/5 p-6 space-y-6 overflow-hidden"
+            className="rounded-2xl border border-purple-500/30 bg-purple-500/5 p-6 space-y-6 overflow-hidden"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-blue-500" />
+                <Sparkles className="h-5 w-5 text-purple-600" />
                 <h3 className="font-bold text-sm sm:text-base text-[var(--apple-text-primary)]">
-                  Job Description Calibration Assistant
+                  {lang === 'es' ? 'Asistente de Calibración de Vacante' : 'Job Description Calibration Assistant'}
                 </h3>
               </div>
               <span className="text-xs text-[var(--apple-text-tertiary)]">
-                Step 1 of 2: Set role requirements
+                {lang === 'es' ? 'Paso 1: Requerimientos del puesto' : 'Step 1 of 2: Set role requirements'}
               </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-[var(--apple-text-primary)] mb-1">
-                  Job Title
+                  {t.jobTitleLabel}
                 </label>
                 <input
                   type="text"
                   value={jobTitle}
                   onChange={e => setJobTitle(e.target.value)}
-                  className="w-full text-xs rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] px-3.5 py-2.5 text-[var(--apple-text-primary)] focus:outline-none focus:border-blue-500"
+                  className="w-full text-xs rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] px-3.5 py-2.5 text-[var(--apple-text-primary)] focus:outline-none focus:border-purple-600"
                   placeholder="e.g. Lead SRE / Senior Product Manager"
                 />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-[var(--apple-text-primary)] mb-1">
-                  Department / Business Unit
+                  {t.deptLabel}
                 </label>
                 <input
                   type="text"
                   value={department}
                   onChange={e => setDepartment(e.target.value)}
-                  className="w-full text-xs rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] px-3.5 py-2.5 text-[var(--apple-text-primary)] focus:outline-none focus:border-blue-500"
+                  className="w-full text-xs rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] px-3.5 py-2.5 text-[var(--apple-text-primary)] focus:outline-none focus:border-purple-600"
                   placeholder="e.g. Infrastructure & Cloud Security"
                 />
               </div>
@@ -207,13 +200,13 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
 
             <div>
               <label className="block text-xs font-semibold text-[var(--apple-text-primary)] mb-1">
-                Paste Job Description / Key Responsibilities
+                {t.jdLabel}
               </label>
               <textarea
                 rows={3}
                 value={jdText}
                 onChange={e => setJdText(e.target.value)}
-                className="w-full text-xs rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] p-3 text-[var(--apple-text-primary)] focus:outline-none focus:border-blue-500 leading-relaxed font-mono"
+                className="w-full text-xs rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] p-3 text-[var(--apple-text-primary)] focus:outline-none focus:border-purple-600 leading-relaxed font-mono"
                 placeholder="Paste key responsibilities or required competencies..."
               />
             </div>
@@ -221,7 +214,7 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
             {/* Calibration Questions */}
             <div className="space-y-4 pt-2">
               <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--apple-text-primary)]">
-                Calibration Dimensions:
+                {lang === 'es' ? 'Dimensiones de Calibración:' : 'Calibration Dimensions:'}
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {CALIBRATION_QUESTIONS.map(q => (
@@ -234,9 +227,9 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
                         <button
                           key={opt.label}
                           onClick={() => setCalibrationAnswers(prev => ({ ...prev, [q.id]: opt.label }))}
-                          className={`w-full text-left p-2.5 rounded-xl border text-xs transition-all ${
+                          className={`w-full text-left p-2.5 rounded-xl border text-xs transition-all cursor-pointer ${
                             calibrationAnswers[q.id] === opt.label
-                              ? 'border-blue-500 bg-blue-500/10 text-[var(--apple-text-primary)] shadow-sm'
+                              ? 'border-purple-600 bg-purple-500/10 text-[var(--apple-text-primary)] shadow-sm'
                               : 'border-[var(--apple-border)] bg-[var(--apple-surface)] text-[var(--apple-text-secondary)] hover:border-[var(--apple-border-hover)]'
                           }`}
                         >
@@ -253,10 +246,10 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
             <div className="flex justify-end pt-2">
               <button
                 onClick={handleCalibrateDimensions}
-                className="apple-button flex items-center gap-2 text-xs py-2 px-5 font-semibold"
+                className="apple-button flex items-center gap-2 text-xs py-2 px-5 font-semibold cursor-pointer"
               >
                 <Sparkles className="h-4 w-4" />
-                <span>Apply & Rebuild BARS Dimensions</span>
+                <span>{t.calibrateBtn}</span>
               </button>
             </div>
           </motion.div>
@@ -273,25 +266,25 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
                 {jobTitle}
               </span>
               <span className="text-xs text-[var(--apple-text-secondary)]">
-                {criteria.length} Calibrated Evaluation Dimensions
+                {criteria.length} {lang === 'es' ? 'Dimensiones Calibradas de Evaluación' : 'Calibrated Evaluation Dimensions'}
               </span>
             </div>
 
             <div className="flex items-center gap-2">
               <span className={`px-2.5 py-1 rounded-full text-xs font-bold font-mono ${
                 currentFitResults.totalWeight === 100
-                  ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
+                  ? 'bg-cyan-500/10 text-cyan-700 border border-cyan-500/20'
                   : 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
               }`}>
-                Weights: {currentFitResults.totalWeight}%
+                {lang === 'es' ? 'Ponderación' : 'Weights'}: {currentFitResults.totalWeight}%
               </span>
 
               <button
                 onClick={autoBalanceWeights}
-                className="px-2.5 py-1 rounded-lg border border-[var(--apple-border)] bg-[var(--apple-surface)] text-xs font-semibold text-[var(--apple-text-primary)] hover:bg-[var(--apple-hover)] flex items-center gap-1 shadow-sm"
-                title="Normalize weights to 100%"
+                className="px-2.5 py-1 rounded-lg border border-[var(--apple-border)] bg-[var(--apple-surface)] text-xs font-semibold text-[var(--apple-text-primary)] hover:bg-[var(--apple-hover)] flex items-center gap-1 shadow-sm cursor-pointer"
+                title={lang === 'es' ? 'Normalizar ponderaciones al 100%' : 'Normalize weights to 100%'}
               >
-                <Scale className="h-3.5 w-3.5 text-blue-500" />
+                <Scale className="h-3.5 w-3.5 text-purple-600" />
                 <span>Balance 100%</span>
               </button>
             </div>
@@ -317,7 +310,7 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
                         next[idx].name = e.target.value;
                         setCriteria(next);
                       }}
-                      className="bg-transparent border-b border-transparent focus:border-blue-500 text-sm font-bold text-[var(--apple-text-primary)] w-full focus:outline-none"
+                      className="bg-transparent border-b border-transparent focus:border-purple-600 text-sm font-bold text-[var(--apple-text-primary)] w-full focus:outline-none"
                     />
                   </div>
 
@@ -333,7 +326,7 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
                         next[idx].weight = parseInt(e.target.value, 10);
                         setCriteria(next);
                       }}
-                      className="w-16 accent-blue-500 cursor-pointer"
+                      className="w-16 accent-purple-600 cursor-pointer"
                     />
                     <span className="font-mono text-xs font-bold text-[var(--apple-text-secondary)] w-9 text-right">
                       {c.weight}%
@@ -350,37 +343,37 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     onClick={() => updateCriterionScore(idx, 1)}
-                    className={`p-2.5 rounded-xl border text-left transition-all ${
+                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                       c.score === 1
-                        ? 'border-red-500 bg-red-500/10 text-red-500 font-semibold shadow-sm'
+                        ? 'border-red-500 bg-red-500/10 text-red-600 font-semibold shadow-sm'
                         : 'border-[var(--apple-border)] bg-[var(--apple-surface)] text-[var(--apple-text-secondary)] hover:border-[var(--apple-border-hover)]'
                     }`}
                   >
-                    <div className="font-bold text-[11px] uppercase">1: Substandard</div>
+                    <div className="font-bold text-[11px] uppercase">{lang === 'es' ? '1: Insuficiente' : '1: Substandard'}</div>
                     <div className="text-[10px] opacity-80 mt-1 line-clamp-2">{c.s1}</div>
                   </button>
 
                   <button
                     onClick={() => updateCriterionScore(idx, 3)}
-                    className={`p-2.5 rounded-xl border text-left transition-all ${
+                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                       c.score === 3
                         ? 'border-amber-500 bg-amber-500/10 text-amber-600 font-semibold shadow-sm'
                         : 'border-[var(--apple-border)] bg-[var(--apple-surface)] text-[var(--apple-text-secondary)] hover:border-[var(--apple-border-hover)]'
                     }`}
                   >
-                    <div className="font-bold text-[11px] uppercase">3: Standard Bar</div>
+                    <div className="font-bold text-[11px] uppercase">{lang === 'es' ? '3: Estándar' : '3: Standard Bar'}</div>
                     <div className="text-[10px] opacity-80 mt-1 line-clamp-2">{c.s3}</div>
                   </button>
 
                   <button
                     onClick={() => updateCriterionScore(idx, 5)}
-                    className={`p-2.5 rounded-xl border text-left transition-all ${
+                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                       c.score === 5
-                        ? 'border-emerald-500 bg-emerald-500/10 text-emerald-600 font-semibold shadow-sm'
+                        ? 'border-cyan-500 bg-cyan-500/10 text-cyan-700 font-semibold shadow-sm'
                         : 'border-[var(--apple-border)] bg-[var(--apple-surface)] text-[var(--apple-text-secondary)] hover:border-[var(--apple-border-hover)]'
                     }`}
                   >
-                    <div className="font-bold text-[11px] uppercase">5: Autonomous</div>
+                    <div className="font-bold text-[11px] uppercase">{lang === 'es' ? '5: Autónomo' : '5: Autonomous'}</div>
                     <div className="text-[10px] opacity-80 mt-1 line-clamp-2">{c.s5}</div>
                   </button>
                 </div>
@@ -395,16 +388,16 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
           <div className="apple-card p-6 space-y-5 text-center">
             <div className="flex items-center justify-between border-b border-[var(--apple-border)] pb-3">
               <span className="text-xs font-bold uppercase tracking-wider text-[var(--apple-text-primary)]">
-                Active Candidate Scoring
+                {lang === 'es' ? 'Puntuación de Candidato Activo' : 'Active Candidate Scoring'}
               </span>
               <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                 currentFitResults.fitPct >= 80
-                  ? 'bg-emerald-500/10 text-emerald-600'
+                  ? 'bg-cyan-500/10 text-cyan-700'
                   : currentFitResults.fitPct >= 50
                   ? 'bg-amber-500/10 text-amber-600'
                   : 'bg-red-500/10 text-red-600'
               }`}>
-                {currentFitResults.verdict}
+                {currentFitResults.fitPct >= 80 ? t.hireDecision : currentFitResults.fitPct >= 50 ? t.calibrateDecision : t.passDecision}
               </span>
             </div>
 
@@ -414,8 +407,8 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
                 type="text"
                 value={activeCandidateName}
                 onChange={e => setActiveCandidateName(e.target.value)}
-                placeholder="Enter Candidate Name..."
-                className="w-full text-xs rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] px-3.5 py-2.5 text-[var(--apple-text-primary)] focus:outline-none focus:border-blue-500 font-semibold"
+                placeholder={t.candidateNamePlaceholder}
+                className="w-full text-xs rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] px-3.5 py-2.5 text-[var(--apple-text-primary)] focus:outline-none focus:border-purple-600 font-semibold"
               />
             </div>
 
@@ -425,16 +418,16 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
                 {currentFitResults.fitPct}%
               </div>
               <div className="text-xs text-[var(--apple-text-tertiary)] font-medium mt-1">
-                Composite Score: {currentFitResults.rawScore} / 5.0
+                {lang === 'es' ? 'Puntaje Ponderado' : 'Composite Score'}: {currentFitResults.rawScore} / 5.0
               </div>
             </div>
 
             <button
               onClick={handleLockCandidate}
-              className="apple-button w-full py-2.5 flex items-center justify-center gap-2 text-xs font-semibold shadow-md"
+              className="apple-button w-full py-2.5 flex items-center justify-center gap-2 text-xs font-semibold shadow-md cursor-pointer"
             >
               <UserPlus className="h-4 w-4" />
-              <span>Save & Compare in Arena</span>
+              <span>{lang === 'es' ? 'Guardar y Comparar en Arena' : 'Save & Compare in Arena'}</span>
             </button>
           </div>
 
@@ -442,14 +435,14 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
           <div className="apple-card p-6 space-y-4">
             <div className="flex items-center justify-between border-b border-[var(--apple-border)] pb-3">
               <div className="flex items-center gap-2">
-                <Users className="h-4 w-4 text-blue-500" />
+                <Users className="h-4 w-4 text-purple-600" />
                 <span className="text-xs font-bold uppercase tracking-wider text-[var(--apple-text-primary)]">
-                  Candidate Arena ({candidates.length})
+                  {lang === 'es' ? `Arena de Candidatos (${candidates.length})` : `Candidate Arena (${candidates.length})`}
                 </span>
               </div>
               <button
                 onClick={handleDownloadPDF}
-                className="text-xs font-semibold text-blue-500 hover:underline flex items-center gap-1"
+                className="text-xs font-semibold text-purple-600 hover:underline flex items-center gap-1 cursor-pointer"
               >
                 <Download className="h-3 w-3" />
                 <span>PDF Summary</span>
@@ -465,14 +458,14 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
                     </span>
                     <div>
                       <div className="font-semibold text-[var(--apple-text-primary)]">{c.name}</div>
-                      <div className="text-[10px] text-[var(--apple-text-tertiary)]">Score: {c.score.toFixed(2)} / 5.0</div>
+                      <div className="text-[10px] text-[var(--apple-text-tertiary)]">{lang === 'es' ? 'Puntaje' : 'Score'}: {c.score.toFixed(2)} / 5.0</div>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <span className={`px-2.5 py-0.5 rounded-full font-bold font-mono text-xs ${
                       c.fit >= 80
-                        ? 'bg-emerald-500/10 text-emerald-600'
+                        ? 'bg-cyan-500/10 text-cyan-700'
                         : c.fit >= 50
                         ? 'bg-amber-500/10 text-amber-600'
                         : 'bg-red-500/10 text-red-600'
@@ -481,8 +474,8 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ onShowToast }) => {
                     </span>
                     <button
                       onClick={() => setCandidates(prev => prev.filter((_, idx) => idx !== i))}
-                      className="text-[var(--apple-text-tertiary)] hover:text-red-500 p-1 transition-colors"
-                      title="Remove candidate"
+                      className="text-[var(--apple-text-tertiary)] hover:text-red-500 p-1 transition-colors cursor-pointer"
+                      title={lang === 'es' ? 'Eliminar candidato' : 'Remove candidate'}
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>

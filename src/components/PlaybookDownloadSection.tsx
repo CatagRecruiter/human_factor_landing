@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { BookOpen, Download, Check, Sparkles, Shield, ArrowRight } from 'lucide-react';
+import { BookOpen, Download, Check } from 'lucide-react';
 import { sound } from '../lib/sound';
+import { TRANSLATIONS } from '../lib/translations';
 
 interface Props {
+  lang: 'en' | 'es';
   onShowToast: (msg: string) => void;
 }
 
-export const PlaybookDownloadSection: React.FC<Props> = ({ onShowToast }) => {
+export const PlaybookDownloadSection: React.FC<Props> = ({ lang, onShowToast }) => {
+  const t = TRANSLATIONS[lang].playbook;
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -15,7 +18,7 @@ export const PlaybookDownloadSection: React.FC<Props> = ({ onShowToast }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !email.includes('@')) {
-      onShowToast('Please enter a valid work email.');
+      onShowToast(lang === 'es' ? 'Por favor ingresa un correo corporativo válido.' : 'Please enter a valid work email.');
       return;
     }
 
@@ -26,13 +29,13 @@ export const PlaybookDownloadSection: React.FC<Props> = ({ onShowToast }) => {
       await fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source: 'skills_evidence_hiring_playbook' }),
+        body: JSON.stringify({ email, name, source: 'skills_evidence_hiring_playbook' }),
       });
     } catch {}
 
     setLoading(false);
     setSubmitted(true);
-    onShowToast('Playbook download dispatched to your email!');
+    onShowToast(t.downloadSuccess);
   };
 
   return (
@@ -40,38 +43,30 @@ export const PlaybookDownloadSection: React.FC<Props> = ({ onShowToast }) => {
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
         <div className="space-y-3 max-w-2xl">
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 font-mono text-[11px] font-bold border border-emerald-500/20">
-              FREE EXECUTIVE RESOURCE
-            </span>
-            <span className="text-xs text-[var(--apple-text-tertiary)] font-medium">
-              42-Page Implementation Guide
+            <span className="px-2.5 py-0.5 rounded-full bg-purple-500/10 text-purple-700 font-mono text-[11px] font-bold border border-purple-500/20">
+              {t.badge}
             </span>
           </div>
 
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--apple-text-primary)]">
-            How to Do Skills & Evidence-Based Hiring: The 2026 Playbook
+            {t.title}
           </h2>
 
           <p className="text-xs sm:text-sm text-[var(--apple-text-secondary)] leading-relaxed">
-            The complete blueprint for engineering leads, heads of talent, and founders. Learn how to transform subjective interview conversations into standardized, high-predictive scoring loops.
+            {t.subtitle}
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 text-xs text-[var(--apple-text-secondary)]">
-            <div className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-emerald-500 shrink-0" />
-              <span>Step-by-step BARS rubric creation templates</span>
+          <div className="space-y-1.5 pt-2">
+            <div className="text-xs font-bold text-[var(--apple-text-primary)] mb-1">
+              {t.tableOfContents}
             </div>
-            <div className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-emerald-500 shrink-0" />
-              <span>EU AI Act & US automated hiring compliance</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-emerald-500 shrink-0" />
-              <span>Interviewer calibration workshop slides</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-emerald-500 shrink-0" />
-              <span>Work sample & situational judgment scripts</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-[var(--apple-text-secondary)]">
+              {t.chapters.map((ch, idx) => (
+                <div key={idx} className="flex items-start gap-2">
+                  <Check className="h-4 w-4 text-cyan-600 shrink-0 mt-0.5" />
+                  <span>{ch}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -81,60 +76,64 @@ export const PlaybookDownloadSection: React.FC<Props> = ({ onShowToast }) => {
           {!submitted ? (
             <form onSubmit={handleSubmit} className="space-y-3.5">
               <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--apple-text-primary)]">
-                <BookOpen className="h-4 w-4 text-blue-500" />
-                <span>Download Playbook (PDF)</span>
+                <BookOpen className="h-4 w-4 text-purple-600" />
+                <span>{lang === 'es' ? 'Descargar Playbook (PDF)' : 'Download Playbook (PDF)'}</span>
               </div>
 
               <div>
                 <label className="block text-[11px] font-semibold text-[var(--apple-text-primary)] mb-1">
-                  Your Full Name
+                  {lang === 'es' ? 'Tu Nombre Completo' : 'Your Full Name'}
                 </label>
                 <input
                   type="text"
                   value={name}
                   onChange={e => setName(e.target.value)}
-                  placeholder="e.g. Elena Rostova"
-                  className="w-full text-xs rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] px-3.5 py-2.5 text-[var(--apple-text-primary)] focus:outline-none focus:border-blue-500"
+                  placeholder={t.namePlaceholder}
+                  className="w-full text-xs rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] px-3.5 py-2.5 text-[var(--apple-text-primary)] focus:outline-none focus:border-purple-600"
                 />
               </div>
 
               <div>
                 <label className="block text-[11px] font-semibold text-[var(--apple-text-primary)] mb-1">
-                  Work Email Address
+                  {lang === 'es' ? 'Correo Corporativo' : 'Work Email Address'}
                 </label>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  placeholder="elena@company.com"
-                  className="w-full text-xs rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] px-3.5 py-2.5 text-[var(--apple-text-primary)] focus:outline-none focus:border-blue-500"
+                  placeholder={t.emailPlaceholder}
+                  className="w-full text-xs rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] px-3.5 py-2.5 text-[var(--apple-text-primary)] focus:outline-none focus:border-purple-600"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="apple-button w-full py-2.5 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm"
+                className="apple-button w-full py-2.5 text-xs font-semibold flex items-center justify-center gap-2 shadow-sm cursor-pointer"
               >
                 <Download className="h-4 w-4" />
-                <span>{loading ? 'Preparing...' : 'Get Instant Access'}</span>
+                <span>{loading ? (lang === 'es' ? 'Procesando...' : 'Preparing...') : t.downloadBtn}</span>
               </button>
 
               <p className="text-[10px] text-center text-[var(--apple-text-tertiary)]">
-                Zero spam. You'll also receive our bi-weekly psychometrics dispatch.
+                {lang === 'es' ? 'Cero spam. Recibirás también nuestro boletín de psicometría.' : 'Zero spam. You will also receive our bi-weekly psychometrics dispatch.'}
               </p>
             </form>
           ) : (
             <div className="py-6 text-center space-y-3">
-              <div className="w-12 h-12 mx-auto rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
+              <div className="w-12 h-12 mx-auto rounded-full bg-cyan-500/10 text-cyan-700 flex items-center justify-center">
                 <Check className="h-6 w-6" />
               </div>
               <h3 className="font-bold text-sm text-[var(--apple-text-primary)]">
-                Playbook on its way!
+                {lang === 'es' ? '¡Playbook en camino!' : 'Playbook on its way!'}
               </h3>
               <p className="text-xs text-[var(--apple-text-secondary)]">
-                Check your inbox at <strong>{email}</strong> for the PDF and companion templates.
+                {lang === 'es' ? (
+                  <>Revisa tu bandeja de entrada en <strong>{email}</strong> para recibir el documento.</>
+                ) : (
+                  <>Check your inbox at <strong>{email}</strong> for the PDF and companion templates.</>
+                )}
               </p>
             </div>
           )}

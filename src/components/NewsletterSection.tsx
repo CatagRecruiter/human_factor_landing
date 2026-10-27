@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Newspaper, Clock, ArrowRight, X, Mail, Check, Sparkles } from 'lucide-react';
-import { ARTICLES_DATA, Article } from '../lib/dataContent';
+import { Newspaper, Clock, ArrowRight, X, Mail, Check } from 'lucide-react';
+import { TRANSLATIONS, ArticleItem } from '../lib/translations';
 import { sound } from '../lib/sound';
 
-export const NewsletterSection: React.FC = () => {
-  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+interface Props {
+  lang: 'en' | 'es';
+}
+
+export const NewsletterSection: React.FC<Props> = ({ lang }) => {
+  const t = TRANSLATIONS[lang].newsletter;
+  const [selectedArticle, setSelectedArticle] = useState<ArticleItem | null>(null);
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -22,18 +27,15 @@ export const NewsletterSection: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[var(--apple-border)] pb-6">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-500 font-mono text-[11px] font-bold border border-blue-500/20">
-              MARKET INTEL
-            </span>
-            <span className="text-xs text-[var(--apple-text-tertiary)] font-medium">
-              Bi-weekly dispatch on Talent Science & European Markets
+            <span className="px-2.5 py-0.5 rounded-full bg-purple-500/10 text-purple-700 font-mono text-[11px] font-bold border border-purple-500/20">
+              {t.badge}
             </span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--apple-text-primary)]">
-            Market Signals & Psychometrics Dispatch
+            {t.title}
           </h2>
           <p className="text-xs sm:text-sm text-[var(--apple-text-secondary)] mt-1 max-w-xl">
-            Real data from European tech hubs, behavioral scoring case studies, and modern hiring infrastructure teardowns. Published every 48 hours.
+            {t.subtitle}
           </p>
         </div>
 
@@ -44,120 +46,109 @@ export const NewsletterSection: React.FC = () => {
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              placeholder="name@company.com"
-              className="text-xs rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] px-3.5 py-2.5 text-[var(--apple-text-primary)] focus:outline-none focus:border-blue-500 w-full sm:w-60"
+              placeholder={t.emailPlaceholder}
+              className="text-xs rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] px-3.5 py-2.5 text-[var(--apple-text-primary)] focus:outline-none focus:border-purple-600 w-full sm:w-60"
             />
             <button
               type="submit"
-              className="apple-button whitespace-nowrap text-xs py-2.5 px-4 font-semibold shadow-sm"
+              className="apple-button whitespace-nowrap text-xs py-2.5 px-4 font-semibold shadow-sm cursor-pointer"
             >
-              Subscribe
+              {t.subscribeBtn}
             </button>
           </form>
         ) : (
-          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/10 text-emerald-600 text-xs font-semibold border border-emerald-500/20">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/10 text-cyan-700 text-xs font-semibold border border-cyan-500/20">
             <Check className="h-4 w-4" />
-            <span>Subscribed to bi-weekly dispatch</span>
+            <span>{t.subscribedSuccess}</span>
           </div>
         )}
       </div>
 
-      {/* Articles Grid (Editorial Style similar to Juan's layout) */}
+      {/* Articles Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {ARTICLES_DATA.map(article => (
+        {t.articles.map(article => (
           <div
             key={article.id}
             onClick={() => {
-              sound.playTone(520, 'sine', 0.05);
+              sound.playClick();
               setSelectedArticle(article);
             }}
-            className="group cursor-pointer rounded-2xl border border-[var(--apple-border)] bg-[var(--apple-surface)] p-6 transition-all hover:border-blue-500/40 hover:shadow-md flex flex-col justify-between"
+            className="apple-card p-6 cursor-pointer hover:border-purple-500/40 transition-all space-y-4 group flex flex-col justify-between"
           >
             <div className="space-y-3">
-              <div className="flex items-center justify-between text-[11px] text-[var(--apple-text-tertiary)] font-mono">
-                <span className="font-semibold text-blue-500 uppercase tracking-wider">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-mono text-[11px] font-bold text-purple-700 bg-purple-500/10 px-2.5 py-0.5 rounded-full border border-purple-500/20">
                   {article.category}
                 </span>
-                <span className="flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
+                <span className="text-[var(--apple-text-tertiary)] flex items-center gap-1 text-[11px]">
+                  <Clock className="w-3 h-3" />
                   {article.readTime}
                 </span>
               </div>
 
-              <h3 className="text-base sm:text-lg font-bold text-[var(--apple-text-primary)] group-hover:text-blue-500 transition-colors leading-snug">
+              <h3 className="text-base sm:text-lg font-bold text-[var(--apple-text-primary)] group-hover:text-purple-700 transition-colors leading-snug">
                 {article.title}
               </h3>
 
-              <p className="text-xs text-[var(--apple-text-secondary)] leading-relaxed line-clamp-3">
+              <p className="text-xs text-[var(--apple-text-secondary)] leading-relaxed">
                 {article.excerpt}
               </p>
             </div>
 
-            <div className="flex items-center justify-between pt-4 mt-4 border-t border-[var(--apple-border)] text-xs text-[var(--apple-text-tertiary)]">
-              <span>{article.date}</span>
-              <span className="text-blue-500 font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                Read dispatch <ArrowRight className="h-3.5 w-3.5" />
+            <div className="pt-3 border-t border-[var(--apple-border)] flex items-center justify-between text-xs text-purple-700 font-semibold">
+              <span className="text-[11px] text-[var(--apple-text-tertiary)]">{article.date}</span>
+              <span className="flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                {lang === 'es' ? 'Leer artículo completo' : 'Read full teardown'} <ArrowRight className="w-3.5 h-3.5" />
               </span>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Article Reader Modal */}
+      {/* Full Article Modal Reading View */}
       <AnimatePresence>
         {selectedArticle && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedArticle(null)}
-              className="fixed inset-0 bg-black/50 backdrop-blur-md"
-            />
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96, y: 15 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: 15 }}
-              className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl border border-[var(--apple-border)] bg-[var(--apple-surface)]/95 p-6 sm:p-8 shadow-2xl backdrop-blur-xl"
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="apple-card max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 sm:p-8 space-y-6 bg-[var(--apple-surface)] shadow-2xl relative"
             >
               <button
                 onClick={() => setSelectedArticle(null)}
-                className="absolute right-4 top-4 p-2 rounded-full text-[var(--apple-text-tertiary)] hover:bg-[var(--apple-hover)] hover:text-[var(--apple-text-primary)]"
+                className="absolute top-5 right-5 p-1.5 rounded-full bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] hover:text-[var(--apple-text-primary)] cursor-pointer"
               >
-                <X className="h-5 w-5" />
+                <X className="w-4 h-4" />
               </button>
 
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 text-[11px] font-mono text-blue-500 uppercase font-semibold">
-                  <span>{selectedArticle.category}</span>
-                  <span>•</span>
+              <div className="space-y-2 border-b border-[var(--apple-border)] pb-4">
+                <span className="font-mono text-xs font-bold text-purple-700 bg-purple-500/10 px-2.5 py-0.5 rounded-full border border-purple-500/20">
+                  {selectedArticle.category}
+                </span>
+                <h2 className="text-xl sm:text-2xl font-bold text-[var(--apple-text-primary)]">
+                  {selectedArticle.title}
+                </h2>
+                <div className="text-xs text-[var(--apple-text-tertiary)] flex items-center gap-3">
                   <span>{selectedArticle.date}</span>
                   <span>•</span>
                   <span>{selectedArticle.readTime}</span>
                 </div>
+              </div>
 
-                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--apple-text-primary)]">
-                  {selectedArticle.title}
-                </h2>
+              <div className="space-y-4 text-xs sm:text-sm text-[var(--apple-text-secondary)] leading-relaxed">
+                {selectedArticle.content.map((paragraph, idx) => (
+                  <p key={idx}>{paragraph}</p>
+                ))}
+              </div>
 
-                <div className="space-y-3.5 text-xs sm:text-sm text-[var(--apple-text-secondary)] leading-relaxed border-t border-[var(--apple-border)] pt-4">
-                  {selectedArticle.content.map((paragraph, idx) => (
-                    <p key={idx}>{paragraph}</p>
-                  ))}
-                </div>
-
-                <div className="pt-6 border-t border-[var(--apple-border)] flex items-center justify-between">
-                  <span className="text-xs text-[var(--apple-text-tertiary)]">
-                    Written by Catalina Gil Sierra
-                  </span>
-                  <button
-                    onClick={() => setSelectedArticle(null)}
-                    className="apple-button text-xs py-2 px-4 font-semibold"
-                  >
-                    Done Reading
-                  </button>
-                </div>
+              <div className="pt-4 border-t border-[var(--apple-border)] flex justify-end">
+                <button
+                  onClick={() => setSelectedArticle(null)}
+                  className="apple-button text-xs py-2 px-4 cursor-pointer"
+                >
+                  {lang === 'es' ? 'Cerrar Artículo' : 'Close Article'}
+                </button>
               </div>
             </motion.div>
           </div>

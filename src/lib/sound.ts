@@ -31,6 +31,10 @@ class SoundEngine {
     } catch {}
   }
 
+  playClick() {
+    this.playTone(600, 'sine', 0.04);
+  }
+
   playChord() {
     if (!this.enabled) return;
     this.playTone(523.25, 'triangle', 0.12);

@@ -1,27 +1,17 @@
 import { useState, useEffect } from 'react';
-import confetti from 'canvas-confetti';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
-  ShieldCheck, 
-  Flame, 
-  Trophy, 
   Volume2, 
   VolumeX, 
-  Sun, 
-  Moon, 
-  Copy, 
   Check, 
   ArrowUpRight,
   ChevronRight,
   Sparkles,
-  BookOpen,
-  Newspaper,
   User,
   Sliders,
   DollarSign
 } from 'lucide-react';
 import { sound } from './lib/sound';
-import { NumberTicker } from './components/NumberTicker';
 import { WelcomeModal } from './components/WelcomeModal';
 import { GuidedTourModal } from './components/GuidedTourModal';
 import { InterviewAnalysisTool } from './components/InterviewAnalysisTool';
@@ -30,9 +20,10 @@ import { TalentScienceOverview } from './components/TalentScienceOverview';
 import { AboutMeSection } from './components/AboutMeSection';
 import { NewsletterSection } from './components/NewsletterSection';
 import { PlaybookDownloadSection } from './components/PlaybookDownloadSection';
+import { TRANSLATIONS } from './lib/translations';
 
 export function App() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [lang, setLang] = useState<'en' | 'es'>('en');
   const [sfxOn, setSfxOn] = useState<boolean>(true);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState<boolean>(() => {
@@ -43,9 +34,11 @@ export function App() {
   // Spotlight mouse coordinates
   const [mousePos, setMousePos] = useState({ x: 50, y: 30 });
 
+  const t = TRANSLATIONS[lang];
+
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
+    document.documentElement.setAttribute('data-theme', 'light');
+  }, []);
 
   useEffect(() => {
     sound.enabled = sfxOn;
@@ -77,7 +70,7 @@ export function App() {
 
   return (
     <div 
-      className="relative min-h-screen selection:bg-[var(--apple-blue)] selection:text-white pb-16"
+      className="relative min-h-screen selection:bg-purple-500/20 selection:text-purple-600 pb-16"
       style={{
         '--mouse-x': `${mousePos.x}%`,
         '--mouse-y': `${mousePos.y}%`
@@ -86,13 +79,13 @@ export function App() {
       {/* Living Canvas Background */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div 
-          className="absolute inset-0 opacity-40 dark:opacity-20 transition-opacity duration-1000"
+          className="absolute inset-0 opacity-40 transition-opacity duration-1000"
           style={{
-            background: `radial-gradient(circle 800px at var(--mouse-x) var(--mouse-y), rgba(0, 113, 227, 0.15), transparent 80%)`
+            background: `radial-gradient(circle 800px at var(--mouse-x) var(--mouse-y), rgba(109, 40, 217, 0.12), transparent 80%)`
           }}
         />
         <div 
-          className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
+          className="absolute inset-0 opacity-[0.03]"
           style={{
             backgroundImage: `radial-gradient(var(--apple-text-primary) 1px, transparent 1px)`,
             backgroundSize: '24px 24px'
@@ -109,7 +102,7 @@ export function App() {
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
             className="fixed top-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-5 py-2.5 rounded-full bg-[var(--apple-surface)] border border-[var(--apple-border)] text-[var(--apple-text-primary)] font-semibold text-xs shadow-2xl backdrop-blur-xl"
           >
-            <Check className="w-4 h-4 text-[var(--apple-green)]" />
+            <Check className="w-4 h-4 text-cyan-600" />
             <span>{toastMsg}</span>
           </motion.div>
         )}
@@ -124,43 +117,43 @@ export function App() {
             <motion.div 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="w-8 h-8 rounded-lg bg-[var(--apple-text-primary)] text-[var(--apple-bg)] flex items-center justify-center font-bold text-sm tracking-tight cursor-default"
+              className="w-8 h-8 rounded-lg bg-gradient-to-tr from-purple-700 to-indigo-600 text-white flex items-center justify-center font-bold text-sm tracking-tight cursor-default shadow-xs"
             >
               TS
             </motion.div>
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-bold text-[var(--apple-text-primary)] text-sm tracking-tight">Talent Science</span>
-                <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] border border-[var(--apple-border)]">
-                  PREDICTIVE TA
+                <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-purple-500/10 text-purple-700 border border-purple-500/20 font-mono">
+                  {lang === 'es' ? 'SELECCIÓN PREDICTIVA' : 'PREDICTIVE TA'}
                 </span>
               </div>
               <p className="text-[11px] text-[var(--apple-text-secondary)] hidden sm:block">
-                By Catalina Gil Sierra • Psychometrics (USBMED)
+                Catalina Gil Sierra • {lang === 'es' ? 'Psicometría' : 'Psychometrics'} (USBMED)
               </p>
             </div>
           </div>
 
           {/* Quick Nav Anchors */}
           <nav className="hidden xl:flex items-center gap-1 bg-[var(--apple-surface-secondary)] p-1 rounded-full border border-[var(--apple-border)] text-xs font-semibold text-[var(--apple-text-secondary)]">
-            <button onClick={() => scrollTo('talent-science')} className="px-3 py-1 rounded-full hover:text-[var(--apple-text-primary)] hover:bg-[var(--apple-surface)] transition-all">
-              Talent Science
+            <button onClick={() => scrollTo('talent-science')} className="px-3 py-1 rounded-full hover:text-[var(--apple-text-primary)] hover:bg-[var(--apple-surface)] transition-all cursor-pointer">
+              {t.nav.talentScience}
             </button>
-            <button onClick={() => scrollTo('interview-tool')} className="px-3 py-1 rounded-full hover:text-[var(--apple-text-primary)] hover:bg-[var(--apple-surface)] transition-all">
-              Interview Tool
+            <button onClick={() => scrollTo('interview-tool')} className="px-3 py-1 rounded-full hover:text-[var(--apple-text-primary)] hover:bg-[var(--apple-surface)] transition-all cursor-pointer">
+              {t.nav.interviewTool}
             </button>
-            <button onClick={() => scrollTo('interview-cost')} className="px-3 py-1 rounded-full hover:text-[var(--apple-text-primary)] hover:bg-[var(--apple-surface)] transition-all">
-              Inefficiency Audit
+            <button onClick={() => scrollTo('interview-cost')} className="px-3 py-1 rounded-full hover:text-[var(--apple-text-primary)] hover:bg-[var(--apple-surface)] transition-all cursor-pointer">
+              {t.nav.inefficiencyAudit}
             </button>
-            <button onClick={() => scrollTo('about-me')} className="px-3 py-1 rounded-full hover:text-[var(--apple-text-primary)] hover:bg-[var(--apple-surface)] transition-all">
-              About Catalina
+            <button onClick={() => scrollTo('about-me')} className="px-3 py-1 rounded-full hover:text-[var(--apple-text-primary)] hover:bg-[var(--apple-surface)] transition-all cursor-pointer">
+              {t.nav.aboutCatalina}
             </button>
-            <button onClick={() => scrollTo('newsletter')} className="px-3 py-1 rounded-full hover:text-[var(--apple-text-primary)] hover:bg-[var(--apple-surface)] transition-all">
-              Market Signals
+            <button onClick={() => scrollTo('newsletter')} className="px-3 py-1 rounded-full hover:text-[var(--apple-text-primary)] hover:bg-[var(--apple-surface)] transition-all cursor-pointer">
+              {t.nav.marketSignals}
             </button>
-            <button onClick={() => scrollTo('playbook')} className="px-3 py-1 rounded-full text-blue-500 hover:bg-[var(--apple-surface)] transition-all flex items-center gap-1">
-              <span>Playbook</span>
-              <span className="text-[9px] px-1 py-0.2 rounded bg-blue-500/10 border border-blue-500/20 font-bold">PDF</span>
+            <button onClick={() => scrollTo('playbook')} className="px-3 py-1 rounded-full text-purple-700 hover:bg-[var(--apple-surface)] transition-all flex items-center gap-1 cursor-pointer">
+              <span>{t.nav.playbook}</span>
+              <span className="text-[9px] px-1 py-0.2 rounded bg-purple-500/10 border border-purple-500/20 font-bold">PDF</span>
             </button>
           </nav>
 
@@ -172,11 +165,11 @@ export function App() {
                 sound.playTone(500, 'sine', 0.08);
                 setIsTourOpen(true);
               }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border border-blue-500/30 bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 transition-all shadow-sm"
-              title="Interactive Platform Tour (EN)"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border border-purple-500/30 bg-purple-500/10 text-purple-700 hover:bg-purple-500/20 transition-all shadow-sm cursor-pointer"
+              title={lang === 'es' ? 'Tour Guiado' : 'Interactive Tour'}
             >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Tour (EN)</span>
+              <Sparkles className="w-3.5 h-3.5 text-cyan-600" />
+              <span>{t.nav.tourBtn}</span>
             </motion.button>
 
             <motion.button
@@ -185,30 +178,58 @@ export function App() {
                 sound.playTone(480, 'sine', 0.08);
                 setIsWelcomeModalOpen(true);
               }}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border border-[var(--apple-border)] bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] hover:text-[var(--apple-text-primary)] hover:border-[var(--apple-border-hover)] transition-all"
-              title="View Catalina Gil's Profile"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border border-[var(--apple-border)] bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] hover:text-[var(--apple-text-primary)] hover:border-[var(--apple-border-hover)] transition-all cursor-pointer"
+              title="Catalina Gil's Profile"
             >
               <User className="w-3.5 h-3.5" />
-              <span>Profile</span>
+              <span>{t.nav.profileBtn}</span>
             </motion.button>
 
+            {/* Tactile SFX Toggle */}
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={() => setSfxOn(!sfxOn)}
-              className="p-2 rounded-full hover:bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] hover:text-[var(--apple-text-primary)]"
-              title="Toggle Tactile Sound FX"
+              className="p-2 rounded-full hover:bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] hover:text-[var(--apple-text-primary)] cursor-pointer"
+              title={t.nav.sfxTitle}
             >
-              {sfxOn ? <Volume2 className="w-4 h-4 text-blue-500" /> : <VolumeX className="w-4 h-4" />}
+              {sfxOn ? <Volume2 className="w-4 h-4 text-purple-600" /> : <VolumeX className="w-4 h-4" />}
             </motion.button>
 
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 rounded-full hover:bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] hover:text-[var(--apple-text-primary)]"
-              title="Toggle Theme"
-            >
-              {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-500" /> : <Moon className="w-4 h-4 text-blue-500" />}
-            </motion.button>
+            {/* English / Spanish Toggle Switch */}
+            <div className="flex items-center rounded-xl bg-[var(--apple-surface-secondary)] p-0.5 border border-[var(--apple-border)]">
+              <button
+                onClick={() => {
+                  if (lang !== 'en') {
+                    sound.playClick();
+                    setLang('en');
+                  }
+                }}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  lang === 'en'
+                    ? 'bg-purple-700 text-white shadow-xs'
+                    : 'text-[var(--apple-text-secondary)] hover:text-[var(--apple-text-primary)]'
+                }`}
+                title="Switch to English"
+              >
+                EN
+              </button>
+              <button
+                onClick={() => {
+                  if (lang !== 'es') {
+                    sound.playClick();
+                    setLang('es');
+                  }
+                }}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  lang === 'es'
+                    ? 'bg-purple-700 text-white shadow-xs'
+                    : 'text-[var(--apple-text-secondary)] hover:text-[var(--apple-text-primary)]'
+                }`}
+                title="Cambiar a Español"
+              >
+                ES
+              </button>
+            </div>
 
             <motion.a
               whileHover={{ scale: 1.03 }}
@@ -218,7 +239,7 @@ export function App() {
               rel="noopener noreferrer"
               className="apple-button inline-flex items-center gap-1.5 text-xs py-2 px-3.5"
             >
-              <span>Book 15m</span>
+              <span>{t.nav.bookBtn}</span>
               <ArrowUpRight className="w-3.5 h-3.5" />
             </motion.a>
           </div>
@@ -236,16 +257,16 @@ export function App() {
         {/* Hero Section */}
         <section id="hero" className="text-center max-w-4xl mx-auto space-y-4 pt-4 sm:pt-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] text-xs font-semibold text-[var(--apple-text-secondary)]">
-            <span className="w-2 h-2 rounded-full bg-blue-500" />
-            <span>Predictive Selection • BARS Rubrics • Operating Margin Protection</span>
+            <span className="w-2 h-2 rounded-full bg-cyan-500" />
+            <span>{t.hero.badge}</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[var(--apple-text-primary)] leading-[1.08]">
-            Talent Acquisition Predictive Science
+            {t.hero.title}
           </h1>
 
           <p className="text-sm sm:text-base text-[var(--apple-text-secondary)] max-w-2xl mx-auto leading-relaxed">
-            Eliminating subjective guesswork from technical hiring panels. Calibrated Behaviorally Anchored Rating Scales (BARS), n8n workflow automations, and audit-grade decision frameworks.
+            {t.hero.subtitle}
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
@@ -254,43 +275,43 @@ export function App() {
               className="apple-button flex items-center gap-2 text-xs py-2.5 px-5 font-semibold cursor-pointer"
             >
               <Sliders className="h-4 w-4" />
-              <span>Launch BARS Analysis &amp; Report</span>
+              <span>{t.hero.primaryBtn}</span>
             </button>
             <button
               onClick={() => scrollTo('interview-cost')}
               className="flex items-center gap-2 text-xs py-2.5 px-5 rounded-full border border-[var(--apple-border)] bg-[var(--apple-surface)] hover:bg-[var(--apple-hover)] text-[var(--apple-text-primary)] font-semibold transition-all shadow-sm cursor-pointer"
             >
               <DollarSign className="h-4 w-4 text-amber-500" />
-              <span>Simulate P&amp;L Bleed Cost</span>
+              <span>{t.hero.secondaryBtn}</span>
             </button>
           </div>
         </section>
 
         {/* 1. TALENT SCIENCE OVERVIEW & CASE STUDIES */}
-        <TalentScienceOverview />
+        <TalentScienceOverview lang={lang} />
 
         {/* 2. THE CORE TOOL: INTERVIEW AND ANALYSIS TOOL */}
-        <InterviewAnalysisTool onShowToast={showToast} />
+        <InterviewAnalysisTool lang={lang} onShowToast={showToast} />
 
         {/* 3. COST OF INEFFICIENT INTERVIEWING CALCULATOR */}
-        <InefficientInterviewingCalculator />
+        <InefficientInterviewingCalculator lang={lang} />
 
         {/* 4. ABOUT ME / HOJA DE VIDA SECTION */}
-        <AboutMeSection />
+        <AboutMeSection lang={lang} />
 
         {/* 5. PLAYBOOK DOWNLOAD GATED RESOURCE */}
-        <PlaybookDownloadSection onShowToast={showToast} />
+        <PlaybookDownloadSection lang={lang} onShowToast={showToast} />
 
         {/* 6. NEWSLETTER / MARKET SIGNALS FEED */}
-        <NewsletterSection />
+        <NewsletterSection lang={lang} />
 
         {/* Apple-Style Minimalist Footer */}
         <footer className="pt-8 border-t border-[var(--apple-border)] text-xs text-[var(--apple-text-secondary)] space-y-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-              <strong className="text-[var(--apple-text-primary)] font-semibold">Catalina Gil Sierra</strong> • Lead TA & Psychometric Systems Architect (USBMED)
+              <strong className="text-[var(--apple-text-primary)] font-semibold">{t.footer.byLine}</strong>
               <div className="text-[11px] text-[var(--apple-text-tertiary)] mt-0.5">
-                Predictive Talent Systems, n8n Orchestrations & Objective BARS Frameworks
+                {t.footer.subLine}
               </div>
             </div>
             
@@ -299,32 +320,32 @@ export function App() {
                 href="https://www.linkedin.com/in/catalinagilpeopleops"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-blue-500 flex items-center gap-0.5"
+                className="hover:text-purple-700 flex items-center gap-0.5"
               >
-                <span>LinkedIn</span>
+                <span>{t.footer.linkedIn}</span>
                 <ChevronRight className="w-3 h-3" />
               </a>
               <a
                 href="https://docs.google.com/document/d/1LFZOGBt049Cw7poC0fcgHkFuszylslldqMNAUYQO-eg/edit"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-blue-500 flex items-center gap-0.5"
+                className="hover:text-purple-700 flex items-center gap-0.5"
               >
-                <span>Lead CV</span>
+                <span>{t.footer.leadCv}</span>
                 <ChevronRight className="w-3 h-3" />
               </a>
               <a
                 href="https://docs.google.com/document/d/1NyrhrXB_HySO9egpYThS5MJuVfiH3X2BehcRAJiqOVg/edit"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-blue-500 flex items-center gap-0.5"
+                className="hover:text-purple-700 flex items-center gap-0.5"
               >
-                <span>Full-Cycle CV</span>
+                <span>{t.footer.fullCycleCv}</span>
                 <ChevronRight className="w-3 h-3" />
               </a>
               <a
                 href="mailto:info@catagil.com"
-                className="text-blue-500 font-semibold hover:underline"
+                className="text-purple-700 font-semibold hover:underline"
               >
                 info@catagil.com
               </a>
@@ -335,6 +356,7 @@ export function App() {
         {/* Welcome Modal */}
         <WelcomeModal
           isOpen={isWelcomeModalOpen}
+          lang={lang}
           onClose={() => {
             setIsWelcomeModalOpen(false);
             localStorage.setItem('talentlens_welcomed', 'true');
@@ -352,6 +374,7 @@ export function App() {
         {/* Guided Tour Modal */}
         <GuidedTourModal
           isOpen={isTourOpen}
+          lang={lang}
           onClose={() => setIsTourOpen(false)}
           onSwitchTab={(tab) => {
             if (tab === 'converter') scrollTo('interview-tool');

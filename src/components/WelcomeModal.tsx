@@ -17,6 +17,7 @@ import { sound } from '../lib/sound';
 interface WelcomeModalProps {
   isOpen: boolean;
   onClose: () => void;
+  lang?: 'en' | 'es';
   onSelectAction?: (tab: 'all' | 'converter' | 'calculator') => void;
   onStartTour?: () => void;
 }
@@ -24,6 +25,7 @@ interface WelcomeModalProps {
 export const WelcomeModal: React.FC<WelcomeModalProps> = ({
   isOpen,
   onClose,
+  lang = 'en',
   onSelectAction,
   onStartTour,
 }) => {
@@ -74,7 +76,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
             <button
               onClick={handleClose}
               aria-label="Close modal"
-              className="absolute right-4 top-4 rounded-full p-2 text-[var(--apple-text-tertiary)] transition-colors hover:bg-[var(--apple-hover)] hover:text-[var(--apple-text-primary)] z-10"
+              className="absolute right-4 top-4 rounded-full p-2 text-[var(--apple-text-tertiary)] transition-colors hover:bg-[var(--apple-hover)] hover:text-[var(--apple-text-primary)] z-10 cursor-pointer"
             >
               <X className="h-5 w-5" />
             </button>
@@ -82,24 +84,26 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
             {/* Profile Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-5">
               <div className="relative">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-sky-400 text-white font-bold text-xl shadow-lg shadow-blue-500/20">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-purple-700 via-indigo-600 to-cyan-500 text-white font-bold text-xl shadow-lg shadow-purple-600/20">
                   CG
                 </div>
-                <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 border-2 border-[var(--apple-surface)] text-white">
+                <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-cyan-500 border-2 border-[var(--apple-surface)] text-white">
                   <CheckCircle2 className="h-3 w-3" />
                 </div>
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
-                    Verify in 2 minutes
+                  <span className="text-[11px] font-mono font-medium uppercase tracking-wider text-purple-700 bg-purple-500/10 px-2 py-0.5 rounded-full border border-purple-500/20">
+                    {lang === 'es' ? 'Verificar en 2 minutos' : 'Verify in 2 minutes'}
                   </span>
                 </div>
                 <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--apple-text-primary)] mt-1">
-                  Hi, I'm Catalina Gil
+                  {lang === 'es' ? 'Hola, soy Catalina Gil' : "Hi, I'm Catalina Gil"}
                 </h2>
                 <p className="text-xs sm:text-sm font-medium text-[var(--apple-text-secondary)]">
-                  Senior Talent Acquisition Specialist & Psychometric Systems Architect
+                  {lang === 'es'
+                    ? 'Especialista Senior en Adquisición de Talento y Arquitectura Psicométrica'
+                    : 'Senior Talent Acquisition Specialist & Psychometric Systems Architect'}
                 </p>
               </div>
             </div>
@@ -107,31 +111,39 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
             {/* First-person statement */}
             <div className="space-y-3 text-xs sm:text-sm text-[var(--apple-text-secondary)] leading-relaxed border-y border-[var(--apple-border)] py-4 my-4">
               <p>
-                I eliminate <span className="text-[var(--apple-text-primary)] font-semibold">"vibe check" bias</span> from high-stakes technical hiring. I transform talent acquisition by combining <strong className="text-[var(--apple-text-primary)]">evidence-based psychometrics</strong>, recruitment automation with <strong className="text-[var(--apple-text-primary)]">n8n / AI</strong>, and structured People Analytics.
+                {lang === 'es' ? (
+                  <>Elimino los <span className="text-[var(--apple-text-primary)] font-semibold">sesgos de afinidad superficial ("vibe checks")</span> de las contrataciones técnicas críticas. Transformo la atracción de talento combinando <strong className="text-[var(--apple-text-primary)]">psicometría basada en evidencia</strong>, automatización con <strong className="text-[var(--apple-text-primary)]">n8n / IA</strong> y People Analytics estructurado.</>
+                ) : (
+                  <>I eliminate <span className="text-[var(--apple-text-primary)] font-semibold">"vibe check" bias</span> from high-stakes technical hiring. I transform talent acquisition by combining <strong className="text-[var(--apple-text-primary)]">evidence-based psychometrics</strong>, recruitment automation with <strong className="text-[var(--apple-text-primary)]">n8n / AI</strong>, and structured People Analytics.</>
+                )}
               </p>
               <p>
-                I designed this interactive cockpit to demonstrate how <strong className="text-[var(--apple-text-primary)]">BARS rubrics</strong> and financial P&amp;L bleed models safeguard operational margins and elevate candidate quality across technical panels.
+                {lang === 'es' ? (
+                  <>Diseñé esta plataforma interactiva para demostrar cómo las <strong className="text-[var(--apple-text-primary)]">rúbricas BARS</strong> y los modelos de costos operativos protegen los márgenes de negocio y elevan la calidad técnica de las contrataciones.</>
+                ) : (
+                  <>I designed this interactive cockpit to demonstrate how <strong className="text-[var(--apple-text-primary)]">BARS rubrics</strong> and financial P&amp;L bleed models safeguard operational margins and elevate candidate quality across technical panels.</>
+                )}
               </p>
             </div>
 
             {/* Verified Metrics */}
             <div className="grid grid-cols-3 gap-2.5 sm:gap-3 mb-5">
               <div className="rounded-xl border border-[var(--apple-border)] bg-[var(--apple-hover)]/30 p-3 text-center">
-                <div className="text-base sm:text-lg font-bold text-blue-500 font-mono">7% vs 2%</div>
+                <div className="text-base sm:text-lg font-bold text-purple-700 font-mono">7% vs 2%</div>
                 <div className="text-[10px] sm:text-xs text-[var(--apple-text-tertiary)] mt-0.5 leading-tight">
-                  Outbound Reply Rate (3.5x benchmark)
+                  {lang === 'es' ? 'Respuesta Outbound (3.5x mercado)' : 'Outbound Reply Rate (3.5x benchmark)'}
                 </div>
               </div>
               <div className="rounded-xl border border-[var(--apple-border)] bg-[var(--apple-hover)]/30 p-3 text-center">
-                <div className="text-base sm:text-lg font-bold text-emerald-500 font-mono">3.2 ➔ 4.6</div>
+                <div className="text-base sm:text-lg font-bold text-cyan-700 font-mono">3.2 ➔ 4.6</div>
                 <div className="text-[10px] sm:text-xs text-[var(--apple-text-tertiary)] mt-0.5 leading-tight">
-                  Candidate NPS via Proof-of-Work
+                  {lang === 'es' ? 'NPS del Candidato vía Proof-of-Work' : 'Candidate NPS via Proof-of-Work'}
                 </div>
               </div>
               <div className="rounded-xl border border-[var(--apple-border)] bg-[var(--apple-hover)]/30 p-3 text-center">
-                <div className="text-base sm:text-lg font-bold text-indigo-500 font-mono">4x Scale</div>
+                <div className="text-base sm:text-lg font-bold text-indigo-700 font-mono">4x Scale</div>
                 <div className="text-[10px] sm:text-xs text-[var(--apple-text-tertiary)] mt-0.5 leading-tight">
-                  Throughput via n8n & AI Prompting
+                  {lang === 'es' ? 'Rendimiento con n8n y Prompts IA' : 'Throughput via n8n & AI Prompting'}
                 </div>
               </div>
             </div>
@@ -139,25 +151,29 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
             {/* Production Experience */}
             <div className="space-y-2 mb-6">
               <div className="text-[11px] font-semibold uppercase tracking-wider text-[var(--apple-text-tertiary)] flex items-center gap-1.5">
-                <Sparkles className="h-3.5 w-3.5 text-blue-500" /> Production Track Record & Methodology
+                <Sparkles className="h-3.5 w-3.5 text-purple-600" /> {lang === 'es' ? 'Trayectoria en Producción y Metodología' : 'Production Track Record & Methodology'}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div className="rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] p-3 text-xs">
                   <div className="flex items-center gap-1.5 font-semibold text-[var(--apple-text-primary)]">
-                    <Scale className="h-3.5 w-3.5 text-blue-500" /> Condigno & Meroo
+                    <Scale className="h-3.5 w-3.5 text-purple-600" /> Condigno & Meroo
                   </div>
                   <p className="text-[11px] text-[var(--apple-text-secondary)] mt-1">
-                    Predictive selection across Tech, Oil &amp; Gas, and Manufacturing (NL, BE, DE). Gamified psychometric design & compliance with EU/US automated hiring regulations.
+                    {lang === 'es'
+                      ? 'Selección predictiva en Tech, Petróleo y Gas, y Manufactura (NL, BE, DE). Diseño psicométrico gamificado y cumplimiento con normativas de IA.'
+                      : 'Predictive selection across Tech, Oil & Gas, and Manufacturing (NL, BE, DE). Gamified psychometric design & compliance with EU/US automated hiring regulations.'}
                   </p>
                 </div>
 
                 <div className="rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] p-3 text-xs">
                   <div className="flex items-center gap-1.5 font-semibold text-[var(--apple-text-primary)]">
-                    <Cpu className="h-3.5 w-3.5 text-indigo-500" /> ScaleHouse Talent
+                    <Cpu className="h-3.5 w-3.5 text-cyan-600" /> ScaleHouse Talent
                   </div>
                   <p className="text-[11px] text-[var(--apple-text-secondary)] mt-1">
-                    Scientific talent evaluation (BARS/SJTs) and automated recruitment pipelines with n8n + OpenAI. Integrations across Greenhouse, Manatal, and Zoho.
+                    {lang === 'es'
+                      ? 'Evaluación científica de talento (BARS/SJTs) y flujos automatizados con n8n + OpenAI. Integración con ATS (Greenhouse, Manatal, Zoho).'
+                      : 'Scientific talent evaluation (BARS/SJTs) and automated recruitment pipelines with n8n + OpenAI. Integrations across Greenhouse, Manatal, and Zoho.'}
                   </p>
                 </div>
               </div>
@@ -166,33 +182,33 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
             {/* Cockpit Module Launchers */}
             <div className="space-y-2.5 mb-5">
               <div className="text-[11px] font-semibold uppercase tracking-wider text-[var(--apple-text-tertiary)]">
-                Try my live tools:
+                {lang === 'es' ? 'Probar herramientas en vivo:' : 'Try my live tools:'}
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <button
                   onClick={() => handleAction('converter')}
-                  className="flex items-center justify-between p-3 rounded-xl border border-[var(--apple-border)] hover:border-blue-500/50 hover:bg-[var(--apple-hover)]/50 transition-all text-left group"
+                  className="flex items-center justify-between p-3 rounded-xl border border-[var(--apple-border)] hover:border-purple-500/50 hover:bg-[var(--apple-hover)]/50 transition-all text-left group cursor-pointer"
                 >
                   <div>
-                    <div className="font-semibold text-xs text-[var(--apple-text-primary)] group-hover:text-blue-500 transition-colors">
-                      BARS Arena & Weighted Fit %
+                    <div className="font-semibold text-xs text-[var(--apple-text-primary)] group-hover:text-purple-700 transition-colors">
+                      {lang === 'es' ? 'Arena BARS y Ajuste % Ponderado' : 'BARS Arena & Weighted Fit %'}
                     </div>
-                    <div className="text-[10px] text-[var(--apple-text-secondary)]">Live behavioral rating rubric</div>
+                    <div className="text-[10px] text-[var(--apple-text-secondary)]">{lang === 'es' ? 'Rúbrica conductual interactiva' : 'Live behavioral rating rubric'}</div>
                   </div>
-                  <ArrowRight className="h-3.5 w-3.5 text-[var(--apple-text-tertiary)] group-hover:text-blue-500 group-hover:translate-x-0.5 transition-all" />
+                  <ArrowRight className="h-3.5 w-3.5 text-[var(--apple-text-tertiary)] group-hover:text-purple-700 group-hover:translate-x-0.5 transition-all" />
                 </button>
 
                 <button
                   onClick={() => handleAction('calculator')}
-                  className="flex items-center justify-between p-3 rounded-xl border border-[var(--apple-border)] hover:border-amber-500/50 hover:bg-[var(--apple-hover)]/50 transition-all text-left group"
+                  className="flex items-center justify-between p-3 rounded-xl border border-[var(--apple-border)] hover:border-amber-500/50 hover:bg-[var(--apple-hover)]/50 transition-all text-left group cursor-pointer"
                 >
                   <div>
-                    <div className="font-semibold text-xs text-[var(--apple-text-primary)] group-hover:text-amber-500 transition-colors">
-                      Interview Report & Analysis Generator
+                    <div className="font-semibold text-xs text-[var(--apple-text-primary)] group-hover:text-amber-600 transition-colors">
+                      {lang === 'es' ? 'Auditoría de Ineficiencia y Costos' : 'Interview Report & Analysis Generator'}
                     </div>
-                    <div className="text-[10px] text-[var(--apple-text-secondary)]">SHRM / HBR financial model</div>
+                    <div className="text-[10px] text-[var(--apple-text-secondary)]">{lang === 'es' ? 'Modelo financiero de impacto' : 'SHRM / HBR financial model'}</div>
                   </div>
-                  <ArrowRight className="h-3.5 w-3.5 text-[var(--apple-text-tertiary)] group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all" />
+                  <ArrowRight className="h-3.5 w-3.5 text-[var(--apple-text-tertiary)] group-hover:text-amber-600 group-hover:translate-x-0.5 transition-all" />
                 </button>
               </div>
             </div>
@@ -204,7 +220,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
                   href="https://www.linkedin.com/in/catalinagilpeopleops"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-blue-500 flex items-center gap-1 transition-colors"
+                  className="hover:text-purple-700 flex items-center gap-1 transition-colors"
                 >
                   <ExternalLink className="h-3.5 w-3.5" />
                   <span>LinkedIn</span>
@@ -214,36 +230,36 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
                   href="https://docs.google.com/document/d/1LFZOGBt049Cw7poC0fcgHkFuszylslldqMNAUYQO-eg/edit"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-blue-500 flex items-center gap-1 transition-colors"
+                  className="hover:text-purple-700 flex items-center gap-1 transition-colors"
                 >
                   <FileText className="h-3.5 w-3.5" />
-                  <span>Lead CV</span>
+                  <span>{lang === 'es' ? 'CV Liderazgo' : 'Lead CV'}</span>
                 </a>
                 <span>•</span>
                 <a
                   href="mailto:info@catagil.com"
-                  className="hover:text-blue-500 flex items-center gap-1 transition-colors"
+                  className="hover:text-purple-700 flex items-center gap-1 transition-colors"
                 >
                   <Mail className="h-3.5 w-3.5" />
-                  <span>Contact</span>
+                  <span>{lang === 'es' ? 'Contacto' : 'Contact'}</span>
                 </a>
               </div>
 
               <div className="flex items-center gap-2 w-full sm:w-auto">
                 <button
                   onClick={handleTour}
-                  className="w-full sm:w-auto flex items-center justify-center gap-1.5 py-2 px-4 rounded-full border border-blue-500/40 text-blue-500 hover:bg-blue-500/10 text-xs font-semibold transition-colors"
+                  className="w-full sm:w-auto flex items-center justify-center gap-1.5 py-2 px-4 rounded-full border border-purple-500/40 text-purple-700 hover:bg-purple-500/10 text-xs font-semibold transition-colors cursor-pointer"
                 >
                   <Sparkles className="h-3.5 w-3.5" />
-                  <span>Interactive Tour (EN)</span>
+                  <span>{lang === 'es' ? 'Tour Guiado' : 'Interactive Tour'}</span>
                 </button>
 
                 <button
                   onClick={() => handleAction('all')}
-                  className="apple-button w-full sm:w-auto flex items-center justify-center gap-2 py-2 px-5 text-xs font-semibold"
+                  className="apple-button w-full sm:w-auto flex items-center justify-center gap-2 py-2 px-5 text-xs font-semibold cursor-pointer"
                 >
                   <Sliders className="h-3.5 w-3.5" />
-                  <span>Explore Cockpit</span>
+                  <span>{lang === 'es' ? 'Explorar Cockpit' : 'Explore Cockpit'}</span>
                 </button>
               </div>
             </div>
