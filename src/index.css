@@ -2,78 +2,86 @@
 
 @layer base {
   :root {
-    /* Apple / Tesla High-End Design System Tokens (Light Mode Default) */
-    --apple-bg: #fbfbfd;
-    --apple-surface: rgba(255, 255, 255, 0.78);
+    /* Option 2: Amethyst Purple & Cyber Cyan (Light Mode) */
+    --apple-bg: #faf8fd;
+    --apple-surface: rgba(255, 255, 255, 0.82);
     --apple-surface-solid: #ffffff;
-    --apple-surface-secondary: rgba(245, 245, 247, 0.85);
-    --apple-surface-tertiary: #e8e8ed;
+    --apple-surface-secondary: rgba(246, 242, 253, 0.88);
+    --apple-surface-tertiary: #ece6f8;
     
-    --apple-text-primary: #1d1d1f;
-    --apple-text-secondary: #515154;
-    --apple-text-tertiary: #86868b;
+    --apple-text-primary: #191424;
+    --apple-text-secondary: #585068;
+    --apple-text-tertiary: #8b839c;
     
-    --apple-border: rgba(0, 0, 0, 0.08);
-    --apple-border-hover: rgba(0, 0, 0, 0.18);
+    --apple-border: rgba(109, 40, 217, 0.09);
+    --apple-border-hover: rgba(109, 40, 217, 0.22);
     
-    /* System Accents */
-    --apple-blue: #0071e3;
-    --apple-blue-hover: #0077ed;
-    --apple-green: #34c759;
-    --apple-green-bg: rgba(52, 199, 89, 0.14);
-    --apple-amber: #ff9f0a;
-    --apple-amber-bg: rgba(255, 159, 10, 0.14);
-    --apple-red: #ff3b30;
-    --apple-red-bg: rgba(255, 59, 48, 0.14);
+    /* System Accents: Royal Amethyst (#6d28d9) & Cyber Cyan (#06b6d4) */
+    --apple-purple: #6d28d9;
+    --apple-purple-hover: #5b21b6;
+    --apple-cyan: #06b6d4;
+    --apple-cyan-bg: rgba(6, 182, 212, 0.12);
+    --apple-blue: #6d28d9;
+    --apple-blue-hover: #5b21b6;
+    --apple-green: #06b6d4;
+    --apple-green-bg: rgba(6, 182, 212, 0.12);
+    --apple-amber: #f59e0b;
+    --apple-amber-bg: rgba(245, 158, 11, 0.14);
+    --apple-red: #ef4444;
+    --apple-red-bg: rgba(239, 68, 68, 0.14);
     
-    --apple-nav-bg: rgba(255, 255, 255, 0.75);
-    --apple-card-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
-    --apple-card-shadow-hover: 0 16px 40px rgba(0, 0, 0, 0.08);
+    --apple-nav-bg: rgba(250, 248, 253, 0.80);
+    --apple-card-shadow: 0 10px 30px rgba(109, 40, 217, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
+    --apple-card-shadow-hover: 0 16px 40px rgba(109, 40, 217, 0.10);
 
-    --spotlight-glow: rgba(0, 113, 227, 0.14);
-    --grid-dot-color: rgba(0, 0, 0, 0.07);
+    --spotlight-glow: rgba(109, 40, 217, 0.14);
+    --grid-dot-color: rgba(109, 40, 217, 0.08);
 
     /* Living Animated Background Blobs */
-    --living-blob-1: rgba(0, 113, 227, 0.22);
-    --living-blob-2: rgba(52, 199, 89, 0.20);
-    --living-blob-3: rgba(255, 159, 10, 0.16);
+    --living-blob-1: rgba(109, 40, 217, 0.20);
+    --living-blob-2: rgba(6, 182, 212, 0.18);
+    --living-blob-3: rgba(168, 85, 247, 0.15);
   }
 
   [data-theme="dark"] {
-    /* Apple / Tesla Dark Precision (Dark Mode) */
-    --apple-bg: #000000;
-    --apple-surface: rgba(22, 22, 23, 0.75);
-    --apple-surface-solid: #161617;
-    --apple-surface-secondary: rgba(29, 29, 31, 0.85);
-    --apple-surface-tertiary: #2d2d2f;
+    /* Option 2: Obsidian Amethyst & Neon Cyan (Dark Mode) */
+    --apple-bg: #090611;
+    --apple-surface: rgba(22, 17, 33, 0.78);
+    --apple-surface-solid: #171224;
+    --apple-surface-secondary: rgba(29, 23, 44, 0.85);
+    --apple-surface-tertiary: #31284a;
     
-    --apple-text-primary: #f5f5f7;
-    --apple-text-secondary: #a1a1a6;
-    --apple-text-tertiary: #6e6e73;
+    --apple-text-primary: #f6f3fc;
+    --apple-text-secondary: #a9a0be;
+    --apple-text-tertiary: #756d88;
     
-    --apple-border: rgba(255, 255, 255, 0.12);
-    --apple-border-hover: rgba(255, 255, 255, 0.24);
+    --apple-border: rgba(168, 85, 247, 0.14);
+    --apple-border-hover: rgba(168, 85, 247, 0.28);
     
-    --apple-blue: #2997ff;
-    --apple-blue-hover: #0077ed;
-    --apple-green: #30d158;
-    --apple-green-bg: rgba(48, 209, 88, 0.18);
-    --apple-amber: #ff9f0a;
-    --apple-amber-bg: rgba(255, 159, 10, 0.18);
-    --apple-red: #ff453a;
-    --apple-red-bg: rgba(255, 69, 58, 0.18);
+    --apple-purple: #9333ea;
+    --apple-purple-hover: #a855f7;
+    --apple-cyan: #22d3ee;
+    --apple-cyan-bg: rgba(34, 211, 238, 0.18);
+    --apple-blue: #9333ea;
+    --apple-blue-hover: #a855f7;
+    --apple-green: #22d3ee;
+    --apple-green-bg: rgba(34, 211, 238, 0.18);
+    --apple-amber: #fbbf24;
+    --apple-amber-bg: rgba(251, 191, 36, 0.18);
+    --apple-red: #f87171;
+    --apple-red-bg: rgba(248, 113, 113, 0.18);
     
-    --apple-nav-bg: rgba(22, 22, 23, 0.75);
-    --apple-card-shadow: 0 12px 36px rgba(0, 0, 0, 0.55);
-    --apple-card-shadow-hover: 0 20px 48px rgba(0, 0, 0, 0.75);
+    --apple-nav-bg: rgba(15, 11, 24, 0.80);
+    --apple-card-shadow: 0 12px 36px rgba(0, 0, 0, 0.65);
+    --apple-card-shadow-hover: 0 20px 48px rgba(109, 40, 217, 0.25);
 
-    --spotlight-glow: rgba(41, 151, 255, 0.18);
-    --grid-dot-color: rgba(255, 255, 255, 0.09);
+    --spotlight-glow: rgba(147, 51, 234, 0.18);
+    --grid-dot-color: rgba(168, 85, 247, 0.10);
 
     /* Living Animated Background Blobs */
-    --living-blob-1: rgba(41, 151, 255, 0.25);
-    --living-blob-2: rgba(48, 209, 88, 0.22);
-    --living-blob-3: rgba(168, 85, 247, 0.18);
+    --living-blob-1: rgba(147, 51, 234, 0.28);
+    --living-blob-2: rgba(34, 211, 238, 0.22);
+    --living-blob-3: rgba(168, 85, 247, 0.20);
   }
 
   * {
@@ -92,9 +100,6 @@ body {
   transition: background-color 0.3s cubic-bezier(0.28, 0.11, 0.32, 1), color 0.3s cubic-bezier(0.28, 0.11, 0.32, 1);
 }
 
-/* ========================================================================= */
-/* ALWAYS-ON LIVING CANVAS BACKGROUND (Apple Intelligence & Siri Fluid Mesh) */
-/* ========================================================================= */
 .living-canvas-container {
   position: fixed;
   inset: 0;
@@ -103,87 +108,67 @@ body {
   overflow: hidden;
 }
 
-.living-grid-matrix {
+.living-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(120px);
+  will-change: transform;
+}
+
+.living-blob-1 {
+  width: 650px;
+  height: 650px;
+  background: radial-gradient(circle, var(--living-blob-1) 0%, transparent 70%);
+  animation: floatOrb1 20s infinite alternate ease-in-out;
+}
+
+.living-blob-2 {
+  width: 580px;
+  height: 580px;
+  background: radial-gradient(circle, var(--living-blob-2) 0%, transparent 70%);
+  animation: floatOrb2 22s infinite alternate ease-in-out;
+}
+
+.living-blob-3 {
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle, var(--living-blob-3) 0%, transparent 70%);
+  animation: floatOrb3 26s infinite alternate ease-in-out;
+}
+
+.spotlight-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: background 0.1s ease;
+}
+
+.blueprint-grid {
   position: absolute;
   inset: 0;
   background-image: radial-gradient(var(--grid-dot-color) 1.5px, transparent 1.5px);
-  background-size: 32px 32px;
-  mask-image: radial-gradient(circle at 50% 35%, black 40%, transparent 90%);
-  -webkit-mask-image: radial-gradient(circle at 50% 35%, black 40%, transparent 90%);
-}
-
-.living-orb-1 {
-  position: absolute;
-  width: 700px;
-  height: 700px;
-  top: -150px;
-  left: 20%;
-  border-radius: 9999px;
-  background: radial-gradient(circle, var(--living-blob-1) 0%, transparent 70%);
-  filter: blur(100px);
-  will-change: transform;
-  animation: floatOrb1 16s infinite alternate ease-in-out;
-}
-
-.living-orb-2 {
-  position: absolute;
-  width: 650px;
-  height: 650px;
-  top: 35%;
-  right: -100px;
-  border-radius: 9999px;
-  background: radial-gradient(circle, var(--living-blob-2) 0%, transparent 70%);
-  filter: blur(110px);
-  will-change: transform;
-  animation: floatOrb2 20s infinite alternate ease-in-out;
-}
-
-.living-orb-3 {
-  position: absolute;
-  width: 600px;
-  height: 600px;
-  bottom: 5%;
-  left: -100px;
-  border-radius: 9999px;
-  background: radial-gradient(circle, var(--living-blob-3) 0%, transparent 70%);
-  filter: blur(120px);
-  will-change: transform;
-  animation: floatOrb3 24s infinite alternate ease-in-out;
+  background-size: 30px 30px;
+  opacity: 0.85;
 }
 
 @keyframes floatOrb1 {
   0% { transform: translate3d(0, 0, 0) scale(1); }
-  50% { transform: translate3d(80px, 60px, 0) scale(1.15); }
-  100% { transform: translate3d(-60px, 100px, 0) scale(0.92); }
+  50% { transform: translate3d(60px, 40px, 0) scale(1.1); }
+  100% { transform: translate3d(-40px, 70px, 0) scale(0.95); }
 }
 
 @keyframes floatOrb2 {
   0% { transform: translate3d(0, 0, 0) scale(1); }
-  50% { transform: translate3d(-90px, -70px, 0) scale(1.12); }
-  100% { transform: translate3d(50px, 80px, 0) scale(0.88); }
+  50% { transform: translate3d(-50px, -60px, 0) scale(1.08); }
+  100% { transform: translate3d(40px, 30px, 0) scale(0.92); }
 }
 
 @keyframes floatOrb3 {
   0% { transform: translate3d(0, 0, 0) scale(1); }
-  50% { transform: translate3d(70px, -60px, 0) scale(1.1); }
-  100% { transform: translate3d(-50px, -80px, 0) scale(0.95); }
+  50% { transform: translate3d(50px, -40px, 0) scale(1.12); }
+  100% { transform: translate3d(-30px, 50px, 0) scale(0.96); }
 }
 
-/* Interactive Cursor Spotlight overlay */
-.ambient-spotlight-beam {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    600px circle at var(--mouse-x, 50%) var(--mouse-y, 30%),
-    var(--spotlight-glow),
-    transparent 70%
-  );
-  pointer-events: none;
-}
-
-/* ========================================================================= */
-/* TRANSLUCENT APPLE CARD & UI ARCHITECTURE                                  */
-/* ========================================================================= */
 .apple-glass {
   background-color: var(--apple-nav-bg);
   backdrop-filter: saturate(180%) blur(24px);
@@ -208,28 +193,20 @@ body {
   box-shadow: var(--apple-card-shadow-hover);
 }
 
-/* iOS Segmented Control */
-.segmented-control {
-  background-color: var(--apple-surface-secondary);
-  border-radius: 14px;
-  padding: 3px;
-  border: 1px solid var(--apple-border);
-  position: relative;
-}
-
-/* Apple Button Pill */
 .apple-button {
-  background-color: var(--apple-blue);
+  background: linear-gradient(135deg, var(--apple-purple) 0%, #4c1d95 100%);
   color: #ffffff;
   border-radius: 980px;
   padding: 8px 18px;
   font-weight: 600;
   font-size: 13px;
+  box-shadow: 0 4px 14px rgba(109, 40, 217, 0.30);
   transition: all 0.18s cubic-bezier(0.28, 0.11, 0.32, 1);
 }
 
 .apple-button:hover {
-  background-color: var(--apple-blue-hover);
+  background: linear-gradient(135deg, var(--apple-purple-hover) 0%, var(--apple-purple) 100%);
+  box-shadow: 0 6px 20px rgba(109, 40, 217, 0.45);
   transform: scale(1.02);
 }
 
@@ -237,7 +214,6 @@ body {
   transform: scale(0.97);
 }
 
-/* Numbers Tabular Alignment */
 .t-nums {
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.025em;
