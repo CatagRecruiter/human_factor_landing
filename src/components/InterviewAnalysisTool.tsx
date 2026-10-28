@@ -9,7 +9,9 @@ import {
   Users, 
   Scale,
   Calendar,
-  ArrowRight
+  ArrowRight,
+  X,
+  Plus
 } from 'lucide-react';
 import { SkillCriterion, CandidateEntry, calculateFit } from '../lib/engine';
 import { CALIBRATION_QUESTIONS, extractDimensionsFromJD } from '../lib/jdAnalyzer';
@@ -53,6 +55,11 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
 
   const [activeCandidateName, setActiveCandidateName] = useState(lang === 'es' ? 'Camilo Gómez' : 'Sam Patel');
   const [mobileTab, setMobileTab] = useState<'rubrics' | 'arena'>('rubrics');
+
+  // Quick Add Candidate Modal State
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [quickCandidateName, setQuickCandidateName] = useState('');
+  const [quickCandidateScore, setQuickCandidateScore] = useState<number>(4.2);
 
   // Real-time calculation of current criteria
   const currentFitResults = calculateFit(criteria);
@@ -101,6 +108,26 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
     setActiveCandidateName('');
     sound.playChord();
     onShowToast(lang === 'es' ? `Evaluado y guardado: ${name} (${currentFitResults.fitPct}%)` : `Evaluated & saved ${name} (${currentFitResults.fitPct}%)`);
+  };
+
+  // Handler: Quick Add Candidate via Modal
+  const handleQuickAddCandidate = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const name = quickCandidateName.trim() || (lang === 'es' ? `Candidato #${candidates.length + 1}` : `Candidate #${candidates.length + 1}`);
+    const fitPct = Math.round((quickCandidateScore / 5.0) * 100);
+    const newEntry: CandidateEntry = {
+      name,
+      score: quickCandidateScore,
+      fit: fitPct,
+      status: fitPct >= 80 ? 'HIRE' : fitPct >= 50 ? 'CALIBRATE' : 'PASS',
+      color: fitPct >= 80 ? 'var(--apple-green)' : fitPct >= 50 ? 'var(--apple-amber)' : 'var(--apple-red)',
+    };
+    setCandidates(prev => [newEntry, ...prev].sort((a, b) => b.fit - a.fit));
+    setQuickCandidateName('');
+    setQuickCandidateScore(4.2);
+    setIsAddModalOpen(false);
+    sound.playChord();
+    onShowToast(lang === 'es' ? `Candidato añadido: ${name} (${fitPct}%)` : `Added candidate: ${name} (${fitPct}%)`);
   };
 
   // Handler: Download PDF Report
@@ -481,16 +508,30 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
               <div className="flex items-center gap-2">
                 <Users className="h-4 w-4 text-purple-600" />
                 <span className="text-xs font-bold uppercase tracking-wider text-[var(--apple-text-primary)]">
-                  {lang === 'es' ? `Arena de Candidatos (${candidates.length})` : `Candidate Arena (${candidates.length})`}
+                  {lang === 'es' ? `Arena (${candidates.length})` : `Arena (${candidates.length})`}
                 </span>
               </div>
-              <button
-                onClick={handleDownloadPDF}
-                className="text-xs font-semibold text-purple-600 hover:underline flex items-center gap-1 cursor-pointer"
-              >
-                <Download className="h-3 w-3" />
-                <span>PDF Summary</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    sound.playClick();
+                    setIsAddModalOpen(true);
+                  }}
+                  className="px-2.5 py-1 rounded-lg bg-purple-700 hover:bg-purple-800 text-white text-xs font-semibold flex items-center gap-1 shadow-2xs transition-all cursor-pointer"
+                  title={lang === 'es' ? 'Añadir nuevo candidato' : 'Add new candidate'}
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  <span>{lang === 'es' ? 'Añadir Candidato' : 'Add Candidate'}</span>
+                </button>
+                <button
+                  onClick={handleDownloadPDF}
+                  className="px-2 py-1 rounded-lg border border-[var(--apple-border)] bg-[var(--apple-surface)] hover:bg-[var(--apple-surface-secondary)] text-xs font-semibold text-purple-700 flex items-center gap-1 cursor-pointer transition-colors"
+                  title="PDF Summary"
+                >
+                  <Download className="h-3 w-3" />
+                  <span>PDF</span>
+                </button>
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -557,6 +598,158 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
           </div>
         </div>
       </div>
+
+      {/* Quick Add Candidate Modal */}
+      <AnimatePresence>
+        {isAddModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsAddModalOpen(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-md"
+            />
+
+            {/* Modal Dialog Content */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.2 }}
+              className="relative w-full max-w-md rounded-t-3xl sm:rounded-2xl bg-[var(--apple-surface-solid)] border border-[var(--apple-border)] shadow-2xl p-6 z-10 space-y-5"
+            >
+              <div className="flex items-center justify-between border-b border-[var(--apple-border)] pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-purple-500/10 text-purple-700 flex items-center justify-center">
+                    <UserPlus className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-[var(--apple-text-primary)]">
+                      {lang === 'es' ? 'Añadir Candidato a la Arena' : 'Add Candidate to Arena'}
+                    </h3>
+                    <p className="text-[11px] text-[var(--apple-text-tertiary)]">
+                      {lang === 'es' ? 'Compara perfiles en tiempo real' : 'Compare profiles in real-time'}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="p-1.5 rounded-lg text-[var(--apple-text-tertiary)] hover:text-[var(--apple-text-primary)] hover:bg-[var(--apple-surface-secondary)] transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <form onSubmit={handleQuickAddCandidate} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-[var(--apple-text-primary)] mb-1">
+                    {lang === 'es' ? 'Nombre Completo del Candidato' : 'Candidate Full Name'}
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    autoFocus
+                    value={quickCandidateName}
+                    onChange={e => setQuickCandidateName(e.target.value)}
+                    placeholder={lang === 'es' ? 'Ej. Mariana Silva' : 'E.g. Elena Rostova'}
+                    className="w-full text-xs rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] px-3.5 py-2.5 text-[var(--apple-text-primary)] focus:outline-none focus:border-purple-600 font-semibold"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between text-xs font-semibold text-[var(--apple-text-primary)] mb-1.5">
+                    <span>{lang === 'es' ? 'Puntaje de Ajuste / Score Ponderado' : 'Composite Fit Score'}</span>
+                    <span className="font-mono text-purple-700 font-bold text-sm">
+                      {quickCandidateScore.toFixed(1)} / 5.0 ({Math.round((quickCandidateScore / 5.0) * 100)}%)
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min="1.0"
+                    max="5.0"
+                    step="0.1"
+                    value={quickCandidateScore}
+                    onChange={e => {
+                      setQuickCandidateScore(parseFloat(e.target.value));
+                      sound.playTone(380, 'sine', 0.02);
+                    }}
+                    className="w-full accent-purple-600 cursor-pointer"
+                  />
+                  
+                  {/* Presets */}
+                  <div className="grid grid-cols-3 gap-1.5 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setQuickCandidateScore(4.6);
+                        sound.playClick();
+                      }}
+                      className="p-1.5 rounded-lg border border-cyan-500/20 bg-cyan-500/10 text-cyan-800 text-[10px] font-bold text-center hover:bg-cyan-500/20 transition-colors cursor-pointer"
+                    >
+                      HIRE (92%)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setQuickCandidateScore(3.5);
+                        sound.playClick();
+                      }}
+                      className="p-1.5 rounded-lg border border-amber-500/20 bg-amber-500/10 text-amber-700 text-[10px] font-bold text-center hover:bg-amber-500/20 transition-colors cursor-pointer"
+                    >
+                      CALIBRATE (70%)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setQuickCandidateScore(2.2);
+                        sound.playClick();
+                      }}
+                      className="p-1.5 rounded-lg border border-red-500/20 bg-red-500/10 text-red-600 text-[10px] font-bold text-center hover:bg-red-500/20 transition-colors cursor-pointer"
+                    >
+                      PASS (44%)
+                    </button>
+                  </div>
+                </div>
+
+                {/* Recommendation pill preview */}
+                <div className="p-3 rounded-xl bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] flex items-center justify-between text-xs">
+                  <span className="text-[var(--apple-text-secondary)] font-medium">
+                    {lang === 'es' ? 'Decisión Predictiva:' : 'Predictive Status:'}
+                  </span>
+                  <span className={`px-2.5 py-0.5 rounded-full font-bold font-mono text-xs ${
+                    quickCandidateScore >= 4.0
+                      ? 'bg-cyan-500/15 text-cyan-700 border border-cyan-500/30'
+                      : quickCandidateScore >= 2.5
+                      ? 'bg-amber-500/15 text-amber-700 border border-amber-500/30'
+                      : 'bg-red-500/15 text-red-600 border border-red-500/30'
+                  }`}>
+                    {quickCandidateScore >= 4.0 ? t.hireDecision : quickCandidateScore >= 2.5 ? t.calibrateDecision : t.passDecision}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsAddModalOpen(false)}
+                    className="flex-1 py-2.5 rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] hover:bg-[var(--apple-surface-secondary)] text-xs font-semibold text-[var(--apple-text-secondary)] transition-colors cursor-pointer"
+                  >
+                    {lang === 'es' ? 'Cancelar' : 'Cancel'}
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 apple-button py-2.5 text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer shadow-md"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>{lang === 'es' ? 'Añadir a la Arena' : 'Add to Arena'}</span>
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
