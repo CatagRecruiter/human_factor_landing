@@ -20,7 +20,6 @@ import { CommandPalette } from './components/CommandPalette';
 import { InterviewAnalysisTool } from './components/InterviewAnalysisTool';
 import { InefficientInterviewingCalculator } from './components/InefficientInterviewingCalculator';
 import { TalentScienceOverview } from './components/TalentScienceOverview';
-import { ExecutiveEndorsementsSection } from './components/ExecutiveEndorsementsSection';
 import { AboutMeSection } from './components/AboutMeSection';
 import { NewsletterSection } from './components/NewsletterSection';
 import { PlaybookDownloadSection } from './components/PlaybookDownloadSection';
@@ -135,19 +134,9 @@ export function App() {
             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-700 via-indigo-600 to-cyan-600 flex items-center justify-center text-white shadow-md shadow-purple-600/20 group-hover:scale-105 transition-transform shrink-0">
               <Sparkles className="w-4 h-4 text-cyan-200" />
             </div>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-1.5 leading-none">
-                <span className="font-black text-sm text-[var(--apple-text-primary)] tracking-tight">
-                  Talent Science
-                </span>
-                <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-purple-500/10 text-purple-700 border border-purple-500/20 hidden sm:inline">
-                  COCKPIT
-                </span>
-              </div>
-              <span className="text-[10px] text-[var(--apple-text-tertiary)] font-medium leading-tight">
-                by Catalina Gil Sierra
-              </span>
-            </div>
+            <span className="font-black text-sm sm:text-base text-[var(--apple-text-primary)] tracking-tight">
+              Talent Science
+            </span>
           </div>
 
           {/* Quick Nav Anchors */}
@@ -450,10 +439,7 @@ export function App() {
         {/* 3. COST OF INEFFICIENT INTERVIEWING CALCULATOR */}
         <InefficientInterviewingCalculator lang={lang} />
 
-        {/* 4. EXECUTIVE ENDORSEMENTS & PUBLISHED RESEARCH */}
-        <ExecutiveEndorsementsSection lang={lang} />
-
-        {/* 5. ABOUT ME / HOJA DE VIDA SECTION */}
+        {/* 4. ABOUT ME / HOJA DE VIDA SECTION */}
         <AboutMeSection lang={lang} />
 
         {/* 5. PLAYBOOK DOWNLOAD GATED RESOURCE */}
