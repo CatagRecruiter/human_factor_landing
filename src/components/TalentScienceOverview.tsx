@@ -37,21 +37,21 @@ export const TalentScienceOverview: React.FC<Props> = ({ lang }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         
         {/* Pain / Traditional Approach */}
-        <div className="p-5 sm:p-6 rounded-2xl bg-red-500/5 border border-red-500/20 space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-red-500/15">
-            <div className="flex items-center gap-2 text-red-600 font-bold text-sm">
-              <XCircle className="h-4 w-4 shrink-0" />
+        <div className="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200/90 space-y-4 shadow-2xs">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div className="flex items-center gap-2 text-slate-800 font-bold text-sm">
+              <XCircle className="h-4 w-4 shrink-0 text-slate-400" />
               <span>{t.traditionalTitle}</span>
             </div>
-            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/20">
+            <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
               {t.traditionalBadge}
             </span>
           </div>
 
-          <ul className="space-y-2.5 text-xs text-[var(--apple-text-secondary)]">
+          <ul className="space-y-2.5 text-xs text-slate-600">
             {t.traditionalPoints.map((pt, idx) => (
               <li key={idx} className="flex items-start gap-2">
-                <span className="text-red-500 font-bold mt-0.5">•</span>
+                <span className="text-slate-400 font-bold mt-0.5">•</span>
                 <span>{pt}</span>
               </li>
             ))}
@@ -59,21 +59,22 @@ export const TalentScienceOverview: React.FC<Props> = ({ lang }) => {
         </div>
 
         {/* Solution / Talent Science Approach */}
-        <div className="p-5 sm:p-6 rounded-2xl bg-cyan-500/10 border border-cyan-500/25 space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-cyan-500/20">
-            <div className="flex items-center gap-2 text-cyan-800 font-bold text-sm">
-              <CheckCircle2 className="h-4 w-4 shrink-0 text-cyan-600" />
+        <div className="p-5 sm:p-6 rounded-2xl bg-white border border-purple-200 space-y-4 shadow-xs relative overflow-hidden ring-1 ring-purple-500/10">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-purple-600" />
+          <div className="flex items-center justify-between pb-3 border-b border-purple-100">
+            <div className="flex items-center gap-2 text-purple-950 font-bold text-sm">
+              <CheckCircle2 className="h-4 w-4 shrink-0 text-purple-600" />
               <span>{t.scienceTitle}</span>
             </div>
-            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-700 border border-cyan-500/30">
+            <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200">
               {t.scienceBadge}
             </span>
           </div>
 
-          <ul className="space-y-2.5 text-xs text-[var(--apple-text-secondary)]">
+          <ul className="space-y-2.5 text-xs text-slate-700">
             {t.sciencePoints.map((pt, idx) => (
               <li key={idx} className="flex items-start gap-2">
-                <span className="text-cyan-600 font-bold mt-0.5">•</span>
+                <span className="text-purple-600 font-bold mt-0.5">•</span>
                 <span>{pt}</span>
               </li>
             ))}
@@ -84,7 +85,7 @@ export const TalentScienceOverview: React.FC<Props> = ({ lang }) => {
 
       {/* 3 Core Pillars Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="p-4 rounded-xl bg-[var(--apple-surface)] border border-[var(--apple-border)] space-y-1">
+        <div className="p-4 rounded-xl bg-white border border-slate-200/80 space-y-1 shadow-2xs">
           <div className="flex items-center gap-2 font-bold text-xs text-[var(--apple-text-primary)]">
             <Layers className="h-4 w-4 text-purple-600" />
             <span>{t.pillars[0].title}</span>
@@ -94,9 +95,9 @@ export const TalentScienceOverview: React.FC<Props> = ({ lang }) => {
           </p>
         </div>
 
-        <div className="p-4 rounded-xl bg-[var(--apple-surface)] border border-[var(--apple-border)] space-y-1">
+        <div className="p-4 rounded-xl bg-white border border-slate-200/80 space-y-1 shadow-2xs">
           <div className="flex items-center gap-2 font-bold text-xs text-[var(--apple-text-primary)]">
-            <Zap className="h-4 w-4 text-cyan-600" />
+            <Zap className="h-4 w-4 text-purple-600" />
             <span>{t.pillars[1].title}</span>
           </div>
           <p className="text-[11px] text-[var(--apple-text-secondary)]">
@@ -104,9 +105,9 @@ export const TalentScienceOverview: React.FC<Props> = ({ lang }) => {
           </p>
         </div>
 
-        <div className="p-4 rounded-xl bg-[var(--apple-surface)] border border-[var(--apple-border)] space-y-1">
+        <div className="p-4 rounded-xl bg-white border border-slate-200/80 space-y-1 shadow-2xs">
           <div className="flex items-center gap-2 font-bold text-xs text-[var(--apple-text-primary)]">
-            <ShieldCheck className="h-4 w-4 text-emerald-600" />
+            <ShieldCheck className="h-4 w-4 text-purple-600" />
             <span>{t.pillars[2].title}</span>
           </div>
           <p className="text-[11px] text-[var(--apple-text-secondary)]">
@@ -122,12 +123,12 @@ export const TalentScienceOverview: React.FC<Props> = ({ lang }) => {
             <TrendingUp className="h-4 w-4 text-purple-600" />
             {t.caseStudiesTitle}
           </span>
-          <span className="text-[10px] text-cyan-700 bg-cyan-500/10 px-2 py-0.5 rounded-full border border-cyan-500/20 font-bold">{t.caseStudiesBadge}</span>
+          <span className="text-[10px] text-purple-700 bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-200 font-bold">{t.caseStudiesBadge}</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {t.caseStudies.map((cs) => (
-            <div key={cs.id} className="p-4 rounded-xl bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] space-y-2.5">
+            <div key={cs.id} className="p-4 rounded-xl bg-white border border-slate-200/80 space-y-2.5 shadow-2xs">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-purple-700">{cs.clientType}</span>
                 <span className="text-[10px] font-mono text-[var(--apple-text-tertiary)]">{cs.market}</span>
@@ -138,10 +139,10 @@ export const TalentScienceOverview: React.FC<Props> = ({ lang }) => {
                 <p><strong>{t.solutionLabel}</strong> {cs.solution}</p>
               </div>
 
-              <div className="pt-2 border-t border-[var(--apple-border)] grid grid-cols-3 gap-2">
+              <div className="pt-2 border-t border-slate-100 grid grid-cols-3 gap-2">
                 {cs.metrics.map((m, mIdx) => (
-                  <div key={mIdx} className="p-2 rounded-lg bg-[var(--apple-surface)] border border-[var(--apple-border)] text-center">
-                    <div className="text-xs font-black text-cyan-700 font-mono">{m.value}</div>
+                  <div key={mIdx} className="p-2 rounded-lg bg-slate-50 border border-slate-200/70 text-center">
+                    <div className="text-xs font-black text-purple-700 font-mono">{m.value}</div>
                     <div className="text-[9px] text-[var(--apple-text-secondary)] leading-tight mt-0.5">{m.label}</div>
                   </div>
                 ))}

@@ -2,86 +2,84 @@
 
 @layer base {
   :root {
-    /* Option 2: Amethyst Purple & Cyber Cyan (Light Mode) */
-    --apple-bg: #faf8fd;
-    --apple-surface: rgba(255, 255, 255, 0.82);
+    /* Pure Tech White & Precision Purple (Apple/Tesla Enterprise) */
+    --apple-bg: #fbfbfe;
+    --apple-surface: #ffffff;
     --apple-surface-solid: #ffffff;
-    --apple-surface-secondary: rgba(246, 242, 253, 0.88);
-    --apple-surface-tertiary: #ece6f8;
+    --apple-surface-secondary: #f8fafc;
+    --apple-surface-tertiary: #f1f5f9;
     
-    --apple-text-primary: #191424;
-    --apple-text-secondary: #585068;
-    --apple-text-tertiary: #8b839c;
+    --apple-text-primary: #0f172a;
+    --apple-text-secondary: #475569;
+    --apple-text-tertiary: #94a3b8;
     
-    --apple-border: rgba(109, 40, 217, 0.09);
-    --apple-border-hover: rgba(109, 40, 217, 0.22);
+    --apple-border: rgba(15, 23, 42, 0.08);
+    --apple-border-hover: rgba(109, 40, 217, 0.35);
     
-    /* System Accents: Royal Amethyst (#6d28d9) & Cyber Cyan (#06b6d4) */
+    /* System Accent: Deep Electric Violet / Royal Tech Amethyst */
     --apple-purple: #6d28d9;
     --apple-purple-hover: #5b21b6;
-    --apple-cyan: #06b6d4;
-    --apple-cyan-bg: rgba(6, 182, 212, 0.12);
+    --apple-cyan: #6d28d9;
+    --apple-cyan-bg: rgba(109, 40, 217, 0.08);
     --apple-blue: #6d28d9;
     --apple-blue-hover: #5b21b6;
-    --apple-green: #06b6d4;
-    --apple-green-bg: rgba(6, 182, 212, 0.12);
-    --apple-amber: #f59e0b;
-    --apple-amber-bg: rgba(245, 158, 11, 0.14);
-    --apple-red: #ef4444;
-    --apple-red-bg: rgba(239, 68, 68, 0.14);
+    --apple-green: #6d28d9;
+    --apple-green-bg: rgba(109, 40, 217, 0.08);
+    --apple-amber: #6d28d9;
+    --apple-amber-bg: rgba(109, 40, 217, 0.08);
+    --apple-red: #64748b;
+    --apple-red-bg: rgba(100, 116, 139, 0.08);
     
-    --apple-nav-bg: rgba(250, 248, 253, 0.80);
-    --apple-card-shadow: 0 10px 30px rgba(109, 40, 217, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
-    --apple-card-shadow-hover: 0 16px 40px rgba(109, 40, 217, 0.10);
+    --apple-nav-bg: rgba(255, 255, 255, 0.85);
+    --apple-card-shadow: 0 4px 20px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02);
+    --apple-card-shadow-hover: 0 12px 32px rgba(109, 40, 217, 0.08), 0 2px 6px rgba(0, 0, 0, 0.03);
 
-    --spotlight-glow: rgba(109, 40, 217, 0.14);
-    --grid-dot-color: rgba(109, 40, 217, 0.08);
+    --spotlight-glow: rgba(109, 40, 217, 0.09);
+    --grid-dot-color: rgba(15, 23, 42, 0.04);
 
-    /* Living Animated Background Blobs */
-    --living-blob-1: rgba(109, 40, 217, 0.20);
-    --living-blob-2: rgba(6, 182, 212, 0.18);
-    --living-blob-3: rgba(168, 85, 247, 0.15);
+    /* Living Animated Background Blobs (Soft, Ambient & Non-Intrusive) */
+    --living-blob-1: rgba(109, 40, 217, 0.12);
+    --living-blob-2: rgba(147, 51, 234, 0.08);
+    --living-blob-3: rgba(109, 40, 217, 0.06);
   }
 
   [data-theme="dark"] {
-    /* Option 2: Obsidian Amethyst & Neon Cyan (Dark Mode) */
     --apple-bg: #090611;
-    --apple-surface: rgba(22, 17, 33, 0.78);
+    --apple-surface: rgba(22, 17, 33, 0.85);
     --apple-surface-solid: #171224;
-    --apple-surface-secondary: rgba(29, 23, 44, 0.85);
+    --apple-surface-secondary: rgba(29, 23, 44, 0.90);
     --apple-surface-tertiary: #31284a;
     
-    --apple-text-primary: #f6f3fc;
-    --apple-text-secondary: #a9a0be;
-    --apple-text-tertiary: #756d88;
+    --apple-text-primary: #f8fafc;
+    --apple-text-secondary: #94a3b8;
+    --apple-text-tertiary: #64748b;
     
-    --apple-border: rgba(168, 85, 247, 0.14);
-    --apple-border-hover: rgba(168, 85, 247, 0.28);
+    --apple-border: rgba(255, 255, 255, 0.08);
+    --apple-border-hover: rgba(168, 85, 247, 0.35);
     
     --apple-purple: #9333ea;
     --apple-purple-hover: #a855f7;
-    --apple-cyan: #22d3ee;
-    --apple-cyan-bg: rgba(34, 211, 238, 0.18);
+    --apple-cyan: #a855f7;
+    --apple-cyan-bg: rgba(168, 85, 247, 0.12);
     --apple-blue: #9333ea;
     --apple-blue-hover: #a855f7;
-    --apple-green: #22d3ee;
-    --apple-green-bg: rgba(34, 211, 238, 0.18);
-    --apple-amber: #fbbf24;
-    --apple-amber-bg: rgba(251, 191, 36, 0.18);
-    --apple-red: #f87171;
-    --apple-red-bg: rgba(248, 113, 113, 0.18);
+    --apple-green: #a855f7;
+    --apple-green-bg: rgba(168, 85, 247, 0.12);
+    --apple-amber: #a855f7;
+    --apple-amber-bg: rgba(168, 85, 247, 0.12);
+    --apple-red: #94a3b8;
+    --apple-red-bg: rgba(148, 163, 184, 0.12);
     
-    --apple-nav-bg: rgba(15, 11, 24, 0.80);
+    --apple-nav-bg: rgba(15, 11, 24, 0.85);
     --apple-card-shadow: 0 12px 36px rgba(0, 0, 0, 0.65);
     --apple-card-shadow-hover: 0 20px 48px rgba(109, 40, 217, 0.25);
 
-    --spotlight-glow: rgba(147, 51, 234, 0.18);
-    --grid-dot-color: rgba(168, 85, 247, 0.10);
+    --spotlight-glow: rgba(147, 51, 234, 0.14);
+    --grid-dot-color: rgba(255, 255, 255, 0.04);
 
-    /* Living Animated Background Blobs */
-    --living-blob-1: rgba(147, 51, 234, 0.28);
-    --living-blob-2: rgba(34, 211, 238, 0.22);
-    --living-blob-3: rgba(168, 85, 247, 0.20);
+    --living-blob-1: rgba(147, 51, 234, 0.18);
+    --living-blob-2: rgba(168, 85, 247, 0.12);
+    --living-blob-3: rgba(147, 51, 234, 0.10);
   }
 
   * {
@@ -205,7 +203,7 @@ body {
   position: absolute;
   inset: -1px;
   border-radius: inherit;
-  background: linear-gradient(135deg, rgba(109, 40, 217, 0.35), rgba(6, 182, 212, 0.3), transparent 70%);
+  background: linear-gradient(135deg, rgba(109, 40, 217, 0.25), rgba(147, 51, 234, 0.15), transparent 70%);
   z-index: -1;
   opacity: 0;
   transition: opacity 0.35s ease;

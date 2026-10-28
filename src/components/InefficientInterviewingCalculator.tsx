@@ -43,7 +43,7 @@ export const InefficientInterviewingCalculator: React.FC<Props> = ({ lang }) => 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--apple-border)] pb-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full bg-red-500/10 text-red-600 font-mono text-[11px] font-bold border border-red-500/20">
+            <span className="px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 font-mono text-[11px] font-bold border border-purple-200">
               {t.badge}
             </span>
             <span className="text-xs text-[var(--apple-text-tertiary)] font-medium">
@@ -61,7 +61,7 @@ export const InefficientInterviewingCalculator: React.FC<Props> = ({ lang }) => 
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Sliders Console */}
-        <div className="lg:col-span-6 space-y-5 bg-[var(--apple-surface-secondary)] p-6 rounded-2xl border border-[var(--apple-border)]">
+        <div className="lg:col-span-6 space-y-5 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-2xs">
           <div className="text-xs font-bold uppercase tracking-wider text-[var(--apple-text-primary)] mb-2">
             {lang === 'es' ? 'Parámetros del Comité y Proceso:' : 'Panel & Workflow Parameters:'}
           </div>
@@ -201,9 +201,9 @@ export const InefficientInterviewingCalculator: React.FC<Props> = ({ lang }) => 
           <div>
             <div className="flex justify-between text-xs font-medium mb-1.5">
               <span className="text-[var(--apple-text-primary)] flex items-center gap-1.5">
-                <DollarSign className="w-3.5 h-3.5 text-amber-500" /> {t.relyAgencies}:
+                <DollarSign className="w-3.5 h-3.5 text-purple-600" /> {t.relyAgencies}:
               </span>
-              <span className="text-amber-500 font-bold">{relyOnAgenciesPct}%</span>
+              <span className="text-purple-700 font-bold">{relyOnAgenciesPct}%</span>
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -227,7 +227,7 @@ export const InefficientInterviewingCalculator: React.FC<Props> = ({ lang }) => 
                   setRelyOnAgenciesPct(parseInt(e.target.value, 10));
                   sound.playTone(380, 'sine', 0.02);
                 }}
-                className="w-full accent-amber-500 cursor-pointer"
+                className="w-full accent-purple-600 cursor-pointer"
               />
               <button
                 type="button"
@@ -246,11 +246,11 @@ export const InefficientInterviewingCalculator: React.FC<Props> = ({ lang }) => 
 
         {/* Breakdown Output by Business Areas */}
         <div className="lg:col-span-6 space-y-4">
-          <div className="rounded-2xl border border-red-500/30 bg-red-500/5 p-6 space-y-2">
-            <span className="text-[11px] font-mono uppercase tracking-wider text-red-600 font-bold flex items-center gap-1.5">
-              <AlertTriangle className="h-4 w-4" /> {t.annualWasteTitle}:
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-2 shadow-2xs">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-slate-700 font-bold flex items-center gap-1.5">
+              <AlertTriangle className="h-4 w-4 text-slate-500" /> {t.annualWasteTitle}:
             </span>
-            <div className="text-4xl sm:text-5xl font-extrabold text-[var(--apple-text-primary)] tracking-tight font-mono">
+            <div className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight font-mono">
               ${totalAnnualInefficiencyCost.toLocaleString()}
             </div>
             <p className="text-xs text-[var(--apple-text-secondary)]">
@@ -260,61 +260,61 @@ export const InefficientInterviewingCalculator: React.FC<Props> = ({ lang }) => 
 
           {/* Area Impact Breakdown */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="p-3.5 rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] space-y-1">
-              <span className="text-[10px] uppercase font-bold text-[var(--apple-text-tertiary)] block">
+            <div className="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1 shadow-2xs">
+              <span className="text-[10px] uppercase font-bold text-slate-500 block">
                 {t.hoursBurnedTitle}
               </span>
-              <div className="font-mono text-base font-bold text-red-600">
+              <div className="font-mono text-base font-bold text-slate-900">
                 ${annualInternalEngineeringCost.toLocaleString()}
               </div>
-              <p className="text-[11px] text-[var(--apple-text-secondary)]">
+              <p className="text-[11px] text-slate-600">
                 {totalInterviewHoursPerHire * annualHires} {lang === 'es' ? 'horas consumidas en debates de comités no calibrados.' : 'total hours burned in uncalibrated panel debates.'}
               </p>
             </div>
 
-            <div className="p-3.5 rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] space-y-1">
-              <span className="text-[10px] uppercase font-bold text-[var(--apple-text-tertiary)] block">
+            <div className="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1 shadow-2xs">
+              <span className="text-[10px] uppercase font-bold text-slate-500 block">
                 {t.agencyFeesTitle}
               </span>
-              <div className="font-mono text-base font-bold text-amber-500">
+              <div className="font-mono text-base font-bold text-slate-900">
                 ${annualAgencyFees.toLocaleString()}
               </div>
-              <p className="text-[11px] text-[var(--apple-text-secondary)]">
+              <p className="text-[11px] text-slate-600">
                 {t.agencyFeesSub}
               </p>
             </div>
 
-            <div className="p-3.5 rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] space-y-1">
-              <span className="text-[10px] uppercase font-bold text-[var(--apple-text-tertiary)] block">
+            <div className="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1 shadow-2xs">
+              <span className="text-[10px] uppercase font-bold text-slate-500 block">
                 {lang === 'es' ? 'Fricción Operativa' : 'Opportunity Drag'}
               </span>
               <div className="font-mono text-base font-bold text-purple-700">
                 ${operationalDisruptionCost.toLocaleString()}
               </div>
-              <p className="text-[11px] text-[var(--apple-text-secondary)]">
+              <p className="text-[11px] text-slate-600">
                 {lang === 'es' ? 'Retrasos en proyectos por ciclos de contratación de más de 4 semanas.' : 'Project delays caused by prolonged 4+ week time-to-hire cycles.'}
               </p>
             </div>
           </div>
 
           {/* Calibrated Model Comparison */}
-          <div className="p-4 rounded-xl border border-cyan-500/30 bg-cyan-500/10 flex items-center justify-between gap-4">
+          <div className="p-4 rounded-xl border border-purple-200 bg-purple-50/50 flex items-center justify-between gap-4 shadow-2xs">
             <div>
-              <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-800">
-                <ShieldCheck className="h-4 w-4 text-cyan-600" />
+              <div className="flex items-center gap-1.5 text-xs font-bold text-purple-900">
+                <ShieldCheck className="h-4 w-4 text-purple-600" />
                 <span>{t.savingsTitle}:</span>
               </div>
-              <div className="text-xl sm:text-2xl font-bold font-mono text-[var(--apple-text-primary)] mt-0.5">
+              <div className="text-xl sm:text-2xl font-bold font-mono text-purple-800 mt-0.5">
                 ${netEstimatedSavings.toLocaleString()} {lang === 'es' ? '/ año' : '/ year'}
               </div>
             </div>
-            <div className="text-right text-xs text-[var(--apple-text-secondary)] hidden sm:block">
+            <div className="text-right text-xs text-slate-600 hidden sm:block">
               {t.savingsSub}
             </div>
           </div>
 
           {/* Direct Pipeline Audit CTA */}
-          <div className="p-4 rounded-xl border border-purple-200 bg-gradient-to-r from-purple-50 to-indigo-50 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
+          <div className="p-4 rounded-xl border border-purple-200 bg-white flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
             <div className="space-y-0.5 text-left">
               <span className="text-[11px] font-bold uppercase tracking-wider text-purple-700 flex items-center gap-1">
                 <Calendar className="w-3.5 h-3.5" />

@@ -63,7 +63,7 @@ export const PlaybookDownloadSection: React.FC<Props> = ({ lang, onShowToast }) 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-[var(--apple-text-secondary)]">
               {t.chapters.map((ch, idx) => (
                 <div key={idx} className="flex items-start gap-2">
-                  <Check className="h-4 w-4 text-cyan-600 shrink-0 mt-0.5" />
+                  <Check className="h-4 w-4 text-purple-600 shrink-0 mt-0.5" />
                   <span>{ch}</span>
                 </div>
               ))}
@@ -122,7 +122,7 @@ export const PlaybookDownloadSection: React.FC<Props> = ({ lang, onShowToast }) 
             </form>
           ) : (
             <div className="py-6 text-center space-y-3">
-              <div className="w-12 h-12 mx-auto rounded-full bg-cyan-500/10 text-cyan-700 flex items-center justify-center">
+              <div className="w-12 h-12 mx-auto rounded-full bg-purple-50 text-purple-700 border border-purple-200 flex items-center justify-center">
                 <Check className="h-6 w-6" />
               </div>
               <h3 className="font-bold text-sm text-[var(--apple-text-primary)]">

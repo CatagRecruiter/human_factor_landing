@@ -131,8 +131,8 @@ export function App() {
             onClick={() => scrollTo('hero')}
             className="flex items-center gap-2.5 cursor-pointer group"
           >
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-700 via-indigo-600 to-cyan-600 flex items-center justify-center text-white shadow-md shadow-purple-600/20 group-hover:scale-105 transition-transform shrink-0">
-              <Sparkles className="w-4 h-4 text-cyan-200" />
+            <div className="w-8 h-8 rounded-xl bg-purple-700 flex items-center justify-center text-white shadow-md shadow-purple-600/20 group-hover:scale-105 transition-transform shrink-0">
+              <Sparkles className="w-4 h-4 text-purple-200" />
             </div>
             <span className="font-black text-sm sm:text-base text-[var(--apple-text-primary)] tracking-tight">
               Talent Science
@@ -184,10 +184,10 @@ export function App() {
                 sound.playTone(500, 'sine', 0.08);
                 setIsTourOpen(true);
               }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border border-purple-500/30 bg-purple-500/10 text-purple-700 hover:bg-purple-500/20 transition-all shadow-sm cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100 transition-all shadow-sm cursor-pointer"
               title={lang === 'es' ? 'Tour Guiado' : 'Interactive Tour'}
             >
-              <Sparkles className="w-3.5 h-3.5 text-cyan-600" />
+              <Sparkles className="w-3.5 h-3.5 text-purple-600" />
               <span>{t.nav.tourBtn}</span>
             </motion.button>
 
@@ -362,9 +362,9 @@ export function App() {
                     setIsMobileMenuOpen(false);
                     setIsTourOpen(true);
                   }}
-                  className="flex-1 py-2 rounded-xl border border-purple-500/30 bg-purple-500/10 text-purple-700 text-xs font-semibold flex items-center justify-center gap-1.5"
+                  className="flex-1 py-2 rounded-xl border border-purple-200 bg-purple-50 text-purple-700 text-xs font-semibold flex items-center justify-center gap-1.5"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-cyan-600" />
+                  <Sparkles className="w-3.5 h-3.5 text-purple-600" />
                   <span>{t.nav.tourBtn}</span>
                 </button>
                 <button
@@ -424,7 +424,7 @@ export function App() {
               onClick={() => scrollTo('interview-cost')}
               className="flex items-center gap-2 text-xs py-2.5 px-5 rounded-full border border-[var(--apple-border)] bg-[var(--apple-surface)] hover:bg-[var(--apple-hover)] text-[var(--apple-text-primary)] font-semibold transition-all shadow-sm cursor-pointer"
             >
-              <DollarSign className="h-4 w-4 text-amber-500" />
+              <DollarSign className="h-4 w-4 text-purple-600" />
               <span>{t.hero.secondaryBtn}</span>
             </button>
           </div>

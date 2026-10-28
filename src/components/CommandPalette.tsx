@@ -71,7 +71,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       category: lang === 'es' ? 'Módulos' : 'Modules',
       title: lang === 'es' ? 'Calculadora de Ineficiencia (Simulador P&L)' : 'Inefficiency Cost Calculator (P&L Simulator)',
       subtitle: lang === 'es' ? 'Módulo 2: Desperdicio financiero y horas de ingeniería' : 'Module 2: Real financial bleed and engineering waste',
-      icon: <DollarSign className="w-4 h-4 text-amber-500" />,
+      icon: <DollarSign className="w-4 h-4 text-purple-600" />,
       shortcut: '2',
       action: () => {
         onScrollTo('interview-cost');
@@ -83,7 +83,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       category: lang === 'es' ? 'Módulos' : 'Modules',
       title: lang === 'es' ? 'Ciencia Predictiva vs. Intuición' : 'Predictive Science vs. Gut Feeling',
       subtitle: lang === 'es' ? 'Comparativa de métodos y fiabilidad psicométrica' : 'Method comparison and psychometric predictive validity',
-      icon: <Sparkles className="w-4 h-4 text-cyan-600" />,
+      icon: <Sparkles className="w-4 h-4 text-purple-600" />,
       action: () => {
         onScrollTo('talent-science');
         onClose();
@@ -105,7 +105,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       category: lang === 'es' ? 'Módulos' : 'Modules',
       title: lang === 'es' ? 'Sobre Catalina Gil Sierra' : 'About Catalina Gil Sierra',
       subtitle: lang === 'es' ? 'Perfil ejecutivo, trayectoria y portafolio' : 'Executive profile, track record and credentials',
-      icon: <User className="w-4 h-4 text-indigo-600" />,
+      icon: <User className="w-4 h-4 text-purple-600" />,
       action: () => {
         onScrollTo('about-me');
         onClose();
@@ -130,7 +130,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       category: lang === 'es' ? 'Acciones' : 'Actions',
       title: lang === 'es' ? 'Iniciar Tour Guiado Interactivo' : 'Start Interactive Guided Tour',
       subtitle: lang === 'es' ? 'Paso a paso por los dos módulos principales' : 'Step-by-step walkthrough of both modules',
-      icon: <Sparkles className="w-4 h-4 text-cyan-600" />,
+      icon: <Sparkles className="w-4 h-4 text-purple-600" />,
       action: () => {
         onOpenTour();
         onClose();
@@ -143,7 +143,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       category: lang === 'es' ? 'Preferencias' : 'Preferences',
       title: sfxOn ? (lang === 'es' ? 'Silenciar Efectos de Audio' : 'Mute Tactile Audio FX') : (lang === 'es' ? 'Activar Efectos de Audio' : 'Enable Tactile Audio FX'),
       subtitle: sfxOn ? 'Web Audio: ON' : 'Web Audio: OFF',
-      icon: <Volume2 className="w-4 h-4 text-rose-500" />,
+      icon: <Volume2 className="w-4 h-4 text-purple-600" />,
       action: () => {
         onToggleSound();
         onClose();
@@ -154,7 +154,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       category: lang === 'es' ? 'Preferencias' : 'Preferences',
       title: lang === 'es' ? 'Switch to English' : 'Cambiar a Español',
       subtitle: lang === 'es' ? 'Current: Español' : 'Current: English',
-      icon: <Languages className="w-4 h-4 text-indigo-500" />,
+      icon: <Languages className="w-4 h-4 text-purple-600" />,
       action: () => {
         onToggleLang();
         onClose();

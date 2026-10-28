@@ -335,8 +335,8 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
             <div className="flex items-center gap-2">
               <span className={`px-2.5 py-1 rounded-full text-xs font-bold font-mono ${
                 currentFitResults.totalWeight === 100
-                  ? 'bg-cyan-500/10 text-cyan-700 border border-cyan-500/20'
-                  : 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
+                  ? 'bg-purple-50 text-purple-700 border border-purple-200'
+                  : 'bg-slate-100 text-slate-700 border border-slate-200'
               }`}>
                 {lang === 'es' ? 'Ponderación' : 'Weights'}: {currentFitResults.totalWeight}%
               </span>
@@ -357,11 +357,11 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
             {criteria.map((c, idx) => (
               <div
                 key={idx}
-                className="p-4 sm:p-5 rounded-2xl bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] space-y-3"
+                className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/80 space-y-3 shadow-2xs"
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2 flex-1">
-                    <span className="w-5 h-5 rounded-md bg-[var(--apple-surface)] text-[var(--apple-text-primary)] text-xs font-bold flex items-center justify-center shrink-0 border border-[var(--apple-border)]">
+                    <span className="w-5 h-5 rounded-md bg-slate-100 text-slate-800 text-xs font-bold flex items-center justify-center shrink-0 border border-slate-200">
                       {idx + 1}
                     </span>
                     <input
@@ -397,7 +397,7 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
                 </div>
 
                 {/* Behavioral Probe */}
-                <div className="text-xs text-[var(--apple-text-secondary)] bg-[var(--apple-surface)] px-3.5 py-2.5 rounded-xl border border-[var(--apple-border)] leading-relaxed italic">
+                <div className="text-xs text-slate-600 bg-slate-50 px-3.5 py-2.5 rounded-xl border border-slate-200/70 leading-relaxed italic">
                   "{c.q}"
                 </div>
 
@@ -407,13 +407,13 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
                     onClick={() => updateCriterionScore(idx, 1)}
                     className={`p-3 rounded-2xl border text-left transition-all active:scale-[0.97] cursor-pointer ${
                       c.score === 1
-                        ? 'border-red-500 bg-red-500/10 text-red-600 font-semibold shadow-xs ring-1 ring-red-500/30'
-                        : 'border-[var(--apple-border)] bg-[var(--apple-surface)] text-[var(--apple-text-secondary)] hover:border-[var(--apple-border-hover)] hover:bg-[var(--apple-surface-secondary)]'
+                        ? 'border-slate-400 bg-slate-100 text-slate-800 font-semibold shadow-xs ring-1 ring-slate-400/30'
+                        : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
                     }`}
                   >
                     <div className="font-bold text-[11px] uppercase tracking-wide flex items-center justify-between">
                       <span>{lang === 'es' ? '1: Insuficiente' : '1: Substandard'}</span>
-                      {c.score === 1 && <span className="w-1.5 h-1.5 rounded-full bg-red-500" />}
+                      {c.score === 1 && <span className="w-1.5 h-1.5 rounded-full bg-slate-500" />}
                     </div>
                     <div className="text-[10px] opacity-80 mt-1 line-clamp-2 leading-relaxed">{c.s1}</div>
                   </button>
@@ -422,13 +422,13 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
                     onClick={() => updateCriterionScore(idx, 3)}
                     className={`p-3 rounded-2xl border text-left transition-all active:scale-[0.97] cursor-pointer ${
                       c.score === 3
-                        ? 'border-amber-500 bg-amber-500/10 text-amber-600 font-semibold shadow-xs ring-1 ring-amber-500/30'
-                        : 'border-[var(--apple-border)] bg-[var(--apple-surface)] text-[var(--apple-text-secondary)] hover:border-[var(--apple-border-hover)] hover:bg-[var(--apple-surface-secondary)]'
+                        ? 'border-purple-300 bg-purple-50/50 text-purple-900 font-semibold shadow-xs ring-1 ring-purple-300/40'
+                        : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
                     }`}
                   >
                     <div className="font-bold text-[11px] uppercase tracking-wide flex items-center justify-between">
                       <span>{lang === 'es' ? '3: Estándar' : '3: Standard Bar'}</span>
-                      {c.score === 3 && <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />}
+                      {c.score === 3 && <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />}
                     </div>
                     <div className="text-[10px] opacity-80 mt-1 line-clamp-2 leading-relaxed">{c.s3}</div>
                   </button>
@@ -437,13 +437,13 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
                     onClick={() => updateCriterionScore(idx, 5)}
                     className={`p-3 rounded-2xl border text-left transition-all active:scale-[0.97] cursor-pointer ${
                       c.score === 5
-                        ? 'border-cyan-500 bg-cyan-500/10 text-cyan-700 font-semibold shadow-xs ring-1 ring-cyan-500/30'
-                        : 'border-[var(--apple-border)] bg-[var(--apple-surface)] text-[var(--apple-text-secondary)] hover:border-[var(--apple-border-hover)] hover:bg-[var(--apple-surface-secondary)]'
+                        ? 'border-purple-600 bg-purple-50 text-purple-900 font-semibold shadow-xs ring-1 ring-purple-500/40'
+                        : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
                     }`}
                   >
                     <div className="font-bold text-[11px] uppercase tracking-wide flex items-center justify-between">
                       <span>{lang === 'es' ? '5: Autónomo' : '5: Autonomous'}</span>
-                      {c.score === 5 && <span className="w-1.5 h-1.5 rounded-full bg-cyan-500" />}
+                      {c.score === 5 && <span className="w-1.5 h-1.5 rounded-full bg-purple-600" />}
                     </div>
                     <div className="text-[10px] opacity-80 mt-1 line-clamp-2 leading-relaxed">{c.s5}</div>
                   </button>
@@ -461,12 +461,12 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
               <span className="text-xs font-bold uppercase tracking-wider text-[var(--apple-text-primary)]">
                 {lang === 'es' ? 'Puntuación de Candidato Activo' : 'Active Candidate Scoring'}
               </span>
-              <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+              <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
                 currentFitResults.fitPct >= 80
-                  ? 'bg-cyan-500/10 text-cyan-700'
+                  ? 'bg-purple-50 text-purple-700 border border-purple-200'
                   : currentFitResults.fitPct >= 50
-                  ? 'bg-amber-500/10 text-amber-600'
-                  : 'bg-red-500/10 text-red-600'
+                  ? 'bg-slate-100 text-slate-700 border border-slate-200'
+                  : 'bg-slate-50 text-slate-500 border border-slate-200'
               }`}>
                 {currentFitResults.fitPct >= 80 ? t.hireDecision : currentFitResults.fitPct >= 50 ? t.calibrateDecision : t.passDecision}
               </span>
@@ -553,10 +553,10 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
                   <div className="flex items-center gap-2">
                     <span className={`px-2.5 py-0.5 rounded-full font-bold font-mono text-xs ${
                       c.fit >= 80
-                        ? 'bg-cyan-500/10 text-cyan-700 border border-cyan-500/20'
+                        ? 'bg-purple-50 text-purple-700 border border-purple-200'
                         : c.fit >= 50
-                        ? 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
-                        : 'bg-red-500/10 text-red-600 border border-red-500/20'
+                        ? 'bg-slate-100 text-slate-700 border border-slate-200'
+                        : 'bg-slate-50 text-slate-500 border border-slate-200'
                     }`}>
                       {c.fit}%
                     </span>
@@ -574,9 +574,9 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
           </div>
 
           {/* Calibrate Hiring Committee CTA */}
-          <div className="p-4 rounded-xl border border-indigo-200 bg-gradient-to-r from-indigo-50 to-blue-50 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
+          <div className="p-4 rounded-xl border border-purple-200/90 bg-white flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
             <div className="space-y-0.5 text-left">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-700 flex items-center gap-1">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-purple-700 flex items-center gap-1">
                 <Scale className="w-3.5 h-3.5" />
                 {lang === 'es' ? 'Despliega Rúbricas BARS en tu Equipo' : 'Deploy Calibrated BARS in Your Org'}
               </span>
@@ -590,7 +590,7 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
               href="https://cal.com/catalinagil"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-indigo-700 hover:bg-indigo-800 text-white text-xs font-semibold shadow-xs hover:shadow transition-all shrink-0 cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-purple-700 hover:bg-purple-800 text-white text-xs font-semibold shadow-xs hover:shadow transition-all shrink-0 cursor-pointer"
             >
               <span>{lang === 'es' ? 'Consultar con Catalina' : 'Work with Catalina'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -686,7 +686,7 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
                         setQuickCandidateScore(4.6);
                         sound.playClick();
                       }}
-                      className="p-1.5 rounded-lg border border-cyan-500/20 bg-cyan-500/10 text-cyan-800 text-[10px] font-bold text-center hover:bg-cyan-500/20 transition-colors cursor-pointer"
+                      className="p-1.5 rounded-lg border border-purple-200 bg-purple-50 text-purple-800 text-[10px] font-bold text-center hover:bg-purple-100 transition-colors cursor-pointer"
                     >
                       HIRE (92%)
                     </button>
@@ -696,7 +696,7 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
                         setQuickCandidateScore(3.5);
                         sound.playClick();
                       }}
-                      className="p-1.5 rounded-lg border border-amber-500/20 bg-amber-500/10 text-amber-700 text-[10px] font-bold text-center hover:bg-amber-500/20 transition-colors cursor-pointer"
+                      className="p-1.5 rounded-lg border border-slate-200 bg-slate-100 text-slate-700 text-[10px] font-bold text-center hover:bg-slate-200 transition-colors cursor-pointer"
                     >
                       CALIBRATE (70%)
                     </button>
@@ -706,7 +706,7 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
                         setQuickCandidateScore(2.2);
                         sound.playClick();
                       }}
-                      className="p-1.5 rounded-lg border border-red-500/20 bg-red-500/10 text-red-600 text-[10px] font-bold text-center hover:bg-red-500/20 transition-colors cursor-pointer"
+                      className="p-1.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-600 text-[10px] font-bold text-center hover:bg-slate-100 transition-colors cursor-pointer"
                     >
                       PASS (44%)
                     </button>
@@ -714,16 +714,16 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
                 </div>
 
                 {/* Recommendation pill preview */}
-                <div className="p-3 rounded-xl bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] flex items-center justify-between text-xs">
-                  <span className="text-[var(--apple-text-secondary)] font-medium">
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-xs">
+                  <span className="text-slate-600 font-medium">
                     {lang === 'es' ? 'Decisión Predictiva:' : 'Predictive Status:'}
                   </span>
                   <span className={`px-2.5 py-0.5 rounded-full font-bold font-mono text-xs ${
                     quickCandidateScore >= 4.0
-                      ? 'bg-cyan-500/15 text-cyan-700 border border-cyan-500/30'
+                      ? 'bg-purple-50 text-purple-700 border border-purple-200'
                       : quickCandidateScore >= 2.5
-                      ? 'bg-amber-500/15 text-amber-700 border border-amber-500/30'
-                      : 'bg-red-500/15 text-red-600 border border-red-500/30'
+                      ? 'bg-slate-100 text-slate-700 border border-slate-200'
+                      : 'bg-slate-50 text-slate-500 border border-slate-200'
                   }`}>
                     {quickCandidateScore >= 4.0 ? t.hireDecision : quickCandidateScore >= 2.5 ? t.calibrateDecision : t.passDecision}
                   </span>

@@ -84,10 +84,10 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
             {/* Profile Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-5">
               <div className="relative">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-purple-700 via-indigo-600 to-cyan-500 text-white font-bold text-xl shadow-lg shadow-purple-600/20">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-700 text-white font-bold text-xl shadow-lg shadow-purple-600/20">
                   CG
                 </div>
-                <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-cyan-500 border-2 border-[var(--apple-surface)] text-white">
+                <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-purple-700 border-2 border-[var(--apple-surface)] text-white">
                   <CheckCircle2 className="h-3 w-3" />
                 </div>
               </div>
@@ -135,13 +135,13 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
                 </div>
               </div>
               <div className="rounded-xl border border-[var(--apple-border)] bg-[var(--apple-hover)]/30 p-3 text-center">
-                <div className="text-base sm:text-lg font-bold text-cyan-700 font-mono">3.2 ➔ 4.6</div>
+                <div className="text-base sm:text-lg font-bold text-purple-700 font-mono">3.2 ➔ 4.6</div>
                 <div className="text-[10px] sm:text-xs text-[var(--apple-text-tertiary)] mt-0.5 leading-tight">
                   {lang === 'es' ? 'NPS del Candidato vía Proof-of-Work' : 'Candidate NPS via Proof-of-Work'}
                 </div>
               </div>
               <div className="rounded-xl border border-[var(--apple-border)] bg-[var(--apple-hover)]/30 p-3 text-center">
-                <div className="text-base sm:text-lg font-bold text-indigo-700 font-mono">4x Scale</div>
+                <div className="text-base sm:text-lg font-bold text-purple-700 font-mono">4x Scale</div>
                 <div className="text-[10px] sm:text-xs text-[var(--apple-text-tertiary)] mt-0.5 leading-tight">
                   {lang === 'es' ? 'Rendimiento con n8n y Prompts IA' : 'Throughput via n8n & AI Prompting'}
                 </div>
@@ -168,7 +168,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
 
                 <div className="rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] p-3 text-xs">
                   <div className="flex items-center gap-1.5 font-semibold text-[var(--apple-text-primary)]">
-                    <Cpu className="h-3.5 w-3.5 text-cyan-600" /> ScaleHouse Talent
+                    <Cpu className="h-3.5 w-3.5 text-purple-600" /> ScaleHouse Talent
                   </div>
                   <p className="text-[11px] text-[var(--apple-text-secondary)] mt-1">
                     {lang === 'es'
@@ -200,15 +200,15 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
 
                 <button
                   onClick={() => handleAction('calculator')}
-                  className="flex items-center justify-between p-3 rounded-xl border border-[var(--apple-border)] hover:border-amber-500/50 hover:bg-[var(--apple-hover)]/50 transition-all text-left group cursor-pointer"
+                  className="flex items-center justify-between p-3 rounded-xl border border-[var(--apple-border)] hover:border-purple-500/50 hover:bg-[var(--apple-hover)]/50 transition-all text-left group cursor-pointer"
                 >
                   <div>
-                    <div className="font-semibold text-xs text-[var(--apple-text-primary)] group-hover:text-amber-600 transition-colors">
+                    <div className="font-semibold text-xs text-[var(--apple-text-primary)] group-hover:text-purple-700 transition-colors">
                       {lang === 'es' ? 'Auditoría de Ineficiencia y Costos' : 'Interview Report & Analysis Generator'}
                     </div>
                     <div className="text-[10px] text-[var(--apple-text-secondary)]">{lang === 'es' ? 'Modelo financiero de impacto' : 'SHRM / HBR financial model'}</div>
                   </div>
-                  <ArrowRight className="h-3.5 w-3.5 text-[var(--apple-text-tertiary)] group-hover:text-amber-600 group-hover:translate-x-0.5 transition-all" />
+                  <ArrowRight className="h-3.5 w-3.5 text-[var(--apple-text-tertiary)] group-hover:text-purple-700 group-hover:translate-x-0.5 transition-all" />
                 </button>
               </div>
             </div>

@@ -57,7 +57,7 @@ export const NewsletterSection: React.FC<Props> = ({ lang }) => {
             </button>
           </form>
         ) : (
-          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/10 text-cyan-700 text-xs font-semibold border border-cyan-500/20">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-50 text-purple-700 text-xs font-semibold border border-purple-200">
             <Check className="h-4 w-4" />
             <span>{t.subscribedSuccess}</span>
           </div>
