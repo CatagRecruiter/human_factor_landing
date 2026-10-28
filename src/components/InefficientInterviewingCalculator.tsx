@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DollarSign, Clock, Building2, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { DollarSign, Clock, Building2, AlertTriangle, ShieldCheck, Calendar, ArrowRight, Minus, Plus } from 'lucide-react';
 import { sound } from '../lib/sound';
 import { TRANSLATIONS } from '../lib/translations';
 
@@ -73,17 +73,41 @@ export const InefficientInterviewingCalculator: React.FC<Props> = ({ lang }) => 
               </span>
               <span className="text-purple-700 font-bold">{panelEngineers}</span>
             </div>
-            <input
-              type="range"
-              min="1"
-              max="8"
-              value={panelEngineers}
-              onChange={e => {
-                setPanelEngineers(parseInt(e.target.value, 10));
-                sound.playTone(380, 'sine', 0.02);
-              }}
-              className="w-full accent-purple-600 cursor-pointer"
-            />
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setPanelEngineers(prev => Math.max(1, prev - 1));
+                  sound.playTone(360, 'sine', 0.02);
+                }}
+                className="w-8 h-8 rounded-lg border border-[var(--apple-border)] bg-[var(--apple-surface)] hover:bg-[var(--apple-hover)] flex items-center justify-center text-[var(--apple-text-secondary)] active:scale-95 transition-transform shrink-0"
+                aria-label="Decrease panel engineers"
+              >
+                <Minus className="w-3.5 h-3.5" />
+              </button>
+              <input
+                type="range"
+                min="1"
+                max="8"
+                value={panelEngineers}
+                onChange={e => {
+                  setPanelEngineers(parseInt(e.target.value, 10));
+                  sound.playTone(380, 'sine', 0.02);
+                }}
+                className="w-full accent-purple-600 cursor-pointer"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setPanelEngineers(prev => Math.min(8, prev + 1));
+                  sound.playTone(420, 'sine', 0.02);
+                }}
+                className="w-8 h-8 rounded-lg border border-[var(--apple-border)] bg-[var(--apple-surface)] hover:bg-[var(--apple-hover)] flex items-center justify-center text-[var(--apple-text-secondary)] active:scale-95 transition-transform shrink-0"
+                aria-label="Increase panel engineers"
+              >
+                <Plus className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
 
           <div>
@@ -93,17 +117,41 @@ export const InefficientInterviewingCalculator: React.FC<Props> = ({ lang }) => 
               </span>
               <span className="text-purple-700 font-bold">{candidatesPerHire}</span>
             </div>
-            <input
-              type="range"
-              min="2"
-              max="15"
-              value={candidatesPerHire}
-              onChange={e => {
-                setCandidatesPerHire(parseInt(e.target.value, 10));
-                sound.playTone(380, 'sine', 0.02);
-              }}
-              className="w-full accent-purple-600 cursor-pointer"
-            />
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setCandidatesPerHire(prev => Math.max(2, prev - 1));
+                  sound.playTone(360, 'sine', 0.02);
+                }}
+                className="w-8 h-8 rounded-lg border border-[var(--apple-border)] bg-[var(--apple-surface)] hover:bg-[var(--apple-hover)] flex items-center justify-center text-[var(--apple-text-secondary)] active:scale-95 transition-transform shrink-0"
+                aria-label="Decrease candidates per hire"
+              >
+                <Minus className="w-3.5 h-3.5" />
+              </button>
+              <input
+                type="range"
+                min="2"
+                max="15"
+                value={candidatesPerHire}
+                onChange={e => {
+                  setCandidatesPerHire(parseInt(e.target.value, 10));
+                  sound.playTone(380, 'sine', 0.02);
+                }}
+                className="w-full accent-purple-600 cursor-pointer"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setCandidatesPerHire(prev => Math.min(15, prev + 1));
+                  sound.playTone(420, 'sine', 0.02);
+                }}
+                className="w-8 h-8 rounded-lg border border-[var(--apple-border)] bg-[var(--apple-surface)] hover:bg-[var(--apple-hover)] flex items-center justify-center text-[var(--apple-text-secondary)] active:scale-95 transition-transform shrink-0"
+                aria-label="Increase candidates per hire"
+              >
+                <Plus className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
 
           <div>
@@ -113,17 +161,41 @@ export const InefficientInterviewingCalculator: React.FC<Props> = ({ lang }) => 
               </span>
               <span className="text-purple-700 font-bold">{annualHires}</span>
             </div>
-            <input
-              type="range"
-              min="2"
-              max="50"
-              value={annualHires}
-              onChange={e => {
-                setAnnualHires(parseInt(e.target.value, 10));
-                sound.playTone(380, 'sine', 0.02);
-              }}
-              className="w-full accent-purple-600 cursor-pointer"
-            />
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setAnnualHires(prev => Math.max(2, prev - 1));
+                  sound.playTone(360, 'sine', 0.02);
+                }}
+                className="w-8 h-8 rounded-lg border border-[var(--apple-border)] bg-[var(--apple-surface)] hover:bg-[var(--apple-hover)] flex items-center justify-center text-[var(--apple-text-secondary)] active:scale-95 transition-transform shrink-0"
+                aria-label="Decrease annual hires"
+              >
+                <Minus className="w-3.5 h-3.5" />
+              </button>
+              <input
+                type="range"
+                min="2"
+                max="50"
+                value={annualHires}
+                onChange={e => {
+                  setAnnualHires(parseInt(e.target.value, 10));
+                  sound.playTone(380, 'sine', 0.02);
+                }}
+                className="w-full accent-purple-600 cursor-pointer"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setAnnualHires(prev => Math.min(50, prev + 1));
+                  sound.playTone(420, 'sine', 0.02);
+                }}
+                className="w-8 h-8 rounded-lg border border-[var(--apple-border)] bg-[var(--apple-surface)] hover:bg-[var(--apple-hover)] flex items-center justify-center text-[var(--apple-text-secondary)] active:scale-95 transition-transform shrink-0"
+                aria-label="Increase annual hires"
+              >
+                <Plus className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
 
           <div>
@@ -133,18 +205,42 @@ export const InefficientInterviewingCalculator: React.FC<Props> = ({ lang }) => 
               </span>
               <span className="text-amber-500 font-bold">{relyOnAgenciesPct}%</span>
             </div>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              step="5"
-              value={relyOnAgenciesPct}
-              onChange={e => {
-                setRelyOnAgenciesPct(parseInt(e.target.value, 10));
-                sound.playTone(380, 'sine', 0.02);
-              }}
-              className="w-full accent-amber-500 cursor-pointer"
-            />
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setRelyOnAgenciesPct(prev => Math.max(0, prev - 5));
+                  sound.playTone(360, 'sine', 0.02);
+                }}
+                className="w-8 h-8 rounded-lg border border-[var(--apple-border)] bg-[var(--apple-surface)] hover:bg-[var(--apple-hover)] flex items-center justify-center text-[var(--apple-text-secondary)] active:scale-95 transition-transform shrink-0"
+                aria-label="Decrease agency reliance"
+              >
+                <Minus className="w-3.5 h-3.5" />
+              </button>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                step="5"
+                value={relyOnAgenciesPct}
+                onChange={e => {
+                  setRelyOnAgenciesPct(parseInt(e.target.value, 10));
+                  sound.playTone(380, 'sine', 0.02);
+                }}
+                className="w-full accent-amber-500 cursor-pointer"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setRelyOnAgenciesPct(prev => Math.min(100, prev + 5));
+                  sound.playTone(420, 'sine', 0.02);
+                }}
+                className="w-8 h-8 rounded-lg border border-[var(--apple-border)] bg-[var(--apple-surface)] hover:bg-[var(--apple-hover)] flex items-center justify-center text-[var(--apple-text-secondary)] active:scale-95 transition-transform shrink-0"
+                aria-label="Increase agency reliance"
+              >
+                <Plus className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -215,6 +311,30 @@ export const InefficientInterviewingCalculator: React.FC<Props> = ({ lang }) => 
             <div className="text-right text-xs text-[var(--apple-text-secondary)] hidden sm:block">
               {t.savingsSub}
             </div>
+          </div>
+
+          {/* Direct Pipeline Audit CTA */}
+          <div className="p-4 rounded-xl border border-purple-200 bg-gradient-to-r from-purple-50 to-indigo-50 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
+            <div className="space-y-0.5 text-left">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-purple-700 flex items-center gap-1">
+                <Calendar className="w-3.5 h-3.5" />
+                {lang === 'es' ? 'Recupera hasta el 65% de este gasto' : 'Recover up to 65% of this budget'}
+              </span>
+              <p className="text-xs text-slate-700">
+                {lang === 'es'
+                  ? 'Audita tu embudo técnico y calibra rúbricas BARS en 15 minutos.'
+                  : 'Audit your engineering hiring loop and deploy calibrated BARS in 15 mins.'}
+              </p>
+            </div>
+            <a
+              href="https://cal.com/catalinagil"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-purple-700 hover:bg-purple-800 text-white text-xs font-semibold shadow-xs hover:shadow transition-all shrink-0 cursor-pointer"
+            >
+              <span>{lang === 'es' ? 'Agendar Auditoría' : 'Book Pipeline Audit'}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
           </div>
         </div>
       </div>

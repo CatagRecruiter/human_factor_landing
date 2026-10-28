@@ -10,7 +10,9 @@ import {
   User, 
   Sliders, 
   DollarSign,
-  Command
+  Command,
+  Menu,
+  X
 } from 'lucide-react';
 import { sound } from './lib/sound';
 import { GuidedTourModal } from './components/GuidedTourModal';
@@ -18,6 +20,7 @@ import { CommandPalette } from './components/CommandPalette';
 import { InterviewAnalysisTool } from './components/InterviewAnalysisTool';
 import { InefficientInterviewingCalculator } from './components/InefficientInterviewingCalculator';
 import { TalentScienceOverview } from './components/TalentScienceOverview';
+import { ExecutiveEndorsementsSection } from './components/ExecutiveEndorsementsSection';
 import { AboutMeSection } from './components/AboutMeSection';
 import { NewsletterSection } from './components/NewsletterSection';
 import { PlaybookDownloadSection } from './components/PlaybookDownloadSection';
@@ -29,6 +32,7 @@ export function App() {
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [isTourOpen, setIsTourOpen] = useState<boolean>(false);
   const [isCommandOpen, setIsCommandOpen] = useState<boolean>(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   // Spotlight mouse coordinates
   const [mousePos, setMousePos] = useState({ x: 50, y: 30 });
@@ -81,7 +85,7 @@ export function App() {
 
   return (
     <div 
-      className="relative min-h-screen selection:bg-purple-500/20 selection:text-purple-600 pb-16"
+      className="relative min-h-screen selection:bg-purple-500/20 selection:text-purple-600 pb-28 sm:pb-16"
       style={{
         '--mouse-x': `${mousePos.x}%`,
         '--mouse-y': `${mousePos.y}%`
@@ -123,6 +127,29 @@ export function App() {
       <header className="sticky top-0 z-40 apple-glass px-4 sm:px-8 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
+          {/* Brand Logo & Attribution */}
+          <div 
+            onClick={() => scrollTo('hero')}
+            className="flex items-center gap-2.5 cursor-pointer group"
+          >
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-700 via-indigo-600 to-cyan-600 flex items-center justify-center text-white shadow-md shadow-purple-600/20 group-hover:scale-105 transition-transform shrink-0">
+              <Sparkles className="w-4 h-4 text-cyan-200" />
+            </div>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-1.5 leading-none">
+                <span className="font-black text-sm text-[var(--apple-text-primary)] tracking-tight">
+                  Talent Science
+                </span>
+                <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-purple-500/10 text-purple-700 border border-purple-500/20 hidden sm:inline">
+                  COCKPIT
+                </span>
+              </div>
+              <span className="text-[10px] text-[var(--apple-text-tertiary)] font-medium leading-tight">
+                by Catalina Gil Sierra
+              </span>
+            </div>
+          </div>
+
           {/* Quick Nav Anchors */}
           <nav className="hidden xl:flex items-center gap-1 bg-[var(--apple-surface-secondary)] p-1 rounded-full border border-[var(--apple-border)] text-xs font-semibold text-[var(--apple-text-secondary)]">
             <button onClick={() => scrollTo('talent-science')} className="px-3 py-1 rounded-full hover:text-[var(--apple-text-primary)] hover:bg-[var(--apple-surface)] transition-all cursor-pointer">
@@ -146,8 +173,8 @@ export function App() {
             </button>
           </nav>
 
-          {/* Controls & CTAs */}
-          <div className="ml-auto xl:ml-0 flex items-center gap-2">
+          {/* Controls & CTAs (Desktop / Tablet) */}
+          <div className="hidden sm:flex items-center gap-2">
             {/* Command Palette Trigger */}
             <motion.button
               whileTap={{ scale: 0.94 }}
@@ -159,7 +186,7 @@ export function App() {
               title={lang === 'es' ? 'Paleta de Comandos (Ctrl+K)' : 'Command Palette (Ctrl+K)'}
             >
               <Command className="w-3.5 h-3.5 text-purple-600" />
-              <span className="font-mono text-[10px] hidden sm:inline">⌘K</span>
+              <span className="font-mono text-[10px] hidden md:inline">⌘K</span>
             </motion.button>
 
             <motion.button
@@ -180,7 +207,7 @@ export function App() {
               onClick={() => {
                 scrollTo('about-me');
               }}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border border-[var(--apple-border)] bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] hover:text-[var(--apple-text-primary)] hover:border-[var(--apple-border-hover)] transition-all cursor-pointer"
+              className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border border-[var(--apple-border)] bg-[var(--apple-surface-secondary)] text-[var(--apple-text-secondary)] hover:text-[var(--apple-text-primary)] hover:border-[var(--apple-border-hover)] transition-all cursor-pointer"
               title="Catalina Gil's Profile"
             >
               <User className="w-3.5 h-3.5" />
@@ -245,7 +272,137 @@ export function App() {
               <ArrowUpRight className="w-3.5 h-3.5" />
             </motion.a>
           </div>
+
+          {/* Mobile Right Controls (< 640px) */}
+          <div className="flex sm:hidden items-center gap-2">
+            <div className="flex items-center rounded-xl bg-[var(--apple-surface-secondary)] p-0.5 border border-[var(--apple-border)]">
+              <button
+                onClick={() => {
+                  if (lang !== 'en') {
+                    sound.playClick();
+                    setLang('en');
+                  }
+                }}
+                className={`px-2 py-1 rounded-lg text-[11px] font-bold transition-all ${
+                  lang === 'en' ? 'bg-purple-700 text-white' : 'text-[var(--apple-text-secondary)]'
+                }`}
+              >
+                EN
+              </button>
+              <button
+                onClick={() => {
+                  if (lang !== 'es') {
+                    sound.playClick();
+                    setLang('es');
+                  }
+                }}
+                className={`px-2 py-1 rounded-lg text-[11px] font-bold transition-all ${
+                  lang === 'es' ? 'bg-purple-700 text-white' : 'text-[var(--apple-text-secondary)]'
+                }`}
+              >
+                ES
+              </button>
+            </div>
+
+            <button
+              onClick={() => {
+                sound.playClick();
+                setIsMobileMenuOpen(!isMobileMenuOpen);
+              }}
+              className="p-2 rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] text-[var(--apple-text-primary)] hover:bg-[var(--apple-hover)] transition-all cursor-pointer"
+              aria-label="Toggle Mobile Menu"
+            >
+              {isMobileMenuOpen ? <X className="w-4 h-4 text-purple-700" /> : <Menu className="w-4 h-4" />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Dropdown Drawer */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              className="sm:hidden border-t border-[var(--apple-border)] mt-3 pt-3 pb-2 space-y-2 overflow-hidden"
+            >
+              <div className="grid grid-cols-2 gap-2 text-xs font-semibold">
+                <button
+                  onClick={() => {
+                    scrollTo('talent-science');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="p-2.5 rounded-xl bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] text-left"
+                >
+                  {t.nav.talentScience}
+                </button>
+                <button
+                  onClick={() => {
+                    scrollTo('interview-tool');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="p-2.5 rounded-xl bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] text-left text-purple-700 font-bold"
+                >
+                  {t.nav.interviewTool}
+                </button>
+                <button
+                  onClick={() => {
+                    scrollTo('interview-cost');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="p-2.5 rounded-xl bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] text-left"
+                >
+                  {t.nav.inefficiencyAudit}
+                </button>
+                <button
+                  onClick={() => {
+                    scrollTo('about-me');
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="p-2.5 rounded-xl bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] text-left"
+                >
+                  {t.nav.aboutCatalina}
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2 pt-1">
+                <button
+                  onClick={() => {
+                    sound.playClick();
+                    setIsMobileMenuOpen(false);
+                    setIsTourOpen(true);
+                  }}
+                  className="flex-1 py-2 rounded-xl border border-purple-500/30 bg-purple-500/10 text-purple-700 text-xs font-semibold flex items-center justify-center gap-1.5"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-cyan-600" />
+                  <span>{t.nav.tourBtn}</span>
+                </button>
+                <button
+                  onClick={() => {
+                    sound.playClick();
+                    setIsMobileMenuOpen(false);
+                    setIsCommandOpen(true);
+                  }}
+                  className="flex-1 py-2 rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)] text-xs font-semibold flex items-center justify-center gap-1.5"
+                >
+                  <Command className="w-3.5 h-3.5 text-purple-600" />
+                  <span>⌘K Menu</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setSfxOn(!sfxOn);
+                    sound.playClick();
+                  }}
+                  className="p-2 rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface)]"
+                  title="Toggle SFX"
+                >
+                  {sfxOn ? <Volume2 className="w-4 h-4 text-purple-600" /> : <VolumeX className="w-4 h-4" />}
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* Main Experience Flow */}
@@ -293,7 +450,10 @@ export function App() {
         {/* 3. COST OF INEFFICIENT INTERVIEWING CALCULATOR */}
         <InefficientInterviewingCalculator lang={lang} />
 
-        {/* 4. ABOUT ME / HOJA DE VIDA SECTION */}
+        {/* 4. EXECUTIVE ENDORSEMENTS & PUBLISHED RESEARCH */}
+        <ExecutiveEndorsementsSection lang={lang} />
+
+        {/* 5. ABOUT ME / HOJA DE VIDA SECTION */}
         <AboutMeSection lang={lang} />
 
         {/* 5. PLAYBOOK DOWNLOAD GATED RESOURCE */}
@@ -375,6 +535,30 @@ export function App() {
         />
 
       </motion.main>
+
+      {/* Sticky Mobile Action Bar (< 640px) */}
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-[var(--apple-surface)]/90 backdrop-blur-xl border-t border-[var(--apple-border)] px-4 py-2.5 pb-safe shadow-xl flex items-center justify-between gap-3">
+        <button
+          onClick={() => {
+            sound.playTone(450, 'sine', 0.05);
+            scrollTo('interview-tool');
+          }}
+          className="flex-1 py-2 px-3 rounded-xl border border-[var(--apple-border)] bg-[var(--apple-surface-secondary)] text-xs font-semibold text-[var(--apple-text-primary)] flex items-center justify-center gap-1.5 shadow-2xs active:scale-95 transition-transform"
+        >
+          <Sliders className="w-3.5 h-3.5 text-purple-600" />
+          <span>{lang === 'es' ? 'Herramienta BARS' : 'BARS Tool'}</span>
+        </button>
+
+        <a
+          href="https://cal.com/catalinagil"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-1 apple-button py-2 px-3 flex items-center justify-center gap-1.5 text-xs font-semibold shadow-md active:scale-95 transition-transform"
+        >
+          <span>{t.nav.bookBtn}</span>
+          <ArrowUpRight className="w-3.5 h-3.5" />
+        </a>
+      </div>
     </div>
   );
 }

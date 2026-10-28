@@ -7,7 +7,9 @@ import {
   Download, 
   UserPlus, 
   Users, 
-  Scale
+  Scale,
+  Calendar,
+  ArrowRight
 } from 'lucide-react';
 import { SkillCriterion, CandidateEntry, calculateFit } from '../lib/engine';
 import { CALIBRATION_QUESTIONS, extractDimensionsFromJD } from '../lib/jdAnalyzer';
@@ -50,6 +52,7 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
   ]);
 
   const [activeCandidateName, setActiveCandidateName] = useState(lang === 'es' ? 'Camilo Gómez' : 'Sam Patel');
+  const [mobileTab, setMobileTab] = useState<'rubrics' | 'arena'>('rubrics');
 
   // Real-time calculation of current criteria
   const currentFitResults = calculateFit(criteria);
@@ -256,10 +259,42 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
         )}
       </AnimatePresence>
 
+      {/* Mobile Tab Stepper (< 1024px) */}
+      <div className="flex lg:hidden items-center p-1 rounded-2xl bg-[var(--apple-surface-secondary)] border border-[var(--apple-border)] gap-1 shadow-2xs">
+        <button
+          onClick={() => {
+            sound.playClick();
+            setMobileTab('rubrics');
+          }}
+          className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            mobileTab === 'rubrics'
+              ? 'bg-purple-700 text-white shadow-xs'
+              : 'text-[var(--apple-text-secondary)] hover:text-[var(--apple-text-primary)]'
+          }`}
+        >
+          <Sliders className="w-3.5 h-3.5" />
+          <span>{lang === 'es' ? 'Rúbricas BARS' : 'BARS Rubrics'} ({criteria.length})</span>
+        </button>
+        <button
+          onClick={() => {
+            sound.playClick();
+            setMobileTab('arena');
+          }}
+          className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            mobileTab === 'arena'
+              ? 'bg-purple-700 text-white shadow-xs'
+              : 'text-[var(--apple-text-secondary)] hover:text-[var(--apple-text-primary)]'
+          }`}
+        >
+          <Users className="w-3.5 h-3.5" />
+          <span>{lang === 'es' ? 'Arena y Fit' : 'Fit & Arena'} ({currentFitResults.fitPct}%)</span>
+        </button>
+      </div>
+
       {/* Main Evaluator Grid: 7 cols for Scorecard Rubrics, 5 cols for Live Ring & Arena */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
         {/* Left Column: Criteria & Questions */}
-        <div className="lg:col-span-7 apple-card p-6 sm:p-8 space-y-6">
+        <div className={`apple-card p-5 sm:p-8 space-y-6 ${mobileTab === 'rubrics' ? 'block' : 'hidden'} lg:block lg:col-span-7`}>
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--apple-border)] pb-4">
             <div>
               <span className="text-xs font-bold text-[var(--apple-text-primary)] uppercase tracking-wider block">
@@ -340,7 +375,7 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
                 </div>
 
                 {/* 1 - 3 - 5 Objective Anchors */}
-                <div className="grid grid-cols-3 gap-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5">
                   <button
                     onClick={() => updateCriterionScore(idx, 1)}
                     className={`p-3 rounded-2xl border text-left transition-all active:scale-[0.97] cursor-pointer ${
@@ -392,7 +427,7 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
         </div>
 
         {/* Right Column: Live Fit Ring + Multi-Candidate Arena */}
-        <div className="lg:col-span-5 space-y-6">
+        <div className={`space-y-6 ${mobileTab === 'arena' ? 'block' : 'hidden'} lg:block lg:col-span-5`}>
           {/* Active Candidate Evaluation Card */}
           <div className="apple-card p-6 space-y-5 text-center">
             <div className="flex items-center justify-between border-b border-[var(--apple-border)] pb-3">
@@ -495,6 +530,30 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Calibrate Hiring Committee CTA */}
+          <div className="p-4 rounded-xl border border-indigo-200 bg-gradient-to-r from-indigo-50 to-blue-50 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
+            <div className="space-y-0.5 text-left">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-700 flex items-center gap-1">
+                <Scale className="w-3.5 h-3.5" />
+                {lang === 'es' ? 'Despliega Rúbricas BARS en tu Equipo' : 'Deploy Calibrated BARS in Your Org'}
+              </span>
+              <p className="text-xs text-slate-700">
+                {lang === 'es'
+                  ? 'Entrena a tus entrevistadores técnicos para evaluar evidencia conductual sin sesgos.'
+                  : 'Calibrate your interview panels to evaluate behavioral evidence and eradicate interviewer variance.'}
+              </p>
+            </div>
+            <a
+              href="https://cal.com/catalinagil"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-indigo-700 hover:bg-indigo-800 text-white text-xs font-semibold shadow-xs hover:shadow transition-all shrink-0 cursor-pointer"
+            >
+              <span>{lang === 'es' ? 'Consultar con Catalina' : 'Work with Catalina'}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
           </div>
         </div>
       </div>
