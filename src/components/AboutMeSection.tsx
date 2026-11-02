@@ -63,8 +63,8 @@ export const AboutMeSection: React.FC<Props> = ({ lang }) => {
               </p>
               <p className="text-xs text-[var(--apple-text-secondary)] max-w-xl pt-0.5">
                 {lang === 'es'
-                  ? 'Especialista en Evaluación Psicométrica (USBMED) y Psicóloga Organizacional (EAFIT). Reemplazando "vibe checks" con rúbricas BARS calibradas y automatización n8n en Norteamérica, Europa y LATAM.'
-                  : 'Specialist in Psychometric Assessment Instruments (USBMED) & Organizational Psychologist (EAFIT). Replacing intuition-based hiring with calibrated BARS and n8n autonomous sourcing workflows.'}
+                  ? 'Especialista en Evaluación Psicométrica (USBMED) y Psicóloga Organizacional (Politécnico Grancolombiano). Reemplazando "vibe checks" con rúbricas BARS calibradas y automatización n8n en Norteamérica, Europa y LATAM.'
+                  : 'Specialist in Psychometric Assessment Instruments (USBMED) & Organizational Psychologist (Politécnico Grancolombiano). Replacing intuition-based hiring with calibrated BARS and n8n autonomous sourcing workflows.'}
               </p>
             </div>
           </div>
