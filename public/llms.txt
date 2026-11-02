@@ -1,0 +1,30 @@
+# Talent Science Suite | Interactive Psychometric Cockpit by Catalina Gil Sierra
+
+> Interactive executive cockpit for founders, VPs of Engineering, and People Ops executives to quantify hiring inefficiency costs, deploy Behaviorally Anchored Rating Scales (BARS), and export calibrated candidate evaluation reports in PDF.
+
+- Canonical Web Application: https://talentscience.catagil.com
+- Primary Executive Dossier: https://catagil.com
+- Full Persona & Research LLM Context: https://catagil.com/llms.txt
+- Author: Catalina Gil Sierra (Senior Talent Acquisition Specialist & Psychometric Systems Architect)
+- Academic Credentials: Politécnico Grancolombiano (Psychology) & Universidad de San Buenaventura Medellín USBMED (Psychometrics)
+- Direct Consultation Booking: https://cal.com/catalinagil
+
+---
+
+## Interactive Modules in the Cockpit
+
+### 1. Inefficient Interviewing Calculator (P&L Bleed Simulator)
+- **Objective:** Quantifies the financial hemorrhage of subjective, intuition-based interviewing.
+- **Parameters:** Average engineering base salary, annual hires, early turnover rate (months 1–6), technical interviewer hours per candidate.
+- **Underlying Formula:** Calculates direct loss based on the empirical 3.2x base salary cost of a technical mis-hire (wasted interview hours, onboarding overhead, tech debt, and replacement costs).
+
+### 2. BARS Arena & Interview Analysis Tool
+- **Objective:** Replaces conversational "vibe checks" with structured Behaviorally Anchored Rating Scales.
+- **Functionality:** Ingests Job Descriptions (Tech, Product, Leadership), maps them to critical competency anchors (Score 1 = Deficient, Score 3 = Competent, Score 5 = Elite), calculates weighted candidate fit %, and issues calibrated verdicts (HIRE / CALIBRATE / PASS).
+- **Research Anchor:** Raises interview predictive validity from r = 0.20 to r = 0.58, reducing inter-rater variance by up to 85%.
+
+### 3. Executive PDF Audit Generator
+- Client-side document synthesizer built with jsPDF to produce clean, committee-ready candidate scorecards and hiring panel calibration records.
+
+### 4. Serverless API Endpoint
+- `POST /api/leads`: Captures executive audit requests directly onto a Cloudflare D1 relational database (`talentlens-db`) with bot-protection honeypots and CF edge geolocation.
