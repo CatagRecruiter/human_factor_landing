@@ -1,17 +1,17 @@
-# Talent Science Suite | Interactive Psychometric Cockpit by Catalina Gil Sierra
+# Talent Science Suite | Interactive Psychometric Platform by Catalina Gil Sierra
 
-> Interactive executive cockpit for founders, VPs of Engineering, and People Ops executives to quantify hiring inefficiency costs, deploy Behaviorally Anchored Rating Scales (BARS), and export calibrated candidate evaluation reports in PDF.
+> Interactive executive platform for founders, VPs of Engineering, and People Ops executives to quantify hiring inefficiency costs, deploy Behaviorally Anchored Rating Scales (BARS), and export calibrated candidate evaluation reports in PDF.
 
 - Canonical Web Application: https://talentscience.catagil.com
 - Primary Executive Dossier: https://catagil.com
 - Full Persona & Research LLM Context: https://catagil.com/llms.txt
 - Author: Catalina Gil Sierra (Senior Talent Acquisition Specialist & Psychometric Systems Architect)
 - Academic Credentials: Politécnico Grancolombiano (Psychology) & Universidad de San Buenaventura Medellín USBMED (Psychometrics)
-- Direct Consultation Booking: https://cal.com/catalinagil
+- Direct Consultation Booking: https://calendar.app.google/AjS1kWeh4xrEVcFM9
 
 ---
 
-## Interactive Modules in the Cockpit
+## Interactive Modules in Talent Science
 
 ### 1. Inefficient Interviewing Calculator (P&L Bleed Simulator)
 - **Objective:** Quantifies the financial hemorrhage of subjective, intuition-based interviewing.

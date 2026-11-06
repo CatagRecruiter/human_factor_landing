@@ -14,5 +14,8 @@
       "database_name": "talentlens-db",
       "database_id": "53144a09-dc73-41c9-8748-45abcacc80db"
     }
-  ]
+  ],
+  "vars": {
+    "NOTIFICATION_EMAIL": "catalinagilsierra@gmail.com"
+  }
 }

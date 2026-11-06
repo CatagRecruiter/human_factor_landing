@@ -1,0 +1,17 @@
+{
+  "name": "Talent Science — Predictive Talent Acquisition & BARS Arena",
+  "short_name": "Talent Science",
+  "description": "Interactive platform for BARS candidate rubrics, P&L hiring bleed simulations, and calibrated evaluation audits.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#7c3aed",
+  "icons": [
+    {
+      "src": "/catalina.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}

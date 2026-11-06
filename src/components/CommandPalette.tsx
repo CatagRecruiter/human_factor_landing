@@ -117,11 +117,11 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       id: 'book',
       category: lang === 'es' ? 'Acciones' : 'Actions',
       title: lang === 'es' ? 'Agendar Consulta de 15 Minutos' : 'Book 15-Minute Consultation',
-      subtitle: 'cal.com/catalinagil',
+      subtitle: 'Google Calendar (15 min)',
       icon: <Calendar className="w-4 h-4 text-purple-600" />,
       shortcut: '↵',
       action: () => {
-        window.open('https://cal.com/catalinagil', '_blank');
+        window.open('https://calendar.app.google/AjS1kWeh4xrEVcFM9', '_blank');
         onClose();
       }
     },

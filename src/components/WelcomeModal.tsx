@@ -121,7 +121,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
                 {lang === 'es' ? (
                   <>Diseñé esta plataforma interactiva para demostrar cómo las <strong className="text-[var(--apple-text-primary)]">rúbricas BARS</strong> y los modelos de costos operativos protegen los márgenes de negocio y elevan la calidad técnica de las contrataciones.</>
                 ) : (
-                  <>I designed this interactive cockpit to demonstrate how <strong className="text-[var(--apple-text-primary)]">BARS rubrics</strong> and financial P&amp;L bleed models safeguard operational margins and elevate candidate quality across technical panels.</>
+                  <>I designed Talent Science to demonstrate how <strong className="text-[var(--apple-text-primary)]">BARS rubrics</strong> and financial P&amp;L bleed models safeguard operational margins and elevate candidate quality across technical panels.</>
                 )}
               </p>
             </div>
@@ -179,7 +179,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
               </div>
             </div>
 
-            {/* Cockpit Module Launchers */}
+            {/* Talent Science Module Launchers */}
             <div className="space-y-2.5 mb-5">
               <div className="text-[11px] font-semibold uppercase tracking-wider text-[var(--apple-text-tertiary)]">
                 {lang === 'es' ? 'Probar herramientas en vivo:' : 'Try my live tools:'}
@@ -259,7 +259,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({
                   className="apple-button w-full sm:w-auto flex items-center justify-center gap-2 py-2 px-5 text-xs font-semibold cursor-pointer"
                 >
                   <Sliders className="h-3.5 w-3.5" />
-                  <span>{lang === 'es' ? 'Explorar Cockpit' : 'Explore Cockpit'}</span>
+                  <span>{lang === 'es' ? 'Explorar Talent Science' : 'Explore Talent Science'}</span>
                 </button>
               </div>
             </div>

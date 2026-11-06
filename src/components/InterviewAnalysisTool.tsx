@@ -18,6 +18,7 @@ import { CALIBRATION_QUESTIONS, extractDimensionsFromJD } from '../lib/jdAnalyze
 import { generateComparisonPDF } from '../lib/pdfReport';
 import { sound } from '../lib/sound';
 import { TRANSLATIONS } from '../lib/translations';
+import { RadarChart } from './RadarChart';
 
 interface Props {
   lang: 'en' | 'es';
@@ -493,6 +494,17 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
               </div>
             </div>
 
+            {/* Radar 360 Competency Chart */}
+            <RadarChart
+              axes={criteria.map(c => ({
+                name: c.name,
+                score: c.score,
+                benchmark: 3.5
+              }))}
+              candidateName={activeCandidateName}
+              size={240}
+            />
+
             <button
               onClick={handleLockCandidate}
               className="apple-button w-full py-2.5 flex items-center justify-center gap-2 text-xs font-semibold shadow-md cursor-pointer"
@@ -587,7 +599,7 @@ export const InterviewAnalysisTool: React.FC<Props> = ({ lang, onShowToast }) =>
               </p>
             </div>
             <a
-              href="https://cal.com/catalinagil"
+              href="https://calendar.app.google/AjS1kWeh4xrEVcFM9"
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-purple-700 hover:bg-purple-800 text-white text-xs font-semibold shadow-xs hover:shadow transition-all shrink-0 cursor-pointer"

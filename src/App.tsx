@@ -24,12 +24,15 @@ import { AboutMeSection } from './components/AboutMeSection';
 import { NewsletterSection } from './components/NewsletterSection';
 import { PlaybookDownloadSection } from './components/PlaybookDownloadSection';
 import { TRANSLATIONS } from './lib/translations';
+import { LiveAuditTicker } from './components/LiveAuditTicker';
+import { HiringArchetypeQuizModal } from './components/HiringArchetypeQuizModal';
 
 export function App() {
   const [lang, setLang] = useState<'en' | 'es'>('en');
   const [sfxOn, setSfxOn] = useState<boolean>(true);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [isTourOpen, setIsTourOpen] = useState<boolean>(false);
+  const [isQuizOpen, setIsQuizOpen] = useState<boolean>(false);
   const [isCommandOpen, setIsCommandOpen] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
@@ -121,6 +124,9 @@ export function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Live Social Proof Audit Ticker */}
+      <LiveAuditTicker lang={lang} onOpenQuiz={() => setIsQuizOpen(true)} />
 
       {/* Apple Translucent Frosted Glass Navbar */}
       <header className="sticky top-0 z-40 apple-glass px-4 sm:px-8 py-3">
@@ -252,7 +258,7 @@ export function App() {
             <motion.a
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.95 }}
-              href="https://cal.com/catalinagil"
+              href="https://calendar.app.google/AjS1kWeh4xrEVcFM9"
               target="_blank"
               rel="noopener noreferrer"
               className="apple-button inline-flex items-center gap-1.5 text-xs py-2 px-3.5"
@@ -508,6 +514,16 @@ export function App() {
           }}
         />
 
+        {/* Hiring Archetype Diagnostic Quiz Modal */}
+        <HiringArchetypeQuizModal
+          isOpen={isQuizOpen}
+          onClose={() => setIsQuizOpen(false)}
+          lang={lang}
+          onSelectModule={(mod) => {
+            scrollTo(mod === 'converter' ? 'interview-tool' : 'interview-cost');
+          }}
+        />
+
         {/* Raycast / Linear Style Command Palette (Cmd+K) */}
         <CommandPalette
           isOpen={isCommandOpen}
@@ -536,7 +552,7 @@ export function App() {
         </button>
 
         <a
-          href="https://cal.com/catalinagil"
+          href="https://calendar.app.google/AjS1kWeh4xrEVcFM9"
           target="_blank"
           rel="noopener noreferrer"
           className="flex-1 apple-button py-2 px-3 flex items-center justify-center gap-1.5 text-xs font-semibold shadow-md active:scale-95 transition-transform"

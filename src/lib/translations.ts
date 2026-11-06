@@ -426,9 +426,9 @@ export const TRANSLATIONS: Record<'en' | 'es', AppTranslations> = {
         title: "Welcome to Talent Science",
         subtitle: "Predictive Talent Acquisition & Psychometric Architecture",
         role: "By Catalina Gil Sierra",
-        intro: "This interactive cockpit demonstrates how calibrated BARS rubrics, automated n8n pipelines, and psychometric validation transform hiring from subjective intuition into predictable business ROI.",
+        intro: "Talent Science demonstrates how calibrated BARS rubrics, automated n8n pipelines, and psychometric validation transform hiring from subjective intuition into predictable business ROI.",
         startTour: "Start Guided Tour",
-        exploreDirectly: "Explore Cockpit Directly"
+        exploreDirectly: "Explore Talent Science Directly"
       },
       tour: {
         stepOf: "Step",

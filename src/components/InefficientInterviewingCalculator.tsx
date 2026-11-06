@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { DollarSign, Clock, Building2, AlertTriangle, ShieldCheck, Calendar, ArrowRight, Minus, Plus } from 'lucide-react';
+import { DollarSign, Clock, Building2, AlertTriangle, ShieldCheck, Calendar, ArrowRight, Minus, Plus, Sparkles } from 'lucide-react';
 import { sound } from '../lib/sound';
 import { TRANSLATIONS } from '../lib/translations';
+import { LiquidBleedTank } from './LiquidBleedTank';
+import { haptics } from '../lib/haptics';
 
 interface Props {
   lang: 'en' | 'es';
@@ -16,6 +18,7 @@ export const InefficientInterviewingCalculator: React.FC<Props> = ({ lang }) => 
   const [annualHires, setAnnualHires] = useState(12);
   const [engineerHourlyRate] = useState(95);
   const [relyOnAgenciesPct, setRelyOnAgenciesPct] = useState(50);
+  const [isProtected, setIsProtected] = useState(false);
   const avgSalary = 85000;
   const agencyFeePct = 20;
   const roundsPerCandidate = 4;
@@ -62,8 +65,52 @@ export const InefficientInterviewingCalculator: React.FC<Props> = ({ lang }) => 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Sliders Console */}
         <div className="lg:col-span-6 space-y-5 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-2xs">
-          <div className="text-xs font-bold uppercase tracking-wider text-[var(--apple-text-primary)] mb-2">
-            {lang === 'es' ? 'Parámetros del Comité y Proceso:' : 'Panel & Workflow Parameters:'}
+          <div className="text-xs font-bold uppercase tracking-wider text-[var(--apple-text-primary)] mb-2 flex items-center justify-between">
+            <span>{lang === 'es' ? 'Parámetros del Comité y Proceso:' : 'Panel & Workflow Parameters:'}</span>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => {
+                  haptics.step();
+                  sound.playClick();
+                  setPanelEngineers(3);
+                  setCandidatesPerHire(5);
+                  setAnnualHires(4);
+                  setRelyOnAgenciesPct(25);
+                }}
+                className="px-2 py-0.5 rounded-md bg-purple-50 hover:bg-purple-100 text-purple-700 text-[10px] font-mono font-bold transition-colors cursor-pointer"
+              >
+                Seed
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  haptics.step();
+                  sound.playClick();
+                  setPanelEngineers(4);
+                  setCandidatesPerHire(6);
+                  setAnnualHires(12);
+                  setRelyOnAgenciesPct(50);
+                }}
+                className="px-2 py-0.5 rounded-md bg-purple-50 hover:bg-purple-100 text-purple-700 text-[10px] font-mono font-bold transition-colors cursor-pointer"
+              >
+                Scale
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  haptics.step();
+                  sound.playClick();
+                  setPanelEngineers(5);
+                  setCandidatesPerHire(8);
+                  setAnnualHires(30);
+                  setRelyOnAgenciesPct(75);
+                }}
+                className="px-2 py-0.5 rounded-md bg-purple-50 hover:bg-purple-100 text-purple-700 text-[10px] font-mono font-bold transition-colors cursor-pointer"
+              >
+                Enterprise
+              </button>
+            </div>
           </div>
 
           <div>
@@ -246,6 +293,15 @@ export const InefficientInterviewingCalculator: React.FC<Props> = ({ lang }) => 
 
         {/* Breakdown Output by Business Areas */}
         <div className="lg:col-span-6 space-y-4">
+          {/* Animated Dynamic Liquid Bleed Tank */}
+          <LiquidBleedTank
+            totalWaste={totalAnnualInefficiencyCost}
+            savings={netEstimatedSavings}
+            isProtected={isProtected}
+            onToggleProtected={() => setIsProtected(!isProtected)}
+            lang={lang}
+          />
+
           <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-2 shadow-2xs">
             <span className="text-[11px] font-mono uppercase tracking-wider text-slate-700 font-bold flex items-center gap-1.5">
               <AlertTriangle className="h-4 w-4 text-slate-500" /> {t.annualWasteTitle}:
@@ -327,7 +383,7 @@ export const InefficientInterviewingCalculator: React.FC<Props> = ({ lang }) => 
               </p>
             </div>
             <a
-              href="https://cal.com/catalinagil"
+              href="https://calendar.app.google/AjS1kWeh4xrEVcFM9"
               target="_blank"
               rel="noopener noreferrer"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-purple-700 hover:bg-purple-800 text-white text-xs font-semibold shadow-xs hover:shadow transition-all shrink-0 cursor-pointer"

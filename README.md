@@ -1,6 +1,6 @@
 # Talent Science — Talent Acquisition Predictive Science
 
-High-impact, zero-fluff interactive cockpit created for **Catalina Gil Sierra** (Lead TA & Psychometric Systems Architect).
+High-impact, zero-fluff interactive platform created for **Catalina Gil Sierra** (Lead TA & Psychometric Systems Architect).
 
 - **Module 1: Interview Report & Analysis Generator & BARS Arena**
 - **Module 2: Interview Report & Analysis Generator (P&L Bleed Simulator)**
