@@ -61,7 +61,7 @@ export default {
         // 2. Resend Free-Tier Email Notification (3,000 free emails/mo)
         if (env.RESEND_API_KEY) {
           try {
-            const recipient = env.NOTIFICATION_EMAIL || 'catalinagilsierra@gmail.com';
+            const recipient = env.NOTIFICATION_EMAIL || 'catagil91@gmail.com';
             await fetch('https://api.resend.com/emails', {
               method: 'POST',
               headers: {
